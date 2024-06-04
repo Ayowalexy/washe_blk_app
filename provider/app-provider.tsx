@@ -7,7 +7,7 @@ import {
 
 import { useColorScheme } from "react-native";
 
-import { TamaguiProvider } from "tamagui";
+import { TamaguiProvider } from "@tamagui/core";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ReactNode } from "react";
 import config from "../theme";
@@ -21,7 +21,7 @@ export default function AppProvider({ children }: Props) {
   return (
     // add this
 
-    <TamaguiProvider config={config} defaultTheme={colorScheme}>
+    <TamaguiProvider config={config} defaultTheme={colorScheme as any}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <NavigationContainer>
           <GestureHandlerRootView style={{ flex: 1 }}>

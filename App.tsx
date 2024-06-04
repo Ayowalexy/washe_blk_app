@@ -5,7 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useCallback } from "react";
 import AppProvider from "./provider/app-provider";
-import { TextArea } from "tamagui";
+import { RootNavigator } from "./navigation/root.navigation";
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -28,7 +28,7 @@ export default function App() {
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <AppProvider>
-        <Text style={{color: 'red'}}>hello</Text>
+        <RootNavigator />
       </AppProvider>
     </View>
   );
