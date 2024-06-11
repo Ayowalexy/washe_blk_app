@@ -45,14 +45,14 @@ export const Text = ({
 }: TypographyProps) => {
   let textFontSize: { fontSize: number; lineHeight: number } = {
     fontSize: 0,
-    lineHeight: 0,
+    lineHeight: 20,
   };
   if (
     typeof props.fontSize === "number" ||
     typeof props.fontSize === "string"
   ) {
     textFontSize.fontSize = RFValue(Number(props.fontSize) - 2);
-    textFontSize.lineHeight = RFValue(Number(props.fontSize) - 2) + 3;
+    textFontSize.lineHeight = RFValue(Number(props.fontSize) - 2) + 5.4;
   }
   return (
     <Typography

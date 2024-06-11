@@ -13,8 +13,8 @@ type WelcomeScreenProps = NativeStackScreenProps<
   AuthenticationStackParamsList,
   "welcome"
 >;
-export const Welcome = ({navigation} :WelcomeScreenProps) => {
-    const theme = useTheme()
+export const Welcome = ({ navigation }: WelcomeScreenProps) => {
+  const theme = useTheme();
   return (
     <View
       height={DEVICE_HEIGHT}
@@ -23,12 +23,12 @@ export const Welcome = ({navigation} :WelcomeScreenProps) => {
     >
       <Swiper
         style={styles.wrapper}
-       activeDotStyle={{
-        backgroundColor: '#0468F6',
-        width: 40
-       }}
-       dotColor="#E1EDFF"
-        
+        activeDotStyle={{
+          backgroundColor: "#0468F6",
+          width: 40,
+        }}
+        dotColor="#E1EDFF"
+        index={1}
       >
         {Data.map((elem, id) => (
           <View key={id} style={styles.view}>
@@ -63,14 +63,18 @@ export const Welcome = ({navigation} :WelcomeScreenProps) => {
       >
         <View width="50%" margin="auto">
           <Button
-            onPress={() => null}
+            onPress={() => navigation.navigate('login')}
             color="$primary4"
             title="Log in"
             textColor="$black1"
           />
         </View>
         <View width="50%" margin="auto">
-          <Button width="48%" onPress={() => navigation.navigate('create_account')} title="Create Account" />
+          <Button
+            width="48%"
+            onPress={() => navigation.navigate("create_account")}
+            title="Create Account"
+          />
         </View>
       </View>
     </View>

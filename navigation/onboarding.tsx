@@ -10,6 +10,7 @@ import {
   CreateAccount,
   EnterPassword,
   IdVerification,
+  Login,
   UserDetails,
   Welcome,
 } from "../src/screens";
@@ -21,6 +22,7 @@ export type AuthenticationStackParamsList = {
   user_details: undefined;
   address_info: undefined;
   id_verification: undefined;
+  login: undefined;
 };
 
 export type AuthenticationStackScreenProps<
@@ -43,7 +45,8 @@ export const AuthenticationStack = () => {
       <Stack.Screen name="enter_password" component={EnterPassword} />
       <Stack.Screen name="user_details" component={UserDetails} />
       <Stack.Screen name="address_info" component={AddressInfo} />
-      <Stack.Screen name="id_verification" component={IdVerification} />
+      <Stack.Screen name="id_verification" component={IdVerification as any} />
+      <Stack.Screen name="login" component={Login as any} />
     </Stack.Navigator>
   );
 };
