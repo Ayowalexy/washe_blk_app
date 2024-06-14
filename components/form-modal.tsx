@@ -84,7 +84,8 @@ export const FormModal = ({
                 fontSize={14}
                 fontFamily="$body"
                 fontWeight="500"
-                marginTop={8}
+                marginTop={6}
+                paddingHorizontal={10}
               >
                 {text}
               </Text>

@@ -5,6 +5,7 @@ import { SuccessIcon2 } from "../utils/assets";
 import { Text } from "./libs/text";
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../src/constants";
 import { Button } from "./button";
+import { Dispatch, SetStateAction } from "react";
 
 type props = {
   title: string;
@@ -12,6 +13,8 @@ type props = {
   text2?: string;
   onPress: () => void;
   disabled?: boolean;
+  visible: boolean;
+  setVisible: Dispatch<SetStateAction<boolean>>;
 };
 export const SuccessModal = ({
   title,
@@ -19,10 +22,17 @@ export const SuccessModal = ({
   text2,
   onPress,
   disabled = false,
+  visible,
+  setVisible,
 }: props) => {
   const theme = useTheme();
   return (
-    <Modal transparent={true}>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => setVisible(false)}
+    >
       <View style={styles.modalContainer}>
         <View style={styles.modal}>
           <YStack alignItems="center" paddingTop={5}>

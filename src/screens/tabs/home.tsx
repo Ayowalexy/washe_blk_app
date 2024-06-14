@@ -8,20 +8,17 @@ import {
 import { Text } from "../../../components/libs/text";
 import { View } from "../../../components/libs/view";
 import { TabLayout } from "../../../components/tab-layout";
-import { CardImg } from "../../../utils/assets-png";
+import { CardImg, Sand } from "../../../utils/assets-png";
 import { XStack, YStack } from "tamagui";
 import {
   ApplePay,
   Arrow,
-  Close,
   GooglePay,
   Paypal,
   Stripe,
   Washing,
 } from "../../../utils/assets";
-import { RequestCard } from "../../../components/request-card";
 import { LaundryRequests } from "../../../components/laundry-request";
-import { DEVICE_WIDTH } from "../../constants";
 import { EmptyRequest } from "../../../components/empty-request";
 import { useState } from "react";
 import { FormModal } from "../../../components/form-modal";
@@ -48,6 +45,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const [addPayment, setAddPayment] = useState(false);
   const [openCreditCard, setOpenCreditCard] = useState(false);
   const [show, setShow] = useState(false);
+  const [openVerification, setOpenVerification] = useState(false);
   return (
     <TabLayout>
       <View paddingBottom={100}>
@@ -132,6 +130,58 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             now start using Washe
           </Text>
         </View>
+        {/* <View
+          marginTop={23}
+          padding={20}
+          width="100%"
+          height={130}
+          backgroundColor="$primary8"
+          borderRadius={10}
+          position="relative"
+        >
+          <XStack justifyContent="space-between" alignItems="center">
+            <Text
+              fontSize={15}
+              fontFamily="$body"
+              fontWeight="600"
+              color="$primary7"
+            >
+              Verification unsuccessful
+            </Text>
+          </XStack>
+          <XStack justifyContent="space-between">
+            <YStack width="80%">
+              <Text
+                color="$black1"
+                width="94%"
+                fontFamily="$body"
+                fontWeight="500"
+                fontSize={13}
+                marginTop={10}
+                lineHeight={"$1"}
+              >
+                Your washe account verification was unsuccessful & rejected by
+                the admin
+              </Text>
+              <TouchableOpacity onPress={() => setOpenVerification(true)}>
+                <XStack>
+                  <Text color="$red1" fontSize={12} marginTop={10}>
+                    View rejection reason
+                  </Text>
+                </XStack>
+              </TouchableOpacity>
+            </YStack>
+            <View
+              width={55}
+              height={88}
+              position="absolute"
+              right={10}
+              top={"0%"}
+            >
+              <Image source={Sand} style={{ width: "100%", height: "100%" }} />
+            </View>
+          </XStack>
+        </View> */}
         <TouchableOpacity onPress={() => setAddPayment(true)}>
           <View
             marginTop={23}
@@ -179,11 +229,14 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           <View>
             <FlatList
               ListEmptyComponent={<EmptyRequest />}
-              data={LaundryRequests}
+              data={LaundryRequests.filter(
+                (elem) => elem.status === "completed"
+              )}
               keyExtractor={(item) => item.id.toString()}
               renderItem={(item) => (
                 <TouchableOpacity onPress={() => setShowModal(true)}>
                   <Request
+                    status={item.item.status as any}
                     show={true}
                     img={item.item.img}
                     date={item.item.date}
@@ -249,9 +302,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         visible={addPayment}
         setVisible={setAddPayment}
         title="Add Payment Method"
-        text="Select a option below to add a new payment method"
+        text="Select an option below to add a new payment method"
         close={() => {
-          setPaymentModal(false);
+          setAddPayment(false);
         }}
       >
         <PaymentMethod
@@ -280,13 +333,39 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         />
       </FormModal>
 
-      {show && (
-        <SuccessModal
-          onPress={() => setShow(false)}
-          title="Your credit card was added successfully "
-          text="You can now start making laundry request with washe"
-        />
-      )}
+      <SuccessModal
+        visible={show}
+        setVisible={setShow}
+        onPress={() => setShow(false)}
+        title="Your credit card was added successfully "
+        text="You can now start making laundry request with washe"
+      />
+      <FormModal
+        visible={openVerification}
+        setVisible={setOpenVerification}
+        close={() => setOpenVerification(false)}
+        title="Verification Unsuccessful"
+        text="25th Jun 2023, 04:45 PM"
+        button={<Button title="Update Information" onPress={() => null} />}
+        show_button={true}
+      >
+        <YStack
+          width="82%"
+          marginTop={20}
+          marginHorizontal="auto"
+          alignItems="flex-start"
+          justifyContent="flex-start"
+        >
+          <Text color="$red2" fontSize={13} textAlign="justify">
+            Reason for Rejection
+          </Text>
+          <Text fontSize={14} color="$black3">
+            Lorem ipsum dolor sit amet consectetur. Mauris tincidunt dui sed
+            facilisi. Fermentum nibh dui purus morbi leo sodales in. Iaculis in
+            non aliquet faucibus cras.{" "}
+          </Text>
+        </YStack>
+      </FormModal>
     </TabLayout>
   );
 };

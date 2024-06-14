@@ -53,7 +53,12 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
                   paddingHorizontal={20}
                 >
                   <TouchableOpacity onPress={() => setOpenConfirmation(true)}>
-                    <Request
+                  <Request
+                      top_img={false}
+                      showImg={true}
+                      width="100%"
+                      status={request.status}
+                      show={false}
                       img={request.img}
                       time={request.date}
                       name={request.name}

@@ -3,7 +3,7 @@ import { Basket } from "../utils/assets-png";
 export const LaundryRequests = [
   {
     img: Basket,
-    status: "pending",
+    status: "completed",
     id: 1,
     text: "Your laundry request is currently pending",
     date: "25th Jun 2023, 04:45 PM",
@@ -19,7 +19,7 @@ export const LaundryRequests = [
   },
   {
     img: Basket,
-    status: "pending",
+    status: "processing",
     id: 3,
     text: "Your laundry request is currently pending",
     date: "27th Jun 2023, 04:45 PM",

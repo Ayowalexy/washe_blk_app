@@ -11,6 +11,7 @@ interface button extends Partial<TouchableOpacityProps> {
   fontSize?: number;
   width?: string;
   textColor?: string;
+  disabled?: boolean;
 }
 export const Button = ({
   title,
@@ -18,12 +19,21 @@ export const Button = ({
   onPress,
   fontSize = 16,
   textColor = "$white1",
+  disabled,
   ...otherProps
 }: button) => {
   const theme = useTheme();
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress} {...otherProps}>
-      <View backgroundColor={color} style={styles.btn}>
+    <TouchableOpacity
+      disabled={disabled}
+      style={styles.button}
+      onPress={onPress}
+      {...otherProps}
+    >
+      <View
+        backgroundColor={disabled ? "$secondary9" : color}
+        style={styles.btn}
+      >
         <Text
           fontFamily="$body"
           color={textColor}

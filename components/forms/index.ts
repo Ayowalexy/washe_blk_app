@@ -6,3 +6,7 @@ export * from "./ongoing-requests";
 export * from "./one-request";
 export * from "./new-laundry-request";
 export * from "./request-form";
+export * from './address-form'
+export * from './edit-form'
+export * from './payment-info'
+export * from './contact-form'

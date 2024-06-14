@@ -104,7 +104,9 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
               </>
             )}
             <FlatList
-              data={LaundryRequests}
+              data={LaundryRequests.filter(
+                (elem) => elem.status === "completed"
+              )}
               ListEmptyComponent={
                 <EmptyRequest
                   backgroundColor={theme?.primary3?.val}
@@ -112,15 +114,17 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
                   borderColor={theme?.primary3?.val}
                 />
               }
-              renderItem={(item) => (
+              renderItem={({ item }) => (
                 <View>
                   <Request
-                    img={item.item.img}
+                    status={item.status as any}
+                    img={item.img}
                     show={false}
-                    name={item.item.name}
-                    time={item.item.date}
+                    name={item.name}
+                    time={item.date}
                   />
-                  {item.item.id === LaundryRequests.length ? null : (
+                  {item.id !==
+                    LaundryRequests[LaundryRequests.length - 1].id && (
                     <View borderBottomWidth={1} borderBottomColor="$black4" />
                   )}
                 </View>

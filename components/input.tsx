@@ -2,19 +2,21 @@ import React, { useState } from "react";
 import { Label, Input, useTheme, TextArea } from "tamagui";
 import { View } from "./libs/view";
 import { YStack } from "tamagui";
-import { ComponentProps } from "react";
+import { ComponentProps, ReactNode } from "react";
 import { Text } from "./libs/text";
 import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 type Props = {
   label: string;
+  leftElement?: ReactNode;
 } & ComponentProps<typeof Input>;
 
 export const InputBox = ({
   placeholder,
   label,
   secureTextEntry,
+  leftElement,
   ...others
 }: Props) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(!secureTextEntry);
@@ -30,6 +32,7 @@ export const InputBox = ({
         {label}
       </Text>
       <View style={{ position: "relative" }}>
+        {leftElement && <View>{leftElement}</View>}
         <Input
           placeholder={placeholder}
           {...others}
@@ -42,7 +45,10 @@ export const InputBox = ({
           fontFamily="$body"
           fontWeight="500"
           height={50}
-          style={{ paddingRight: 40 }} // Adjust padding to make space for the icon
+          style={{
+            paddingLeft: leftElement ? 40 : 10,
+            paddingRight: secureTextEntry ? 40 : 10,
+          }}
         />
         {secureTextEntry && (
           <TouchableOpacity
@@ -50,7 +56,8 @@ export const InputBox = ({
             style={{
               position: "absolute",
               right: 10,
-              top: 10,
+              top: "50%",
+              transform: [{ translateY: -12 }],
               height: 30,
               justifyContent: "center",
               alignItems: "center",
@@ -70,10 +77,13 @@ export const InputBox = ({
 
 type InputProps = {
   label: string;
+  leftElement?: ReactNode;
 } & ComponentProps<typeof TextArea>;
+
 export const InputTextarea = ({
   label,
   placeholder,
+  leftElement,
   ...others
 }: InputProps) => {
   const theme = useTheme();
@@ -83,6 +93,19 @@ export const InputTextarea = ({
         {label}
       </Text>
       <View style={{ position: "relative" }}>
+        {leftElement && (
+          <View
+            style={{
+              position: "absolute",
+              left: 10,
+              top: 10,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {leftElement}
+          </View>
+        )}
         <TextArea
           minHeight={105}
           placeholder={placeholder}
@@ -94,8 +117,9 @@ export const InputTextarea = ({
           fontSize={14}
           fontFamily="$body"
           fontWeight="500"
-          height={50}
-          style={{ paddingRight: 40 }} // Adjust padding to make space for the icon
+          style={{
+            paddingLeft: leftElement ? 40 : 10,
+          }}
         />
       </View>
     </YStack>

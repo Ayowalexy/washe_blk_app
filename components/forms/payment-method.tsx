@@ -9,7 +9,6 @@ import {
 
 import { View } from "../libs/view";
 import { Text } from "../libs/text";
-import { XStack } from "tamagui";
 
 const PaymentMethods = [
   {

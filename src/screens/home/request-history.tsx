@@ -33,7 +33,9 @@ export const RequestHistory = ({ navigation }: RequestHistoryScreenProps) => {
       paddingVertical={80}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        <ArrowBack width={24} height={24} />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <ArrowBack width={24} height={24} />
+        </TouchableOpacity>
         <Text paddingTop={30}>Request History</Text>
         <RequestFilter />
         <YStack>
@@ -55,6 +57,11 @@ export const RequestHistory = ({ navigation }: RequestHistoryScreenProps) => {
                 >
                   <TouchableOpacity onPress={() => setOpenConfirmation(true)}>
                     <Request
+                      top_img={true}
+                      showImg={false}
+                      width="88%"
+                      status={request.status}
+                      show={false}
                       img={request.img}
                       time={request.date}
                       name={request.name}
