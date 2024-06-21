@@ -6,6 +6,8 @@ import { Text } from "./libs/text";
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../src/constants";
 import { Button } from "./button";
 import { Dispatch, SetStateAction } from "react";
+import { useAtom } from "jotai";
+import { UserData } from "../src/atoms";
 
 type props = {
   title: string;
@@ -26,6 +28,7 @@ export const SuccessModal = ({
   setVisible,
 }: props) => {
   const theme = useTheme();
+  const [userdata] = useAtom(UserData)
   return (
     <Modal
       animationType="slide"
@@ -44,7 +47,7 @@ export const SuccessModal = ({
               fontFamily="$body"
               fontWeight="500"
             >
-              Welldone, Karen James!
+              Welldone, {`${userdata?.firstName} ${userdata?.lastName}`}
             </Text>
             <Text
               fontSize={24}

@@ -10,6 +10,8 @@ import { Ionicons } from "@expo/vector-icons";
 type Props = {
   label: string;
   leftElement?: ReactNode;
+  error?: string;
+  hasError?: boolean;
 } & ComponentProps<typeof Input>;
 
 export const InputBox = ({
@@ -17,6 +19,8 @@ export const InputBox = ({
   label,
   secureTextEntry,
   leftElement,
+  error,
+  hasError,
   ...others
 }: Props) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(!secureTextEntry);
@@ -71,6 +75,11 @@ export const InputBox = ({
           </TouchableOpacity>
         )}
       </View>
+      {hasError && (
+        <Text fontSize={9} color="$red1" fontFamily="$body" fontWeight="400">
+          {error}
+        </Text>
+      )}
     </YStack>
   );
 };
@@ -78,12 +87,16 @@ export const InputBox = ({
 type InputProps = {
   label: string;
   leftElement?: ReactNode;
+  hasError?: boolean;
+  error?: string;
 } & ComponentProps<typeof TextArea>;
 
 export const InputTextarea = ({
   label,
   placeholder,
   leftElement,
+  hasError,
+  error,
   ...others
 }: InputProps) => {
   const theme = useTheme();
@@ -121,6 +134,11 @@ export const InputTextarea = ({
             paddingLeft: leftElement ? 40 : 10,
           }}
         />
+        {hasError && (
+          <Text fontSize={9} color="$red1" fontFamily="$body" fontWeight="400">
+            {error}
+          </Text>
+        )}
       </View>
     </YStack>
   );

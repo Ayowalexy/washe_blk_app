@@ -38,6 +38,7 @@ export const AuthLayout = ({
             fontFamily="$body"
             fontWeight="600"
             color="$primary2"
+            textAlign='center'
           >
             {subtitle}
           </Text>

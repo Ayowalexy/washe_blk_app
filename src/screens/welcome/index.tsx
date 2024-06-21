@@ -63,7 +63,7 @@ export const Welcome = ({ navigation }: WelcomeScreenProps) => {
       >
         <View width="50%" margin="auto">
           <Button
-            onPress={() => navigation.navigate('login')}
+            onPress={() => navigation.navigate("login")}
             color="$primary4"
             title="Log in"
             textColor="$black1"
@@ -72,7 +72,11 @@ export const Welcome = ({ navigation }: WelcomeScreenProps) => {
         <View width="50%" margin="auto">
           <Button
             width="48%"
-            onPress={() => navigation.navigate("create_account")}
+            onPress={() =>
+              navigation.navigate("create_account", {
+                isUpdate: false
+              })
+            }
             title="Create Account"
           />
         </View>

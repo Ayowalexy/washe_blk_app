@@ -1,13 +1,16 @@
 import { Image, StyleSheet } from "react-native";
 import { ScrollView, XStack, YStack, useTheme } from "tamagui";
-import { user } from "../utils/assets-png";
+import { user as ii} from "../utils/assets-png";
 import { View } from "./libs/view";
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../src/constants";
 import { Text } from "./libs/text";
 import { ReactNode } from "react";
+import { useAtom } from "jotai";
+import { persistentUserAtom } from "../src/atoms";
 
 export const TabLayout = ({ children }: { children: ReactNode }) => {
   const theme = useTheme();
+  const [user] = useAtom(persistentUserAtom)
   return (
     <View
       width={DEVICE_WIDTH}
@@ -19,7 +22,7 @@ export const TabLayout = ({ children }: { children: ReactNode }) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <XStack>
           <View height={50} width={50}>
-            <Image source={user} style={styles.img} />
+            <Image source={ii} style={styles.img} />
           </View>
           <YStack marginLeft={9} marginTop={6}>
             <Text
@@ -28,7 +31,7 @@ export const TabLayout = ({ children }: { children: ReactNode }) => {
               fontFamily="$body"
               fontWeight="600"
             >
-              Hello, Karen!
+              Hello, {`${user?.firstName}`}!
             </Text>
             <Text
               marginTop={3}

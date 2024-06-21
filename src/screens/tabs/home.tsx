@@ -13,6 +13,7 @@ import { XStack, YStack } from "tamagui";
 import {
   ApplePay,
   Arrow,
+  Close,
   GooglePay,
   Paypal,
   Stripe,
@@ -24,7 +25,10 @@ import { useState } from "react";
 import { FormModal } from "../../../components/form-modal";
 import { Button } from "../../../components/button";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppRootStackParamsList } from "../../../navigation/app.roots.types";
+import {
+  AppRootStackParamsList,
+  AppStackScreenProps,
+} from "../../../navigation/app.roots.types";
 import {
   PaymentForm,
   SaveForm,
@@ -34,17 +38,21 @@ import {
   Request,
 } from "../../../components/forms";
 import { SuccessModal } from "../../../components/modal";
+import { useAtom } from "jotai";
+import { persistentUserAtom } from "../../atoms";
 
 type HomeScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
   "home_stack"
 >;
-export const Home = ({ navigation }: HomeScreenProps) => {
+export const Home = ({ navigation }: AppStackScreenProps<"tabs">) => {
   const [showModal, setShowModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
   const [addPayment, setAddPayment] = useState(false);
   const [openCreditCard, setOpenCreditCard] = useState(false);
   const [show, setShow] = useState(false);
+  const [user] = useAtom(persistentUserAtom);
+  console.log(user);
   const [openVerification, setOpenVerification] = useState(false);
   return (
     <TabLayout>
@@ -130,7 +138,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             now start using Washe
           </Text>
         </View>
-        {/* <View
+        <View
           marginTop={23}
           padding={20}
           width="100%"
@@ -181,7 +189,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
               <Image source={Sand} style={{ width: "100%", height: "100%" }} />
             </View>
           </XStack>
-        </View> */}
+        </View>
         <TouchableOpacity onPress={() => setAddPayment(true)}>
           <View
             marginTop={23}
@@ -346,7 +354,17 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         close={() => setOpenVerification(false)}
         title="Verification Unsuccessful"
         text="25th Jun 2023, 04:45 PM"
-        button={<Button title="Update Information" onPress={() => null} />}
+        button={
+          <Button
+            title="Update Information"
+            onPress={() =>
+              navigation.navigate("onboarding", {
+                screen: "create_account",
+                params: { isUpdate: true },
+              })
+            }
+          />
+        }
         show_button={true}
       >
         <YStack

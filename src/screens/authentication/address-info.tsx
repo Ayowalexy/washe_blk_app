@@ -9,6 +9,10 @@ import { CloseButton } from "../../../components/close-button";
 import { Button } from "../../../components/button";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthenticationStackParamsList } from "../../../navigation/onboarding";
+import { useFormik } from "formik";
+import { addressValidationSchema } from "../../../schema/validation";
+import { useAtom } from "jotai";
+import { AddressAtom } from "../../atoms";
 
 type addressInfoScreenProps = NativeStackScreenProps<
   AuthenticationStackParamsList,
@@ -16,6 +20,19 @@ type addressInfoScreenProps = NativeStackScreenProps<
 >;
 export const AddressInfo = ({ navigation }: addressInfoScreenProps) => {
   const theme = useTheme();
+  const [address, setAddress] = useAtom(AddressAtom);
+  const { handleBlur, handleChange, handleSubmit, errors, touched, values } =
+    useFormik({
+      initialValues: {
+        address: "",
+      },
+      validationSchema: addressValidationSchema,
+      onSubmit: (values) => {
+        setAddress(values.address);
+        navigation.navigate("id_verification");
+        console.log(values, "vals");
+      },
+    });
   return (
     <View height={DEVICE_HEIGHT} backgroundColor="$white1">
       <KeyboardAvoidingView
@@ -31,8 +48,12 @@ export const AddressInfo = ({ navigation }: addressInfoScreenProps) => {
             >
               <View>
                 <InputTextarea
+                  onChangeText={handleChange("address")}
+                  onBlur={handleBlur("address")}
                   label="Home address"
                   placeholder="Home address"
+                  hasError={!!errors.address && touched.address}
+                  error={errors.address}
                 />
               </View>
               <View
@@ -72,10 +93,7 @@ export const AddressInfo = ({ navigation }: addressInfoScreenProps) => {
         >
           <CloseButton onPress={() => navigation.goBack()} />
           <View width="80%">
-            <Button
-              title="Next"
-              onPress={() => navigation.navigate("id_verification")}
-            />
+            <Button title="Next" onPress={() => handleSubmit()} />
           </View>
         </XStack>
       </KeyboardAvoidingView>
