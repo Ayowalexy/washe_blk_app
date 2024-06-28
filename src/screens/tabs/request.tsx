@@ -27,6 +27,7 @@ import { LaundryRequests } from "../../atoms";
 import { useMakeLaundryRequest } from "../../../api/mutations";
 import Toast from "react-native-toast-message";
 import { useMakePayment } from "../../../api/mutations";
+import moment from "moment";
 
 type RequestScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
@@ -46,6 +47,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
   const [selected_payment_id, setSelectedPaymentId] = useState("");
   const { mutateAsync, isPending: loading } = useMakePayment();
   const { data } = useGetLaundryServices();
+  const { data: datas } = useGetRequests();
 
   const handleOpenRequest = () => {
     setOpenModal(false);
@@ -164,7 +166,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
                 </XStack>
               </TouchableOpacity>
             </XStack>
-            {laundry?.length > 1 && (
+            {datas?.data?.length > 1 && (
               <>
                 <RequestFilter />
                 <Text
@@ -178,9 +180,12 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
               </>
             )}
             <FlatList
-              data={laundry.filter((elem) => elem.status === "completed")}
+              data={datas?.data?.filter(
+                (elem: any) => elem.status === "pending"
+              ).slice(0, 3)}
               ListEmptyComponent={
                 <EmptyRequest
+                  onPress={() => setOpenModal(true)}
                   backgroundColor={theme?.primary3?.val}
                   color={theme?.white1?.val}
                   borderColor={theme?.primary3?.val}
@@ -189,12 +194,14 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
               renderItem={({ item }) => (
                 <View>
                   <Request
-                    status={item.status as any}
+                    status={item?.status as any}
                     show={false}
-                    name={item.name}
-                    time={item.date}
+                    name={item.laundryRequestService.name}
+                    time={moment(item?.created_at).format(
+                      "Do MMM YYYY, hh:mm A"
+                    )}
                   />
-                  {item.id !== laundry[laundry.length - 1].id && (
+                  {item.id !== datas.data[datas.data.length - 1].id && (
                     <View borderBottomWidth={1} borderBottomColor="$black4" />
                   )}
                 </View>

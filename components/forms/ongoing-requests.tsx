@@ -4,15 +4,18 @@ import { View } from "../libs/view";
 import { FlatList } from "react-native";
 import { EmptyRequest } from "../empty-request";
 import { DEVICE_WIDTH } from "../../src/constants";
-import { LaundryRequests } from "../laundry-request";
 import { RequestCard } from "../request-card";
 import { useGetRequests } from "../../api/queries";
 import moment from "moment";
-import { Dispatch } from "react";
-import { SetStateAction } from "jotai";
+import { Dispatch, useCallback, useState } from "react";
+import { SetStateAction, useAtom } from "jotai";
 import { FormModal } from "../form-modal";
 import { Button } from "../button";
 import { PaymentForm } from "./payment-modal";
+import { useMakePayment } from "../../api/mutations";
+import { LaundryRequests } from "../../src/atoms";
+import { useNavigation } from "@react-navigation/native";
+import { HomeStackParamList } from "../../navigation/home.navigation";
 
 type props = {
   paymentModal: boolean;
@@ -20,8 +23,29 @@ type props = {
 };
 export const OngoingRequests = ({ paymentModal, setPaymentModal }: props) => {
   const { refetch, data } = useGetRequests();
+  console.log(data?.data, 'all')
+  const navigation = useNavigation<any>();
   const itemWidth =
     data?.data?.length === 1 ? DEVICE_WIDTH - 80 : DEVICE_WIDTH * 0.56;
+  const [selected_payment_id, setSelectedPaymentId] = useState("");
+  const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
+  const { mutateAsync, isPending: loading } = useMakePayment();
+  const handleMayPayment = useCallback(async () => {
+    try {
+      const response = await mutateAsync({
+        laundryRequestId: oneLaundryRequest.laundryRequestId as string,
+
+        paymentMethodId: selected_payment_id,
+      });
+      console.log(response, "responsee");
+      setPaymentModal(false);
+      navigation.navigate("home_stack", {
+        screen: "payment_successful",
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }, [selected_payment_id, oneLaundryRequest]);
   return (
     <YStack
       backgroundColor="$secondary8"
@@ -48,6 +72,12 @@ export const OngoingRequests = ({ paymentModal, setPaymentModal }: props) => {
               <RequestCard
                 onPress={() => {
                   setPaymentModal(true);
+                  setOneLaundryRequest({
+                    ...oneLaundryRequest,
+                    tax: 0,
+                    total_amount: item?.fee ?? 0,
+                    laundryRequestId: item?.id,
+                  });
                 }}
                 text={"Your laundry request is currently pending"}
                 status={item?.status as any}
@@ -57,30 +87,36 @@ export const OngoingRequests = ({ paymentModal, setPaymentModal }: props) => {
           )}
         />
         <View>
-          <FormModal
-            visible={paymentModal}
-            setVisible={setPaymentModal}
-            goBack={false}
-            title="Payment"
-            text="To confirm please select your preferred payment method"
-            close={() => {
-              setPaymentModal(false);
+        <FormModal
+        visible={paymentModal}
+        setVisible={setPaymentModal}
+        goBack={false}
+       
+        title="Payment"
+        text="To confirm please select your preferred payment method"
+        close={() => {
+          setPaymentModal(false);
+        }}
+        button={
+          <Button
+            color="#00D158"
+            title={`Pay $${
+              Number(oneLaundryRequest?.tax ?? 0) +
+              Number(oneLaundryRequest?.total_amount ?? 0)
+            }`}
+            loading={loading}
+            disabled={!Boolean(selected_payment_id)}
+            onPress={() => {
+              handleMayPayment();
             }}
-            button={
-              <Button
-                color="#00D158"
-                title="Pay $40.00"
-                onPress={() => {
-                  // setPaymentModal(false);
-                  // navigation.navigate("home_stack", {
-                  //   screen: "payment_successful",
-                  // });
-                }}
-              />
-            }
-          >
-            <PaymentForm />
-          </FormModal>
+          />
+        }
+      >
+        <PaymentForm
+          setSelectedPaymentId={setSelectedPaymentId}
+          selected_payment_id={selected_payment_id}
+        />
+      </FormModal>
         </View>
       </View>
     </YStack>
