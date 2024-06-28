@@ -1,13 +1,11 @@
-import { Label, XStack, YStack } from "tamagui";
-import { InputBox } from "../input";
+import { XStack, YStack } from "tamagui";
 import { Text } from "../libs/text";
 import { View } from "../libs/view";
 import { Select } from "./select";
 import { Radio } from "./radio";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Button } from "../button";
-import { FormModal } from "../form-modal";
 import { useAtom } from "jotai";
 import { LaundryRequests, laundryRequestServiceIdAtom } from "../../src/atoms";
 import { useGetLaundryType } from "../../api/queries";
@@ -15,8 +13,6 @@ import { DatePicker } from "./date-picker";
 import { colors } from "../ui/colors";
 import { useFormik } from "formik";
 import { laundryRequestValidationSchema } from "../../schema/validation";
-import Toast from "react-native-toast-message";
-import { useMakeLaundryRequest } from "../../api/mutations";
 import moment from "moment";
 
 const list = [
@@ -59,7 +55,6 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
   const [DyeActive, setDyeActive] = useState<number | null>(null);
 
   const [laundryServiceId] = useAtom(laundryRequestServiceIdAtom);
-  // console.log(laundryServiceId, "laundryServiceId");
 
   const handleTimeFrameActive = (id: string) => {
     setTimeFrameActive(id);
@@ -81,21 +76,9 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
     setDyeActive(id);
   };
 
-  const [selectedOption, setSelectedOption] = useState(null);
-
-  // const handleChange = (option: any) => {
-  //   setSelectedOption(option);
-  //   console.log("Selected laundry type:", option);
-  // };
   const { refetch, data } = useGetLaundryType();
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [dye, setDye] = useState<"Yes" | "No">("No");
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
-
-  const handleDateChange = (date: Date) => {
-    setSelectedDate(date);
-  };
-  // console.log(data?.data, "laundry types");
   const {
     handleBlur,
     handleChange,
@@ -133,25 +116,6 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
         dye: values.dye === "Yes" ? true : false,
       });
       setOpenConfirmation(true);
-
-      //   const data = await mutate(formattedValues, {
-      //     onSuccess: (data) => {
-      //       console.log("Mutation success:", data);
-      //       Toast.show({
-      //         type: "customSuccess",
-      //         text1: "Laundry request created",
-      //       });
-      //     },
-      //     onError: (error: any) => {
-      //       Toast.show({
-      //         type: "customError",
-      //         text1:
-      //           JSON.stringify(error?.response?.data) ||
-      //           "An error occurred, try again",
-      //       });
-      //       console.error("Error submitting form:", error);
-      //     },
-      //   });
     },
   });
   return (

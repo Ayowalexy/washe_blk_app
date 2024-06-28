@@ -26,6 +26,7 @@ import { useAtom } from "jotai";
 import { LaundryRequests } from "../../atoms";
 import { useMakeLaundryRequest } from "../../../api/mutations";
 import Toast from "react-native-toast-message";
+import moment from "moment";
 
 type RequestScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
@@ -41,7 +42,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
   const [paymentModal, setPaymentModal] = useState(false);
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
   const { mutate, isPending } = useMakeLaundryRequest();
-  const { refetch } = useGetRequests();
+  const { refetch, data: datas } = useGetRequests();
 
   const { data } = useGetLaundryServices();
   console.log(data?.data, "dataaa");
@@ -100,7 +101,10 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
     <>
       <TabLayout>
         <View paddingBottom={70}>
-          <OngoingRequests />
+          <OngoingRequests
+            paymentModal={paymentModal}
+            setPaymentModal={setPaymentModal}
+          />
           <View
             position="relative"
             backgroundColor={theme?.secondary8?.val}
@@ -136,7 +140,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
                 </XStack>
               </TouchableOpacity>
             </XStack>
-            {laundry?.length > 1 && (
+            {
               <>
                 <RequestFilter />
                 <Text
@@ -148,9 +152,11 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
                   25th Jun 2023
                 </Text>
               </>
-            )}
+            }
             <FlatList
-              data={laundry.filter((elem) => elem.status === "completed")}
+              data={datas?.data?.filter(
+                (elem: any) => elem.status === "pending"
+              ).slice(0,3)}
               ListEmptyComponent={
                 <EmptyRequest
                   backgroundColor={theme?.primary3?.val}
@@ -160,11 +166,13 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
               }
               renderItem={({ item }) => (
                 <View>
-                  <Request
-                    status={item.status as any}
+                 <Request
+                    status={item?.status as any}
                     show={false}
-                    name={item.name}
-                    time={item.date}
+                    date={moment(item?.created_at).format(
+                      "Do MMM YYYY, hh:mm A"
+                    )}
+                    name={item?.laundryRequestService.name}
                   />
                   {item.id !== laundry[laundry.length - 1].id && (
                     <View borderBottomWidth={1} borderBottomColor="$black4" />
@@ -261,8 +269,8 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         setVisible={setPaymentModal}
         goBack={true}
         onGoBack={() => {
-          setPaymentModal(false)
-          setOpenConfirmation(true)
+          setPaymentModal(false);
+          setOpenConfirmation(true);
         }}
         title="Payment"
         text="To confirm please select your preferred payment method"

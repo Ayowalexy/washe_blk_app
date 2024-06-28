@@ -14,21 +14,21 @@ type props = {
   text: string;
   date: string;
   status: string;
-  image: ImageSourcePropType;
+  onPress: () => void;
 };
-export const RequestCard = ({ text, date, status, image }: props) => {
+export const RequestCard = ({ text, date, status, onPress }: props) => {
   const theme = useTheme();
   return (
     <View
       style={styles.card}
-      width={'100%'}
+      width={"100%"}
       borderRadius={12}
       backgroundColor="$white1"
       padding={20}
       marginTop={18}
     >
       <View style={styles.image}>
-        <Image source={image} style={styles.img} />
+        <Image source={Basket} style={styles.img} />
       </View>
       <View
         backgroundColor="$secondary1"
@@ -48,10 +48,10 @@ export const RequestCard = ({ text, date, status, image }: props) => {
       <Text fontSize={12} color="$black3" marginTop={9}>
         {date}
       </Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onPress}>
         <XStack alignItems="center" marginTop={20}>
           <Text fontSize={12} color={theme?.secondary5?.val} marginRight={3}>
-            Track your request
+            Make payment
           </Text>
           <Arrow color="#006B2D" />
         </XStack>
