@@ -49,7 +49,7 @@ export const Login = ({ navigation }: LoginScreenProps) => {
         onSuccess: async (response) => {
           await saveToken("accessToken", response?.data?.token);
           const { data } = await refetch();
-          console.log(data);
+          console.log(data.data, 'data.data');
           setUser(data?.data);
           Toast.show({
             type: "customSuccess",

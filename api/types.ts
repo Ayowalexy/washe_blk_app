@@ -46,3 +46,42 @@ export interface User {
   } | null;
   fullName: string;
 }
+
+export type LaundryServiceType = {
+  id: string;
+  name: string;
+  description: string;
+};
+
+export type LaundryServiceTypesData = {
+  status: boolean;
+  message: string;
+  data: LaundryServiceType[];
+};
+
+export interface LaundryRequestDTO {
+  laundryRequestServiceId: string;
+  laundryRequestTypeId: string;
+  pickupDate: string;
+  pickupTime: string;
+  timeframe: string;
+  detergentType: string;
+  waterTemperature: string;
+  softener: boolean;
+  bleach: boolean;
+  dye: boolean;
+  dyeColor: string;
+}
+export interface LaundryReRequestDTO {
+  laundryRequestId: string;
+}
+
+export type UpdateAccountDTO = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+};
+export type ContactUsDTO = {
+  message: string;
+};

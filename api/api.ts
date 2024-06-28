@@ -14,6 +14,7 @@ const api = axios.create({
 api.interceptors.request.use(
     async (config) => {
         const result = await getToken("accessToken")
+        console.log(config.url)
         config.headers = { ...config.headers } as AxiosRequestHeaders;
         if (result) {
             config.headers["Authorization"] = `Bearer ${result}`;

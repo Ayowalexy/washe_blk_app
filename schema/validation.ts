@@ -40,3 +40,36 @@ export const loginValidationSchema = Yup.object().shape({
   email: Yup.string().email().required("Email is required"),
   password: Yup.string().required("password is required"),
 });
+export const laundryRequestValidationSchema = (dye: "No" | "Yes") => {
+
+  const obj:any = {
+    Yes: {
+      dyeColor: Yup.string().required()
+    },
+    No: {
+      dyeColor: Yup.string().optional()
+    }
+  }
+  return Yup.object().shape({
+    laundryRequestTypeId: Yup.string().required("Laundry type is required"),
+    pickupDate: Yup.string().required("Pickup date is required"),
+    pickupTime: Yup.string().required("Pickup time is required"),
+    timeframe: Yup.string().required("Timeframe type is required"), // [same_day | normal | 2_days]
+    detergentType: Yup.string().required("Detergent type is required"), // [scented | unscented]
+    waterTemperature: Yup.string().required("water temperature is required"), // [cold | hot]
+    softener: Yup.string().required("Is softener required"),
+    bleach: Yup.string().required("Is bleach required"),
+    dye: Yup.string().required("Is dye required"),
+    ...obj[dye]
+  });
+};
+export const updateProfileValidationSchema = Yup.object().shape({
+  email: Yup.string().email().optional(),
+  firstName: Yup.string().optional(),
+  lastName: Yup.string().optional(),
+  phoneNumber: Yup.string().optional(),
+});
+export const contactUsValidationSchema = Yup.object().shape({
+  email: Yup.string().email().optional(),
+  message:  Yup.string().required("Message is required"),
+});

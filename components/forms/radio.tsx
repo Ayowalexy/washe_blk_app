@@ -2,9 +2,9 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 type RadioProps = {
-  id: number;
+  id: string;
   active: boolean;
-  handleActive: (id: number) => void;
+  handleActive: (id: string) => void;
 };
 
 export const Radio: React.FC<RadioProps> = ({ id, active, handleActive }) => {

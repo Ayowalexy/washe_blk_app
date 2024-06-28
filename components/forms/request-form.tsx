@@ -1,42 +1,67 @@
-import { XStack, YStack } from "tamagui";
+import { Label, XStack, YStack } from "tamagui";
 import { InputBox } from "../input";
 import { Text } from "../libs/text";
 import { View } from "../libs/view";
 import { Select } from "./select";
 import { Radio } from "./radio";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Button } from "../button";
 import { FormModal } from "../form-modal";
+import { useAtom } from "jotai";
+import { LaundryRequests, laundryRequestServiceIdAtom } from "../../src/atoms";
+import { useGetLaundryType } from "../../api/queries";
+import { DatePicker } from "./date-picker";
+import { colors } from "../ui/colors";
+import { useFormik } from "formik";
+import { laundryRequestValidationSchema } from "../../schema/validation";
+import Toast from "react-native-toast-message";
+import { useMakeLaundryRequest } from "../../api/mutations";
+import moment from "moment";
 
 const list = [
   {
     name: "Normal",
-    id: 1,
+    id: "normal",
   },
   {
     name: "Same day",
-    id: 2,
+    id: "same_day",
   },
   {
     name: "2 days",
-    id: 3,
+    id: "2_days",
   },
 ];
+const request = [
+  {
+    name: "Yes",
+    value: true,
+  },
+  {
+    name: "No",
+    value: false,
+  },
+];
+
 type props = {
   setOpenConfirmation: Dispatch<SetStateAction<boolean>>;
 };
-export const RequestForm = ({setOpenConfirmation}: props) => {
-  const [timeFrameActive, setTimeFrameActive] = useState<number | null>(null);
+
+export const RequestForm = ({ setOpenConfirmation }: props) => {
+  const [timeFrameActive, setTimeFrameActive] = useState<string>("normal");
   const [detergentTypeActive, setDetergentTypeActive] = useState<number | null>(
     null
   );
-  const [waterTemp, setWaterTemp] = useState<Number | null>(null);
-  const [fabricSoftActive, setFabricSoftActive] = useState<Number | null>(null);
-  const [bleachActive, setBleachActive] = useState<Number | null>(null);
-  const [DyeActive, setDyeActive] = useState<Number | null>(null);
+  const [waterTemp, setWaterTemp] = useState<number | null>(null);
+  const [fabricSoftActive, setFabricSoftActive] = useState<number | null>(null);
+  const [bleachActive, setBleachActive] = useState<number | null>(null);
+  const [DyeActive, setDyeActive] = useState<number | null>(null);
 
-  const handleTimeFrameActive = (id: number) => {
+  const [laundryServiceId] = useAtom(laundryRequestServiceIdAtom);
+  // console.log(laundryServiceId, "laundryServiceId");
+
+  const handleTimeFrameActive = (id: string) => {
     setTimeFrameActive(id);
   };
 
@@ -55,6 +80,80 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
   const handleDyeActive = (id: number) => {
     setDyeActive(id);
   };
+
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  // const handleChange = (option: any) => {
+  //   setSelectedOption(option);
+  //   console.log("Selected laundry type:", option);
+  // };
+  const { refetch, data } = useGetLaundryType();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [dye, setDye] = useState<"Yes" | "No">("No");
+  const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
+
+  const handleDateChange = (date: Date) => {
+    setSelectedDate(date);
+  };
+  // console.log(data?.data, "laundry types");
+  const {
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    errors,
+    touched,
+    values,
+    setValues,
+    setFieldValue,
+    resetForm,
+  } = useFormik({
+    initialValues: {
+      laundryRequestTypeId: "",
+      pickupDate: "",
+      pickupTime: "",
+      timeframe: "",
+      detergentType: "",
+      waterTemperature: "",
+      softener: "",
+      bleach: "",
+      dye: "",
+      dyeColor: "",
+    },
+    validationSchema: laundryRequestValidationSchema(dye),
+    onSubmit: async (values) => {
+      setOneLaundryRequest({
+        ...values,
+        laundryRequestServiceId: laundryServiceId,
+        pickupDate: moment(values.pickupDate).format("YYYY-MM-DD"),
+        pickupTime: moment(values.pickupTime).format("HH:mm"),
+        detergentType: values.detergentType.toLowerCase(),
+        waterTemperature: values.waterTemperature.toLowerCase(),
+        softener: values.softener === "Yes" ? true : false,
+        bleach: values.bleach === "Yes" ? true : false,
+        dye: values.dye === "Yes" ? true : false,
+      });
+      setOpenConfirmation(true);
+
+      //   const data = await mutate(formattedValues, {
+      //     onSuccess: (data) => {
+      //       console.log("Mutation success:", data);
+      //       Toast.show({
+      //         type: "customSuccess",
+      //         text1: "Laundry request created",
+      //       });
+      //     },
+      //     onError: (error: any) => {
+      //       Toast.show({
+      //         type: "customError",
+      //         text1:
+      //           JSON.stringify(error?.response?.data) ||
+      //           "An error occurred, try again",
+      //       });
+      //       console.error("Error submitting form:", error);
+      //     },
+      //   });
+    },
+  });
   return (
     <View
       width={"100%"}
@@ -66,79 +165,81 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
         showsVerticalScrollIndicator={false}
         style={styles.scrollview}
       >
-        <Select
-          label="Laundry type"
-          onChange={() => null}
-          options={[
-            {
-              label: "wash",
-              value: "1",
-            },
-            {
-              label: "wash",
-              value: "1",
-            },
-          ]}
-          placeholder="Select Laundry type"
-        />
-        <Select
-          label="Pickup date"
-          onChange={() => null}
-          options={[
-            {
-              label: "wash",
-              value: "1",
-            },
-            {
-              label: "wash",
-              value: "2",
-            },
-          ]}
-          placeholder="Select Laundry type"
-        />
-        <Select
-          label="Pickup time"
-          onChange={() => null}
-          options={[
-            {
-              label: "wash",
-              value: "1",
-            },
-            {
-              label: "wash",
-              value: "2",
-            },
-          ]}
-          placeholder="Select Laundry type"
-        />
+        <View>
+          <Select
+            error={errors.laundryRequestTypeId}
+            label="Laundry Type"
+            onChange={(value) =>
+              setFieldValue("laundryRequestTypeId", value.value)
+            }
+            options={
+              Array.isArray(data?.data)
+                ? data?.data.map((elem: any) => ({
+                    label: elem.name,
+                    value: elem.id,
+                  }))
+                : []
+            }
+            placeholder="Select Laundry type"
+            hasError={
+              !!errors.laundryRequestTypeId && touched.laundryRequestTypeId
+            }
+          />
+        </View>
+        <View>
+          <DatePicker
+            onChange={(value) => setFieldValue("pickupDate", value)}
+            value={values.pickupDate ? new Date(values.pickupDate) : new Date()}
+            mode="date"
+            label="Pickup date"
+            hasError={!!errors.pickupDate && touched.pickupDate}
+            error={errors.pickupDate}
+          />
+        </View>
+
+        <View>
+          <DatePicker
+            onChange={(value) => setFieldValue("pickupTime", value)}
+            mode="time"
+            value={values.pickupTime ? new Date(values.pickupTime) : new Date()}
+            label="Pickup time"
+            hasError={!!errors.pickupTime && touched.pickupTime}
+            error={errors.pickupTime}
+          />
+        </View>
         <YStack>
           <Text fontSize={14} marginBottom={-14} color="$black1">
             Select Timeframe
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={"16%"}>
-              {list.slice(0, 2).map((elem) => (
-                <XStack
-                  height={48}
-                  padding={10}
-                  key={elem.id}
-                  gap={8}
-                  width="47%"
-                  borderWidth={1}
-                  borderColor="$accent4"
-                  borderRadius={8}
-                >
-                  <Radio
-                    active={timeFrameActive === elem.id}
-                    handleActive={() => handleTimeFrameActive(elem.id)}
-                    id={elem.id}
-                  />
-                  <Text fontSize={14} color="$black1">
-                    {elem.name}
-                  </Text>
-                </XStack>
-              ))}
-            </XStack>
+            <View>
+              <XStack marginTop={20} gap={"16%"}>
+                {list.slice(0, 2).map((elem) => (
+                  <XStack
+                    height={48}
+                    padding={10}
+                    key={elem.id}
+                    gap={8}
+                    width="47%"
+                    borderWidth={1}
+                    borderColor="$accent4"
+                    borderRadius={8}
+                  >
+                    <Radio
+                      active={timeFrameActive === elem.id}
+                      handleActive={(value) => {
+                        setFieldValue("timeframe", value);
+                        handleTimeFrameActive(elem.id);
+                      }}
+                      id={elem.id}
+                    />
+                    <Text fontSize={14} color="$black1">
+                      {elem.name}
+                    </Text>
+                  </XStack>
+                ))}
+              </XStack>
+            </View>
             <View marginTop={20}>
               <XStack
                 height={48}
@@ -151,7 +252,10 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
               >
                 <Radio
                   active={timeFrameActive === list[2].id}
-                  handleActive={() => handleTimeFrameActive(list[2].id)}
+                  handleActive={(value) => {
+                    handleTimeFrameActive(list[2].id);
+                    setFieldValue("timeframe", value);
+                  }}
                   id={list[2].id}
                 />
                 <Text fontSize={14} color="$black1">
@@ -159,6 +263,11 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
                 </Text>
               </XStack>
             </View>
+            {!!errors.timeframe && touched.timeframe && (
+              <Text fontSize={9} fontWeight="400" color="$red1">
+                {errors.timeframe}
+              </Text>
+            )}
           </YStack>
         </YStack>
         <YStack marginTop={20}>
@@ -180,8 +289,11 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
                 >
                   <Radio
                     active={detergentTypeActive === id}
-                    handleActive={() => handleDetergentTypeActive(id)}
-                    id={id}
+                    handleActive={(value) => {
+                      handleDetergentTypeActive(id);
+                      setFieldValue("detergentType", value);
+                    }}
+                    id={elem}
                   />
                   <Text fontSize={14} color="$black1">
                     {elem}
@@ -190,6 +302,11 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
               ))}
             </XStack>
           </YStack>
+          {!!errors.detergentType && touched.detergentType && (
+            <Text fontSize={9} fontWeight="300" color="$red1">
+              {errors.detergentType}
+            </Text>
+          )}
         </YStack>
         <YStack marginTop={20}>
           <Text fontSize={14} marginBottom={-14} color="$black1">
@@ -210,8 +327,11 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
                 >
                   <Radio
                     active={waterTemp === id}
-                    handleActive={() => handleWaterTemp(id)}
-                    id={id}
+                    handleActive={(value) => {
+                      handleWaterTemp(id);
+                      setFieldValue("waterTemperature", value);
+                    }}
+                    id={elem}
                   />
                   <Text fontSize={14} color="$black1">
                     {elem}
@@ -219,6 +339,11 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
                 </XStack>
               ))}
             </XStack>
+            {!!errors.waterTemperature && touched.waterTemperature && (
+              <Text fontSize={9} color="$red1">
+                {errors.waterTemperature}
+              </Text>
+            )}
           </YStack>
         </YStack>
         <YStack marginTop={20}>
@@ -227,7 +352,7 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
           </Text>
           <YStack>
             <XStack marginTop={20} gap={"16%"}>
-              {["Yes", "No"].map((elem, id) => (
+              {request.map((elem, id) => (
                 <XStack
                   height={48}
                   padding={10}
@@ -240,16 +365,24 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
                 >
                   <Radio
                     active={fabricSoftActive === id}
-                    handleActive={() => handleFabricSoftActive(id)}
-                    id={id}
+                    handleActive={(value) => {
+                      handleFabricSoftActive(id);
+                      setFieldValue("softener", value);
+                    }}
+                    id={elem.name}
                   />
                   <Text fontSize={14} color="$black1">
-                    {elem}
+                    {elem.name}
                   </Text>
                 </XStack>
               ))}
             </XStack>
           </YStack>
+          {!!errors.softener && touched.softener && (
+            <Text fontSize={9} color="$red1">
+              {errors.softener}
+            </Text>
+          )}
         </YStack>
         <YStack marginTop={20}>
           <Text fontSize={14} marginBottom={-14} color="$black1">
@@ -270,8 +403,11 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
                 >
                   <Radio
                     active={bleachActive === id}
-                    handleActive={() => handleBleachActive(id)}
-                    id={id}
+                    handleActive={(value) => {
+                      handleBleachActive(id);
+                      setFieldValue("bleach", value);
+                    }}
+                    id={elem}
                   />
                   <Text fontSize={14} color="$black1">
                     {elem}
@@ -279,6 +415,11 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
                 </XStack>
               ))}
             </XStack>
+            {!!errors.bleach && touched.bleach && (
+              <Text fontSize={9} color="$red1">
+                {errors.bleach}
+              </Text>
+            )}
           </YStack>
         </YStack>
         <YStack marginTop={20}>
@@ -300,8 +441,12 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
                 >
                   <Radio
                     active={DyeActive === id}
-                    handleActive={() => handleDyeActive(id)}
-                    id={id}
+                    handleActive={(value) => {
+                      handleDyeActive(id);
+                      setDye(value as any);
+                      setFieldValue("dye", value);
+                    }}
+                    id={elem}
                   />
                   <Text fontSize={14} color="$black1">
                     {elem}
@@ -309,35 +454,38 @@ export const RequestForm = ({setOpenConfirmation}: props) => {
                 </XStack>
               ))}
             </XStack>
+            {!!errors.dye && touched.dye && (
+              <Text fontSize={9} color="$red1">
+                {errors.dye}
+              </Text>
+            )}
           </YStack>
         </YStack>
-        <Select
-          extraStyles={{ marginTop: 10 }}
-          onChange={() => null}
-          options={[
-            {
-              label: "wash",
-              value: "1",
-            },
-            {
-              label: "wash",
-              value: "2",
-            },
-          ]}
-          placeholder="Select dye color"
-        />
+        <View>
+          <Select
+            hasError={!!errors.dyeColor && touched.dyeColor}
+            error={errors.dyeColor}
+            extraStyles={{ marginTop: 10 }}
+            onChange={(value) => setFieldValue("dyeColor", value.value)}
+            options={
+              Array.isArray(colors)
+                ? colors.map((elem) => ({
+                    label: elem,
+                    value: elem,
+                  }))
+                : []
+            }
+            placeholder="Select dye color"
+          />
+        </View>
       </ScrollView>
       <View paddingTop={25}>
-        <Button
-          title="Next"
-          onPress={() => {
-            setOpenConfirmation(true);
-          }}
-        />
+        <Button title="Next" onPress={handleSubmit} />
       </View>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   scrollview: {
     height: "83%",

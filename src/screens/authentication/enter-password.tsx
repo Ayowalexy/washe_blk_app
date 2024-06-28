@@ -64,7 +64,7 @@ export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
         onError: (error: any) => {
           Toast.show({
             type: "customError",
-            text1: error?.response?.data || "An error occured, try again",
+            text1: JSON.stringify(error?.response?.data) || "An error occured, try again",
           });
           console.log(error, "rrr");
         },

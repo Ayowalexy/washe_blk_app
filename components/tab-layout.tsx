@@ -11,6 +11,7 @@ import { persistentUserAtom } from "../src/atoms";
 export const TabLayout = ({ children }: { children: ReactNode }) => {
   const theme = useTheme();
   const [user] = useAtom(persistentUserAtom)
+  console.log(user, 'us')
   return (
     <View
       width={DEVICE_WIDTH}

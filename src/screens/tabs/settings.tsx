@@ -11,7 +11,7 @@ import { Text } from "../../../components/libs/text";
 import { XStack, YStack, useTheme } from "tamagui";
 
 import { DEVICE_HEIGHT } from "../../constants";
-import { CardImg, user } from "../../../utils/assets-png";
+import { CardImg, user as userImg } from "../../../utils/assets-png";
 import {
   ContactIcon,
   EditIcon,
@@ -34,6 +34,8 @@ import {
 } from "../../../components/forms";
 import { SuccessModal } from "../../../components/modal";
 import { AvatarList } from "../../../components/avatar";
+import { UserData, persistentUserAtom } from "../../atoms";
+import { useAtom } from "jotai";
 
 const List = [
   {
@@ -70,6 +72,7 @@ export const Settings = () => {
   const [openContact, setOpenContact] = useState(false);
   const [openList, setOpenList] = useState(false);
   const [selected, setSelected] = useState(1);
+  const [user] = useAtom(persistentUserAtom);
 
   const handleSelect = (id: number) => {
     setSelected(id);
@@ -93,6 +96,7 @@ export const Settings = () => {
         break;
     }
   };
+  console.log(user, 'current')
   return (
     <View
       height={DEVICE_HEIGHT}
@@ -120,7 +124,7 @@ export const Settings = () => {
                 onPress={() => setOpenList(true)}
               >
                 <View width={74} height={74}>
-                  <Image source={user} style={styles.user} />
+                  <Image source={userImg} style={styles.user} />
                 </View>
                 <View position="absolute" top={40} right={-4}>
                   <EditIcon />
@@ -132,10 +136,10 @@ export const Settings = () => {
                 fontWeight="600"
                 color={theme?.white1?.val}
               >
-                Karen James
+                {user?.firstName} {user?.lastName}
               </Text>
               <Text fontSize={14} fontWeight="500" color={theme?.white1?.val}>
-                karenjames@gmail.com
+                {user?.email}
               </Text>
               <XStack
                 justifyContent="center"
@@ -150,7 +154,7 @@ export const Settings = () => {
                   fontWeight="500"
                   color={theme?.white1?.val}
                 >
-                  +1 456-922-0912
+                  {user?.phoneNumber}
                 </Text>
               </XStack>
             </View>
@@ -337,11 +341,11 @@ export const Settings = () => {
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => handleSelect(item.id)}>
                 {selected === item?.id ? (
-                <View height={78} width={78} borderRadius={50}>
+                  <View height={78} width={78} borderRadius={50}>
                     <View width={74} height={74} borderRadius={50}>
-                    <Image source={item.img} style={styles.cardImg} />
+                      <Image source={item.img} style={styles.cardImg} />
+                    </View>
                   </View>
-                </View>
                 ) : (
                   <View width={74} height={74} borderRadius={50}>
                     <Image source={item.img} style={styles.cardImg} />

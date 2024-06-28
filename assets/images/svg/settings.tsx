@@ -33,7 +33,7 @@ export const SettingsIcon = ({
     <Text
       color={color}
       fontFamily="$body"
-      fontWeight={focused ? "600" : "700"}
+      fontWeight={focused ? "600" : "400"}
       fontSize={12}
       marginTop={-2}
     >

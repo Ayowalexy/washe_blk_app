@@ -17,6 +17,7 @@ type props = {
   text: string;
   show_button?: boolean;
   visible: boolean;
+  onGoBack?: () => void
   setVisible: Dispatch<SetStateAction<boolean>>;
 };
 export const FormModal = ({
@@ -29,6 +30,7 @@ export const FormModal = ({
   show_button = true,
   visible,
   setVisible,
+  onGoBack
 }: props) => {
   const theme = useTheme();
   const navigation = useNavigation();
@@ -44,7 +46,7 @@ export const FormModal = ({
         <XStack style={goBack ? styles.iconContainer : styles.iconContainer2}>
           {goBack ? (
             <>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
+              <TouchableOpacity onPress={onGoBack}>
                 <View style={styles.iconWrapper}>
                   <ArrowBack />
                 </View>

@@ -12,7 +12,7 @@ import { View } from "../../../components/libs/view";
 import { TabLayout } from "../../../components/tab-layout";
 import { Arrow, PlusIcon } from "../../../utils/assets";
 import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
-import { LaundryRequests } from "../../../components/laundry-request";
+import { LaundryRequests as laundry } from "../../../components/laundry-request";
 import { EmptyRequest } from "../../../components/empty-request";
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
@@ -21,6 +21,11 @@ import { Button } from "../../../components/button";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppRootStackParamsList } from "../../../navigation/app.roots.types";
 import { RequestFilter } from "../../../components/request-filter";
+import { useGetLaundryServices, useGetRequests } from "../../../api/queries";
+import { useAtom } from "jotai";
+import { LaundryRequests } from "../../atoms";
+import { useMakeLaundryRequest } from "../../../api/mutations";
+import Toast from "react-native-toast-message";
 
 type RequestScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
@@ -34,7 +39,12 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
+  const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
+  const { mutate, isPending } = useMakeLaundryRequest();
+  const { refetch } = useGetRequests();
 
+  const { data } = useGetLaundryServices();
+  console.log(data?.data, "dataaa");
   const handleOpenRequest = () => {
     setOpenModal(false);
     setOpenRequest(true);
@@ -49,7 +59,43 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
     setOpenConfirmation(false);
     setPaymentModal(true);
   };
-
+  const handleSubmit = () => {
+    const request = {
+      laundryRequestServiceId: oneLaundryRequest.laundryRequestServiceId,
+      laundryRequestTypeId: oneLaundryRequest.laundryRequestTypeId,
+      pickupDate: oneLaundryRequest.pickupDate,
+      pickupTime: oneLaundryRequest.pickupTime,
+      detergentType: oneLaundryRequest.detergentType,
+      waterTemperature: oneLaundryRequest.waterTemperature,
+      timeframe: oneLaundryRequest.timeframe,
+      softener: oneLaundryRequest.softener,
+      bleach: oneLaundryRequest.bleach,
+      dye: oneLaundryRequest.dye,
+      dyeColor: oneLaundryRequest.dyeColor,
+    };
+    mutate(request, {
+      onSuccess: async (data) => {
+        console.log(data, "data");
+        Toast.show({
+          type: "customSuccess",
+          text1: "Request created successfully",
+        });
+        setOpenConfirmation(false);
+        setPaymentModal(true);
+        const { data: allRequests } = await refetch();
+        console.log("All Requests:", allRequests);
+      },
+      onError: (error: any) => {
+        Toast.show({
+          type: "customError",
+          text1:
+            JSON.stringify(error?.response?.data) ||
+            "An error occured, try again",
+        });
+        console.log(error, "rrr");
+      },
+    });
+  };
   return (
     <>
       <TabLayout>
@@ -90,7 +136,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
                 </XStack>
               </TouchableOpacity>
             </XStack>
-            {LaundryRequests?.length > 1 && (
+            {laundry?.length > 1 && (
               <>
                 <RequestFilter />
                 <Text
@@ -104,9 +150,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
               </>
             )}
             <FlatList
-              data={LaundryRequests.filter(
-                (elem) => elem.status === "completed"
-              )}
+              data={laundry.filter((elem) => elem.status === "completed")}
               ListEmptyComponent={
                 <EmptyRequest
                   backgroundColor={theme?.primary3?.val}
@@ -118,13 +162,11 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
                 <View>
                   <Request
                     status={item.status as any}
-                    img={item.img}
                     show={false}
                     name={item.name}
                     time={item.date}
                   />
-                  {item.id !==
-                    LaundryRequests[LaundryRequests.length - 1].id && (
+                  {item.id !== laundry[laundry.length - 1].id && (
                     <View borderBottomWidth={1} borderBottomColor="$black4" />
                   )}
                 </View>
@@ -177,7 +219,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         title="New Laundry Request"
         text="Start a new request by letting us know what services you need"
       >
-        <NewLaundryRequest />
+        <NewLaundryRequest data={data?.data} />
       </FormModal>
 
       <FormModal
@@ -194,27 +236,34 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
       <FormModal
         visible={openConfirmation}
         setVisible={setOpenConfirmation}
-        button={
-          <Button
-            title="Proceed"
-            onPress={() => {
-              setOpenConfirmation(false);
-              setPaymentModal(true);
-            }}
-          />
-        }
         show_button={true}
+        button={
+          <View paddingTop={25}>
+            <Button
+              loading={isPending}
+              title="Proceed"
+              onPress={() => handleSubmit()}
+            />
+          </View>
+        }
         close={() => setOpenConfirmation(false)}
         title="Confirmation"
         text="Please make sure services selected are correct before confirming."
       >
-        <SaveForm />
+        <SaveForm
+          setOpenConfirmation={setOpenConfirmation}
+          setPaymentModal={setPaymentModal}
+        />
       </FormModal>
 
       <FormModal
         visible={paymentModal}
         setVisible={setPaymentModal}
         goBack={true}
+        onGoBack={() => {
+          setPaymentModal(false)
+          setOpenConfirmation(true)
+        }}
         title="Payment"
         text="To confirm please select your preferred payment method"
         close={() => {
