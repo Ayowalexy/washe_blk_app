@@ -4,14 +4,56 @@ import { MessageIcon, PurpleIcon, WhatsappIcon } from "../../utils/assets";
 import { View } from "../libs/view";
 import { InputBox, InputTextarea } from "../input";
 import { Button } from "../button";
-import { ScrollView } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native";
 import { useState } from "react";
+import { useFormik } from "formik";
+import { useAtom } from "jotai";
+import { persistentUserAtom } from "../../src/atoms";
+import { contactUsValidationSchema } from "../../schema/validation";
+import Toast from "react-native-toast-message";
+import { useContactUs } from "../../api/mutations";
 
 export const ContactForm = () => {
   const theme = useTheme();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const isButtonDisabled = !email || !message;
+  const isButtonDisabled = !message;
+  const [user] = useAtom(persistentUserAtom);
+  const { mutate, isPending } = useContactUs();
+  const {
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    errors,
+    touched,
+    values,
+    setValues,
+    resetForm,
+  } = useFormik({
+    initialValues: {
+      message: "",
+    },
+    validationSchema: contactUsValidationSchema,
+    onSubmit: (values) => {
+      mutate(values, {
+        onSuccess: async (response) => {
+          Toast.show({
+            type: "customSuccess",
+            text1: "Message sent successfully",
+          });
+        },
+        onError: (error: any) => {
+          Toast.show({
+            type: "customError",
+            text1:
+              JSON.stringify(error?.response?.data?.message) ||
+              "An error occured, try again",
+          });
+          console.log(error?.response?.data?.message);
+        },
+      });
+    },
+  });
   return (
     <ScrollView style={{ width: "84%" }}>
       <YStack
@@ -26,9 +68,15 @@ export const ContactForm = () => {
           Contact washe via
         </Text>
         <XStack marginTop={12} gap={8}>
-          <MessageIcon />
-          <WhatsappIcon />
-          <PurpleIcon />
+          <TouchableOpacity>
+            <MessageIcon />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <WhatsappIcon />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <PurpleIcon />
+          </TouchableOpacity>
         </XStack>
       </YStack>
       <XStack alignItems="center" marginTop={15} gap={10}>
@@ -40,21 +88,28 @@ export const ContactForm = () => {
       </XStack>
       <YStack marginTop={20}>
         <InputBox
-           onChangeText={setEmail}
+          onChangeText={handleChange("email")}
+          onBlur={handleBlur("email")}
+          value={user?.email}
+          editable={false}
           label="Email address"
           placeholder="Email address"
         />
         <InputTextarea
-          onChangeText={setMessage}
+          onChangeText={handleChange("message")}
+          onBlur={handleBlur("message")}
+          hasError={!!errors.message && touched.message}
+          error={errors.message}
           label="Message"
           placeholder="Type your message here..."
         />
       </YStack>
       <View paddingTop={35}>
         <Button
+          loading={isPending}
           disabled={isButtonDisabled}
           title="Send message"
-          onPress={() => null}
+          onPress={() => handleSubmit()}
         />
       </View>
     </ScrollView>

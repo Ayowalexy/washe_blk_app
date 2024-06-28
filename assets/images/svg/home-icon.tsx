@@ -30,7 +30,12 @@ export const HomeIcon = ({
         height={16.72}
       />
     )}
-    <Text color={color} fontSize={12} marginTop={-2}>
+    <Text
+      color={color}
+      fontWeight={focused ? "600" : "400"}
+      fontSize={12}
+      marginTop={-2}
+    >
       Home
     </Text>
   </YStack>

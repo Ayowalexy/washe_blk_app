@@ -3,9 +3,9 @@ import { View } from "../libs/view";
 import { Image, ImageSourcePropType, StyleSheet } from "react-native";
 import { Text } from "../libs/text";
 import { DEVICE_WIDTH } from "../../src/constants";
+import { Basket } from "../../utils/assets-png";
 
 type Props = {
-  img: ImageSourcePropType;
   show?: boolean;
   date?: string;
   name: string;
@@ -13,11 +13,10 @@ type Props = {
   width?: string;
   status: "pending" | "processing";
   showImg?: boolean;
-  top_img?: boolean
+  top_img?: boolean;
 };
 
 export const Request = ({
-  img,
   date,
   name,
   time,
@@ -25,16 +24,16 @@ export const Request = ({
   width = "100%",
   status = "pending",
   showImg = true,
-  top_img= true
+  top_img = true,
 }: Props) => {
   return (
     <YStack>
       <XStack paddingVertical={20}>
-       {top_img &&
-         <View style={styles.image}>
-         <Image source={img} style={styles.img} />
-       </View>
-       }
+        {top_img && (
+          <View style={styles.image}>
+            <Image source={Basket} style={styles.img} />
+          </View>
+        )}
         <YStack>
           {show && (
             <Text
@@ -62,7 +61,7 @@ export const Request = ({
           </Text>
         </YStack>
       </XStack>
-      {status === "pending" && (
+      {status !== "pending" && (
         <YStack
           width={width}
           backgroundColor={"$white1"}
@@ -74,7 +73,7 @@ export const Request = ({
         >
           {showImg && (
             <View style={styles.image}>
-              <Image source={img} style={styles.img} />
+              <Image source={Basket} style={styles.img} />
             </View>
           )}
           <View
@@ -110,7 +109,7 @@ export const Request = ({
         >
           {showImg && (
             <View style={styles.image}>
-              <Image source={img} style={styles.img} />
+              <Image source={Basket} style={styles.img} />
             </View>
           )}
           <View

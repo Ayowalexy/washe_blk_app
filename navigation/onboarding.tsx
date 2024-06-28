@@ -17,7 +17,9 @@ import {
 
 export type AuthenticationStackParamsList = {
   welcome: undefined;
-  create_account: undefined;
+  create_account: {
+    isUpdate: boolean
+  };
   enter_password: undefined;
   user_details: undefined;
   address_info: undefined;
@@ -41,7 +43,7 @@ export const AuthenticationStack = () => {
       }}
     >
       <Stack.Screen name="welcome" component={Welcome} />
-      <Stack.Screen name="create_account" component={CreateAccount} />
+      <Stack.Screen name="create_account" component={CreateAccount as any} />
       <Stack.Screen name="enter_password" component={EnterPassword} />
       <Stack.Screen name="user_details" component={UserDetails} />
       <Stack.Screen name="address_info" component={AddressInfo} />

@@ -1,9 +1,8 @@
 import { ScrollView, XStack, useTheme } from "tamagui";
 import { AuthLayout } from "../../../components/auth-layout";
-import { InputBox, InputTextarea } from "../../../components/input";
 import { Text } from "../../../components/libs/text";
 import { View } from "../../../components/libs/view";
-import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../../constants";
+import { DEVICE_HEIGHT } from "../../constants";
 import { KeyboardAvoidingView, Platform, TouchableOpacity } from "react-native";
 import { CloseButton } from "../../../components/close-button";
 import { Button } from "../../../components/button";
@@ -13,26 +12,68 @@ import { YStack } from "tamagui";
 import { File, PdfFile } from "../../../utils/assets";
 import * as DocumentPicker from "expo-document-picker";
 import { useState } from "react";
-import { Modal } from "react-native";
 import { SuccessModal } from "../../../components/modal";
-import { AppStackNavigationProp } from "../../../navigation/app.roots.types";
+import { AppStackScreenProps } from "../../../navigation/app.roots.types";
+import { AddressAtom } from "../../atoms";
+import { useAtom } from "jotai";
+import { useSubmitDocument } from "../../../api/mutations";
+import { useFormik } from "formik";
+import Toast from "react-native-toast-message";
 
 type idVerificationScreenProps = NativeStackScreenProps<
   AuthenticationStackParamsList,
   "id_verification"
 >;
+
 export const IdVerification = ({
   navigation,
-}: AppStackNavigationProp<"onboarding">) => {
+}: AppStackScreenProps<"onboarding">) => {
   const theme = useTheme();
-  const [pickImage, setPickImage] = useState({
-    name: "",
-    size: "",
-    mimeType: "",
-    uri: "",
-  });
+  const [address] = useAtom(AddressAtom);
+  const { mutate, isPending } = useSubmitDocument();
   const [fileSizeKB, setFileSizeKB] = useState(0);
   const [visible, setVisible] = useState(false);
+
+  const {
+    handleSubmit,
+    values,
+    setFieldValue,
+    resetForm,
+  } = useFormik({
+    initialValues: {
+      fileName: "",
+      fileUrl: "",
+    },
+    onSubmit: (values) => {
+      const newUser = {
+        address,
+        fileName: values.fileName,
+        fileUrl: "file",
+      };
+      console.log(newUser);
+
+      mutate(newUser, {
+        onSuccess: (data) => {
+          console.log(data, "data");
+          Toast.show({
+            type: "customSuccess",
+            text1: "Confirm the OTP we sent to you",
+          });
+          setVisible(true);
+        },
+        onError: (error: any) => {
+          Toast.show({
+            type: "customError",
+            text1:
+              JSON.stringify(error?.response?.data) ||
+              "An error occurred, try again",
+          });
+          console.log(error?.response?.data, "rrr");
+        },
+      });
+    },
+  });
+
   const pickDocument = async () => {
     const result = await DocumentPicker.getDocumentAsync({});
     if (result.assets) {
@@ -43,16 +84,13 @@ export const IdVerification = ({
         const fileSizeInKB = fileSizeBytes / 1024;
         setFileSizeKB(fileSizeInKB);
       }
-      setPickImage({
-        name: asset.name,
-        size: fileSizeKB.toString(),
-        mimeType: asset.mimeType as any,
-        uri: asset.uri,
-      });
+      setFieldValue("fileName", asset.name);
+      setFieldValue("fileUrl", "file");
+      setFieldValue("size", fileSizeKB.toString());
     }
   };
 
-  console.log(pickImage, "image");
+  console.log(values, "image");
   return (
     <View height={DEVICE_HEIGHT} backgroundColor="$white1">
       <KeyboardAvoidingView
@@ -111,12 +149,11 @@ export const IdVerification = ({
                     fontFamily="$body"
                     fontWeight="500"
                   >
-                    {" "}
                     maximum file size 5 MB
                   </Text>
                 </YStack>
 
-                {pickImage.name && (
+                {values.fileName && (
                   <View marginTop={25}>
                     <XStack>
                       <PdfFile />
@@ -127,7 +164,7 @@ export const IdVerification = ({
                           fontFamily="$body"
                           fontWeight="500"
                         >
-                          {pickImage.name}
+                          {values.fileName}
                         </Text>
                         <XStack alignItems="center" marginTop={5}>
                           <Text
@@ -135,7 +172,7 @@ export const IdVerification = ({
                             fontSize={12}
                             marginRight={7}
                           >
-                            {Number(pickImage.size).toFixed(2)} KB
+                            {Number(fileSizeKB).toFixed(2)} KB
                           </Text>
                           <Text color={theme?.black3} fontSize={12}>
                             |
@@ -212,27 +249,28 @@ export const IdVerification = ({
           <CloseButton onPress={() => navigation.goBack()} />
           <View width="80%">
             <Button
-            
-              disabled={pickImage.name ? false : true}
+              loading={isPending}
+              disabled={values.fileName ? false : true}
               title="Complete Onboarding"
-              onPress={() => setVisible(true)}
+              onPress={() => handleSubmit()}
             />
           </View>
         </XStack>
       </KeyboardAvoidingView>
-      {visible && (
-        <SuccessModal
-          onPress={() => {
-            setVisible(false);
-            navigation.navigate("tabs", {
-              screen: "Home",
-            });
-          }}
-          title="Onboarding Completed"
-          text="Your information have been sent to Washe admin for verification. verification takes 2-5 business days.."
-          text2="In the main time, explore your washe account"
-        />
-      )}
+
+      <SuccessModal
+        visible={visible}
+        setVisible={setVisible}
+        onPress={() => {
+          setVisible(false);
+          navigation.navigate("tabs", {
+            screen: "Home",
+          });
+        }}
+        title="Onboarding Completed"
+        text="Your information have been sent to Washe admin for verification. verification takes 2-5 business days.."
+        text2="In the main time, explore your washe account"
+      />
     </View>
   );
 };

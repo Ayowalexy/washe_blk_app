@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "../libs/text";
@@ -6,47 +6,50 @@ import { View } from "../libs/view";
 import { StyleProp, ViewStyle, StyleSheet } from "react-native";
 import { useTheme } from "tamagui";
 
-export type optionProps = {
+export type OptionProps = {
   label: string;
-  // item?: {label:string} | undefined
   value: string;
 };
 
-type selectProps = {
-  options: optionProps[];
+type SelectProps = {
+  options: OptionProps[];
   search?: boolean;
-  onChange: (e: optionProps) => void;
-  err?: boolean;
-  errMsg?: string;
+  onChange: (option: OptionProps) => void;
   extraStyles?: StyleProp<ViewStyle>;
   placeholder?: string;
   label?: string;
+  defaultValue?: string;
+  hasError?: boolean;
+  error?: string;
 };
 
 export const Select = ({
   options,
   search = false,
   onChange,
-  err,
-  errMsg,
   extraStyles,
   placeholder,
   label,
-}: selectProps) => {
+  defaultValue,
+  hasError,
+  error,
+}: SelectProps) => {
   const [value, setValue] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
+  const theme = useTheme();
 
-  const renderItem = (item: optionProps) => {
-    console.log(item);
+  const renderItem = (item: OptionProps) => {
     return (
       <View style={{ marginVertical: 3 }}>
-        <Text style={styles.selectedTextStyle} fontFamily="$body">
-          {item?.label}
-        </Text>
+        <Text style={styles.selectedTextStyle}>{item.label}</Text>
       </View>
     );
   };
-  const theme = useTheme();
+  // useEffect(() => {
+  //   if (defaultValue){
+  //       setValue(defaultValue)
+  //   }
+  // },[defaultValue])
   return (
     <View style={[{ width: "100%", marginBottom: 20 }, extraStyles]}>
       <Text fontSize={14} marginBottom={-14} color="$black1">
@@ -56,36 +59,28 @@ export const Select = ({
         renderRightIcon={(visible?: boolean) => (
           <FontAwesome name="angle-down" size={18} color="#131515" />
         )}
-        style={[styles.dropdown]}
+        style={styles.dropdown}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         data={options}
-        maxHeight={300}
+        maxHeight={200}
         search={search}
-        labelField={"label"}
-        valueField={"value"}
-        placeholder={
-          !isFocus
-            ? placeholder
-              ? placeholder
-              : "Select Laundry type"
-            : "Select Laundry type"
-        }
+        labelField="label"
+        valueField="value"
+        placeholder={placeholder}
         searchPlaceholder="Search..."
         value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          onChange(item);
-          setValue(item.value);
           setIsFocus(false);
+          setValue(item.value);
+          onChange(item);
         }}
         iconStyle={styles.iconStyle}
         renderItem={renderItem}
       />
-      {err && (
-        <Text style={{ color: "red", fontSize: 12, paddingLeft: "10%" }}>
-          {errMsg}
+      {hasError && (
+        <Text fontSize={9} color="$red1">
+          {error}
         </Text>
       )}
     </View>
@@ -93,11 +88,6 @@ export const Select = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    borderWidth: 2,
-    // padding: 30,
-    width: "100%",
-  },
   dropdown: {
     width: "100%",
     borderColor: "#D3DBDF",
@@ -110,20 +100,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "white",
     alignSelf: "center",
-    // marginBottom: 20
-  },
-  iconStyle: {
-    marginRight: 20,
-    paddingRight: 30,
-    fontSize: 13,
-  },
-  label: {
-    position: "absolute",
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
   },
   placeholderStyle: {
     fontSize: 14,
@@ -133,21 +109,15 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     fontSize: 14,
-    paddingLeft: 20,
+    paddingLeft: 10,
     color: "#000",
-    fontWeight: "500",
+    fontWeight: "400",
   },
-  icon: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-  },
-  label_tag: {
-    color: "#000",
-    fontSize: 12,
-    paddingBottom: 5,
+  iconStyle: {
+    marginRight: 20,
+    paddingRight: 30,
+    fontSize: 13,
   },
 });
+
+export default Select;

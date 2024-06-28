@@ -9,12 +9,68 @@ import { AuthLayout } from "../../../components/auth-layout";
 import { InputBox } from "../../../components/input";
 import { CloseButton } from "../../../components/close-button";
 import { Button } from "../../../components/button";
+import { useFormik } from "formik";
+import { enterPasswordValidationSchema } from "../../../schema/validation";
+import { useAtom } from "jotai";
+import { UserData } from "../../atoms";
+import { useSignUp } from "../../../api/mutations";
+import Toast from "react-native-toast-message";
+import { saveToken } from "../../../resources/storage";
 
 type EnterPasswordScreenProps = NativeStackScreenProps<
   AuthenticationStackParamsList,
   "enter_password"
 >;
 export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
+  const { mutate, isPending } = useSignUp();
+  const [userdata] = useAtom(UserData);
+
+  const {
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    errors,
+    touched,
+    values,
+    setValues,
+    resetForm,
+  } = useFormik({
+    initialValues: {
+      password: "",
+      password_confirmation: "",
+    },
+    validationSchema: enterPasswordValidationSchema,
+    onSubmit: (values) => {
+      const newUser = {
+        firstName: userdata.firstName,
+        lastName: userdata.lastName,
+        email: userdata.email,
+        phoneNumber: userdata.phoneNumber,
+        password: values.password,
+      };
+      console.log(newUser);
+
+      mutate(newUser, {
+        onSuccess: async (data) => {
+          console.log(data, "data");
+          Toast.show({
+            type: "customSuccess",
+            text1: "Confirm the OTP we sent to you",
+          });
+          await saveToken('accessToken', data?.data?.token?.token)
+          console.log(data?.data?.token?.token)
+          navigation.navigate("user_details");
+        },
+        onError: (error: any) => {
+          Toast.show({
+            type: "customError",
+            text1: JSON.stringify(error?.response?.data) || "An error occured, try again",
+          });
+          console.log(error, "rrr");
+        },
+      });
+    },
+  });
   return (
     <View height={DEVICE_HEIGHT} backgroundColor="$white1">
       <KeyboardAvoidingView
@@ -24,11 +80,22 @@ export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
           <AuthLayout auth={false}>
             <View>
               <InputBox
+                onChangeText={handleChange("password")}
+                onBlur={handleBlur("password")}
+                error={errors.password}
+                hasError={!!errors.password && touched.password}
                 secureTextEntry={true}
                 label="Password"
                 placeholder="Enter your password"
               />
               <InputBox
+                onChangeText={handleChange("password_confirmation")}
+                onBlur={handleBlur("password_confirmation")}
+                error={errors.password_confirmation}
+                hasError={
+                  !!errors.password_confirmation &&
+                  touched.password_confirmation
+                }
                 secureTextEntry={true}
                 label="Confirm password"
                 placeholder="Re-enter your password"
@@ -46,8 +113,9 @@ export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
           <CloseButton onPress={() => navigation.goBack()} />
           <View width="80%">
             <Button
+              loading={isPending}
               title="Create account"
-              onPress={() => navigation.navigate('user_details')}
+              onPress={() => handleSubmit()}
             />
           </View>
         </XStack>

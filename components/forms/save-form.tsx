@@ -3,13 +3,42 @@ import { View } from "../libs/view";
 import { XStack, YStack, useTheme } from "tamagui";
 import { Text } from "../libs/text";
 import { CardImg } from "../../utils/assets-png";
+import { useAtom } from "jotai";
+import {
+  LaundryRequests,
+  laundryRequestServiceNameAtom,
+} from "../../src/atoms";
+import { useMakeLaundryRequest } from "../../api/mutations";
+import Toast from "react-native-toast-message";
+import { Button } from "../button";
+import { Dispatch, SetStateAction } from "react";
+import { useGetLaundryType } from "../../api/queries";
+import moment from "moment";
 
-export const SaveForm = () => {
+type props = {
+  setOpenConfirmation: Dispatch<SetStateAction<boolean>>;
+  setPaymentModal: Dispatch<SetStateAction<boolean>>;
+  loading?: boolean;
+};
+export const SaveForm = ({ setOpenConfirmation, setPaymentModal }: props) => {
   const theme = useTheme();
+  const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
+
+  const { refetch, data } = useGetLaundryType();
+  const [LaundryServiceName] = useAtom(laundryRequestServiceNameAtom);
+
+  const serviceName = Array.isArray(data?.data)
+    ? data.data.find(
+        (elem: any) => elem.id === oneLaundryRequest.laundryRequestTypeId
+      )?.name
+    : null;
   return (
     <>
       <View width="100%" paddingHorizontal={28} paddingBottom={150}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.scrollview}
+        >
           <View width="100%" style={styles.container}>
             <ImageBackground
               imageStyle={styles.cardImage}
@@ -32,8 +61,9 @@ export const SaveForm = () => {
                     fontFamily="$body"
                     fontWeight="500"
                     marginTop={5}
+                    textTransform="capitalize"
                   >
-                    Drycleaning
+                    {LaundryServiceName}
                   </Text>
                 </YStack>
                 <YStack marginTop={20}>
@@ -45,14 +75,16 @@ export const SaveForm = () => {
                   >
                     Laundry Type
                   </Text>
+
                   <Text
                     color={theme?.white1?.val}
                     fontSize={14}
                     fontFamily="$body"
                     fontWeight="500"
                     marginTop={5}
+                    textTransform="capitalize"
                   >
-                    Bedspreads, Pillows, Blankets
+                    {serviceName}
                   </Text>
                 </YStack>
               </View>
@@ -74,9 +106,12 @@ export const SaveForm = () => {
               <Text color={theme?.black3?.val} fontSize={13}>
                 Date/Time
               </Text>
-              <Text color={theme?.black1?.val} fontSize={15}>
-                25th Aug 23, 04:45 PM
-              </Text>
+              <XStack gap={4}>
+                <Text color={theme?.black1?.val} fontSize={15}>
+                  {moment(oneLaundryRequest.pickupDate).format("Do MMM YY")},
+                </Text>
+                <Text>{oneLaundryRequest.pickupTime}</Text>
+              </XStack>
               <View
                 borderBottomWidth={1}
                 borderBottomColor={theme?.black4?.val}
@@ -85,10 +120,16 @@ export const SaveForm = () => {
             </YStack>
             <YStack marginTop={20}>
               <Text color={theme?.black3?.val} fontSize={13}>
-                Date/Time
+                TimeFrame
               </Text>
               <Text color={theme?.black1?.val} fontSize={15}>
-                25th Aug 23, 04:45 PM
+                {oneLaundryRequest.timeframe === "same_day"
+                  ? "Same day"
+                  : oneLaundryRequest.timeframe === "2_days"
+                  ? "2 days"
+                  : oneLaundryRequest.timeframe === "normal"
+                  ? "Normal"
+                  : ""}
               </Text>
             </YStack>
           </View>
@@ -110,16 +151,24 @@ export const SaveForm = () => {
                   <Text color={theme?.black3?.val} fontSize={13}>
                     Detergent Type
                   </Text>
-                  <Text color={theme?.black1?.val} fontSize={15}>
-                    Scented
+                  <Text
+                    color={theme?.black1?.val}
+                    fontSize={15}
+                    textTransform="capitalize"
+                  >
+                    {oneLaundryRequest.detergentType}
                   </Text>
                 </YStack>
                 <YStack width={"47%"} alignItems="flex-start">
                   <Text color={theme?.black3?.val} fontSize={13}>
                     Water Temperature
                   </Text>
-                  <Text color={theme?.black1?.val} fontSize={15}>
-                    Hot
+                  <Text
+                    color={theme?.black1?.val}
+                    fontSize={15}
+                    textTransform="capitalize"
+                  >
+                    {oneLaundryRequest.waterTemperature}
                   </Text>
                 </YStack>
               </XStack>
@@ -140,7 +189,7 @@ export const SaveForm = () => {
                     Fabric Softener
                   </Text>
                   <Text color={theme?.black1?.val} fontSize={15}>
-                    Yes{" "}
+                    {oneLaundryRequest.softener ? "Yes" : "No"}
                   </Text>
                 </YStack>
                 <YStack width={"47%"} alignItems="flex-start">
@@ -148,7 +197,7 @@ export const SaveForm = () => {
                     Bleach
                   </Text>
                   <Text color={theme?.black1?.val} fontSize={15}>
-                    No{" "}
+                    {oneLaundryRequest.bleach ? "Yes" : "No"}
                   </Text>
                 </YStack>
               </XStack>
@@ -168,15 +217,19 @@ export const SaveForm = () => {
                     Dye
                   </Text>
                   <Text color={theme?.black1?.val} fontSize={15}>
-                    Yes{" "}
+                    {oneLaundryRequest.dye ? "Yes" : "No"}
                   </Text>
                 </YStack>
                 <YStack width={"47%"} alignItems="flex-start">
                   <Text color={theme?.black3?.val} fontSize={13}>
                     Dye Color
                   </Text>
-                  <Text color={theme?.black1?.val} fontSize={15}>
-                    Blue
+                  <Text
+                    color={theme?.black1?.val}
+                    fontSize={15}
+                    textTransform="capitalize"
+                  >
+                    {oneLaundryRequest.dyeColor}
                   </Text>
                 </YStack>
               </XStack>
@@ -199,5 +252,8 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     borderRadius: 20,
+  },
+  scrollview: {
+    height: "95%",
   },
 });

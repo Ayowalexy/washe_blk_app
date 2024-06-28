@@ -17,8 +17,8 @@ export const Notifications = ({
         </svg>
                           
       `}
-      width={18.75}
-      height={16.72}
+        width={18.75}
+        height={16.72}
       />
     ) : (
       <SvgXml
@@ -27,11 +27,16 @@ export const Notifications = ({
         </svg>
                                  
     `}
-    width={18.75}
-    height={16.72}
+        width={18.75}
+        height={16.72}
       />
     )}
-    <Text color={color} fontSize={12} marginTop={-2}>
+    <Text
+      fontWeight={focused ? "600" : "400"}
+      color={color}
+      fontSize={12}
+      marginTop={-2}
+    >
       Notifications
     </Text>
   </YStack>

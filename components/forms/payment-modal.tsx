@@ -11,15 +11,29 @@ import { Text } from "../libs/text";
 import { CardImg } from "../../utils/assets-png";
 import { AtmCard, Star, Stripe } from "../../utils/assets";
 import { PaymentDetails } from "../payment-details";
-import { useState } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import { Radio } from "./radio";
+import { useGetPaymentMethods } from "../../api/queries";
+import { useAtom } from "jotai";
+import { LaundryRequests, persistentUserAtom } from "../../src/atoms";
 
-export const PaymentForm = () => {
+type Prop = {
+  selected_payment_id: string;
+  setSelectedPaymentId: Dispatch<SetStateAction<string>>;
+};
+
+export const PaymentForm: FC<Prop> = ({
+  selected_payment_id,
+  setSelectedPaymentId,
+}) => {
   const theme = useTheme();
-  const [active, setActive] = useState(1);
-  const handleActive = (id: number) => {
-    setActive(id);
+  const { data } = useGetPaymentMethods();
+  const [oneLaundryRequest] = useAtom(LaundryRequests);
+  const [user] = useAtom(persistentUserAtom);
+  const handleActive = (id: string) => {
+    setSelectedPaymentId(id);
   };
+  // console.log()
   return (
     <>
       <View width="100%" paddingHorizontal={28} paddingBottom={30}>
@@ -48,7 +62,9 @@ export const PaymentForm = () => {
                       fontWeight="500"
                       marginTop={5}
                     >
-                      $ 40.00
+                      ${" "}
+                      {Number(oneLaundryRequest?.tax ?? 0) +
+                        Number(oneLaundryRequest.total_amount ?? 0)}
                     </Text>
                   </XStack>
                   <View
@@ -74,7 +90,7 @@ export const PaymentForm = () => {
                       fontWeight="500"
                       marginTop={5}
                     >
-                      $ 0.00
+                      $ {oneLaundryRequest?.tax}
                     </Text>
                   </XStack>
                   <View
@@ -100,7 +116,7 @@ export const PaymentForm = () => {
                       fontWeight="500"
                       marginTop={5}
                     >
-                      $ 40.00
+                      $ {oneLaundryRequest?.total_amount}
                     </Text>
                   </XStack>
                 </YStack>
@@ -120,7 +136,7 @@ export const PaymentForm = () => {
               Select Payment Information
             </Text>
             <FlatList
-              data={PaymentDetails}
+              data={Array.isArray(data?.data?.data) ? data?.data?.data : []}
               keyExtractor={(item) => item.id.toString()}
               renderItem={(item) => (
                 <YStack marginTop={20}>
@@ -136,17 +152,14 @@ export const PaymentForm = () => {
                         paddingVertical={15}
                         paddingHorizontal={20}
                       >
-                        {item.item.icon}
+                        <AtmCard />
                       </View>
                       <YStack marginLeft={14}>
                         <Text color={theme?.black1?.val} fontSize={15}>
-                          {item.item.name}
+                          {item?.item?.billing_details?.name ??
+                            `${user?.firstName} ${user?.lastName}`}
                         </Text>
-                        {item.item.email ? (
-                          <Text color={theme?.black3?.val} fontSize={12}>
-                            {item.item.email}
-                          </Text>
-                        ) : (
+                        {
                           <XStack alignItems="center">
                             <XStack alignItems="center">
                               {Array(4)
@@ -160,7 +173,7 @@ export const PaymentForm = () => {
                               color={theme?.black3?.val}
                               fontSize={12}
                             >
-                              {item.item.code}
+                              {item.item?.exp_month}
                             </Text>
                             <View
                               borderLeftColor={theme?.black3?.val}
@@ -169,7 +182,7 @@ export const PaymentForm = () => {
                               marginHorizontal={6}
                             />
                             <Text color={theme?.black3?.val} fontSize={12}>
-                              {item.item.expiry}
+                              {item.item?.card?.exp_month}
                             </Text>
                             <View
                               borderLeftColor={theme?.black3?.val}
@@ -178,14 +191,14 @@ export const PaymentForm = () => {
                               marginHorizontal={6}
                             />
                             <Text color={theme?.black3?.val} fontSize={12}>
-                              {item.item.cvv}
+                              {item.item?.card?.last4}
                             </Text>
                           </XStack>
-                        )}
+                        }
                       </YStack>
                     </XStack>
                     <Radio
-                      active={active === item.item.id}
+                      selected_payment_id={selected_payment_id === item.item.id}
                       handleActive={() => handleActive(item.item.id)}
                       id={item?.item?.id}
                     />
@@ -220,7 +233,7 @@ const styles = StyleSheet.create({
     // Shadow for Android
     elevation: 1,
   },
-  active: {
+  selected_payment_id: {
     width: 16,
     height: 16,
     borderRadius: 50,

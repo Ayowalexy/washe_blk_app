@@ -3,40 +3,47 @@ import { View } from "../libs/view";
 import { Basket } from "../../utils/assets-png";
 import { Text } from "../libs/text";
 import { useTheme } from "tamagui";
-import { useState } from "react";
+import React, { useState } from "react";
+import { LaundryServiceType } from "../../api/types";
+import { useAtom } from "jotai";
+import {
+  laundryRequestServiceIdAtom,
+  laundryRequestServiceNameAtom,
+} from "../../src/atoms";
 
-const List = [
-  {
-    name: "Wash",
-    text: "Lorem ipsum dolor sit amet consectetur",
-  },
-  {
-    name: "Wash + iron",
-    text: "Lorem ipsum dolor sit amet consectetur",
-  },
-  {
-    name: "Dry cleaning",
-    text: "Lorem ipsum dolor sit amet consectetur",
-  },
-  {
-    name: "Duvet & Bulky Item",
-    text: "Lorem ipsum dolor sit amet consectetur",
-  },
-];
-export const NewLaundryRequest = () => {
+interface LaundryType {
+  name: string;
+  description: string;
+}
+
+interface Props {
+  data: LaundryServiceType[];
+}
+export const NewLaundryRequest: React.FC<Props> = ({ data }) => {
   const theme = useTheme();
   const [active, setActive] = useState(1);
 
   const handleActive = (id: number) => {
     setActive(id);
   };
+  const [LaundryServiceId, setLaundryServiceId] = useAtom(
+    laundryRequestServiceIdAtom
+  );
+  const [LaundryServiceName, setLaundryServiceName] = useAtom(
+    laundryRequestServiceNameAtom
+  );
+
   return (
     <View style={styles.content}>
-      {List.map((elem, id) => (
+      {data.map((elem, id) => (
         <TouchableOpacity
           style={styles.flexItem}
           key={id}
-          onPress={() => handleActive(id)}
+          onPress={() => {
+            handleActive(id);
+            setLaundryServiceId(elem.id);
+            setLaundryServiceName(elem.name);
+          }}
         >
           <View
             style={active === id ? styles.itemContainer2 : styles.itemContainer}
@@ -49,11 +56,12 @@ export const NewLaundryRequest = () => {
               fontWeight={"600"}
               color={theme?.black1?.val}
               paddingVertical={5}
+              textAlign="center"
             >
               {elem.name}
             </Text>
             <Text fontSize={12} textAlign="center" color={theme?.black3?.val}>
-              {elem.text}
+              {elem.description}
             </Text>
           </View>
         </TouchableOpacity>

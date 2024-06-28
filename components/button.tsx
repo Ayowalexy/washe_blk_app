@@ -1,10 +1,10 @@
-import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+import React from "react";
+import { TouchableOpacity, TouchableOpacityProps, ActivityIndicator, StyleSheet } from "react-native";
 import { View } from "./libs/view";
-import { StyleSheet } from "react-native";
 import { Text } from "./libs/text";
 import { useTheme } from "tamagui";
 
-interface button extends Partial<TouchableOpacityProps> {
+interface ButtonProps extends Partial<TouchableOpacityProps> {
   title: string;
   color?: string;
   onPress: () => void;
@@ -12,7 +12,9 @@ interface button extends Partial<TouchableOpacityProps> {
   width?: string;
   textColor?: string;
   disabled?: boolean;
+  loading?: boolean;
 }
+
 export const Button = ({
   title,
   color = "$primary3",
@@ -20,32 +22,38 @@ export const Button = ({
   fontSize = 16,
   textColor = "$white1",
   disabled,
+  loading = false,
   ...otherProps
-}: button) => {
+}: ButtonProps) => {
   const theme = useTheme();
   return (
     <TouchableOpacity
-      disabled={disabled}
+      disabled={disabled || loading}
       style={styles.button}
       onPress={onPress}
       {...otherProps}
     >
       <View
-        backgroundColor={disabled ? "$secondary9" : color}
+        backgroundColor={disabled || loading ? "$secondary9" : color}
         style={styles.btn}
       >
-        <Text
-          fontFamily="$body"
-          color={textColor}
-          fontWeight="600"
-          fontSize={fontSize}
-        >
-          {title}
-        </Text>
+        {loading ? (
+          <ActivityIndicator size="small" color={'white'} />
+        ) : (
+          <Text
+            fontFamily="$body"
+            color={textColor}
+            fontWeight="600"
+            fontSize={fontSize}
+          >
+            {title}
+          </Text>
+        )}
       </View>
     </TouchableOpacity>
   );
 };
+
 const styles = StyleSheet.create({
   button: {
     width: "100%",
