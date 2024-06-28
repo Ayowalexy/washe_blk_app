@@ -9,11 +9,13 @@ type props = {
   color?: string;
   backgroundColor?: string;
   borderColor?: string;
+  onPress?: () => void;
 };
 export const EmptyRequest = ({
   color = "#051923",
   backgroundColor = "#FFF",
   borderColor = "#D3DBDF",
+  onPress,
 }: props) => {
   const theme = useTheme();
   return (
@@ -55,6 +57,7 @@ export const EmptyRequest = ({
         color={color}
         fontWeight="600"
         marginTop={28}
+        onPress={onPress}
       >
         New laundry request
       </Button>

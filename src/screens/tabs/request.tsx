@@ -125,7 +125,10 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
     <>
       <TabLayout>
         <View paddingBottom={70}>
-          <OngoingRequests />
+          <OngoingRequests
+            setPaymentModal={setPaymentModal}
+            paymentModal={paymentModal}
+          />
           <View
             position="relative"
             backgroundColor={theme?.secondary8?.val}

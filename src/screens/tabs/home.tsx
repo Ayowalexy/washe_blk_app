@@ -13,17 +13,20 @@ import { XStack, YStack } from "tamagui";
 import {
   ApplePay,
   Arrow,
-  Close,
   GooglePay,
   Paypal,
   Stripe,
+  CloseIcon,
   Washing,
+  Close,
 } from "../../../utils/assets";
+import { LaundryRequests } from "../../../components/laundry-request";
 import { EmptyRequest } from "../../../components/empty-request";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FormModal } from "../../../components/form-modal";
 import { Button } from "../../../components/button";
-import { AppStackScreenProps } from "../../../navigation/app.roots.types";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AppRootStackParamsList } from "../../../navigation/app.roots.types";
 import {
   PaymentForm,
   SaveForm,
@@ -33,98 +36,19 @@ import {
   Request,
 } from "../../../components/forms";
 import { SuccessModal } from "../../../components/modal";
-import { useAtom } from "jotai";
-import {
-  LaundryRequests,
-  OnelaundryRequestAtom,
-  laundryRequestServiceNameAtom,
-  persistentUserAtom,
-} from "../../atoms";
-import { useGetRequests } from "../../../api/queries";
-import moment from "moment";
-import { useReMakeLaundryRequest } from "../../../api/mutations";
-import Toast from "react-native-toast-message";
 
-// type HomeScreenProps = NativeStackScreenProps<
-//   AppRootStackParamsList,
-//   "home_stack"
-// >;
-export const Home = ({ navigation }: AppStackScreenProps<"tabs">) => {
+type HomeScreenProps = NativeStackScreenProps<
+  AppRootStackParamsList,
+  "home_stack"
+>;
+export const Home = ({ navigation }: HomeScreenProps) => {
   const [showModal, setShowModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
   const [addPayment, setAddPayment] = useState(false);
   const [openCreditCard, setOpenCreditCard] = useState(false);
   const [show, setShow] = useState(false);
-  const [user] = useAtom(persistentUserAtom);
-  const { refetch, data } = useGetRequests();
-  const { mutate, isPending } = useReMakeLaundryRequest();
-  const [oneRequestId, setOneRequestId] = useAtom(OnelaundryRequestAtom);
-  const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
-  const [LaundryServiceName, setLaundryServiceName] = useAtom(
-    laundryRequestServiceNameAtom
-  );
-  const [openConfirmation, setOpenConfirmation] = useState(false);
   const [openVerification, setOpenVerification] = useState(false);
-
-  const handleRequestPress = (item: any) => {
-    const requestData = {
-      laundryRequestServiceId: item.laundry_request_service_id,
-      laundryRequestServiceName: item.laundryRequestService.name,
-      laundryRequestTypeId: item.laundry_request_type_id,
-      laundryRequestTypeName: item.laundryRequestType.name,
-      pickupDate: item.pickup_date,
-      pickupTime: moment(item.pickup_date_time).format("hh:mm A"),
-      timeframe: item.timeframe,
-      detergentType: item.detergent_type,
-      waterTemperature: item.water_temperature,
-      softener: item.softener,
-      bleach: item.bleach,
-      dye: item.dye,
-      dyeColor: item.dye_color,
-    };
-    console.log("Setting laundry NAME:", requestData.laundryRequestServiceName);
-    setOneLaundryRequest(requestData as any);
-    setLaundryServiceName(item.laundryRequestService.name);
-    setShowModal(true);
-  };
-
-  const handleReMakeRequest = () => {
-    const reRequest = {
-      laundryRequestId: oneRequestId,
-    };
-    mutate(reRequest, {
-      onSuccess: async (data) => {
-        console.log(data, "data");
-        Toast.show({
-          type: "customSuccess",
-          text1: "Re-request made successfully",
-        });
-        setShowModal(false);
-        setPaymentModal(true);
-        const { data: allRequests } = await refetch();
-        console.log("All Requests:", allRequests);
-      },
-      onError: (error: any) => {
-        Toast.show({
-          type: "customError",
-          text1:
-            JSON.stringify(error?.response?.data) ||
-            "An error occured, try again",
-        });
-        console.log(error, "rrr");
-      },
-    });
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await refetch();
-      console.log("Fetched data: ", data);
-    };
-
-    fetchData();
-  }, [refetch]);
-  console.log(data?.data, "dataaee");
+  const [openConfirmation, setOpenConfirmation] = useState(false);
   return (
     <TabLayout>
       <View paddingBottom={100}>
@@ -177,132 +101,90 @@ export const Home = ({ navigation }: AppStackScreenProps<"tabs">) => {
             </XStack>
           </ImageBackground>
         </View>
-        {user?.verificationDocument?.isApproved ? (
-          <View
-            marginTop={23}
-            padding={20}
-            width="100%"
-            height="auto"
-            backgroundColor="$primary6"
-            borderRadius={10}
-          >
-            <XStack justifyContent="space-between" alignItems="center">
-              <Text
-                fontSize={15}
-                fontFamily="$body"
-                fontWeight="600"
-                color="$secondary7"
-              >
-                Verification Successful
-              </Text>
-              <Close />
-            </XStack>
+        <View
+          marginTop={23}
+          padding={20}
+          width="100%"
+          height="auto"
+          backgroundColor="$primary6"
+          borderRadius={10}
+        >
+          <XStack justifyContent="space-between" alignItems="center">
             <Text
-              color="$black3"
-              width="94%"
+              fontSize={15}
               fontFamily="$body"
-              fontWeight="500"
-              fontSize={13}
-              marginTop={10}
-              lineHeight={"$1"}
+              fontWeight="600"
+              color="$secondary7"
             >
-              All information provided have been reviewed by the admin. You can
-              now start using Washe
+              Verification Successful
             </Text>
-          </View>
-        ) : user?.verificationDocument?.rejectionReason === "" ? (
-          <View
-            marginTop={23}
-            padding={20}
-            width="100%"
-            height={130}
-            backgroundColor="$primary8"
-            borderRadius={10}
-            position="relative"
+            <Close />
+          </XStack>
+          <Text
+            color="$black3"
+            width="94%"
+            fontFamily="$body"
+            fontWeight="500"
+            fontSize={13}
+            marginTop={10}
+            lineHeight={"$1"}
           >
-            <XStack justifyContent="space-between" alignItems="center">
-              <Text
-                fontSize={15}
-                fontFamily="$body"
-                fontWeight="600"
-                color="$primary7"
-              >
-                Verification unsuccessful
-              </Text>
-            </XStack>
-            <XStack justifyContent="space-between">
-              <YStack width="80%">
-                <Text
-                  color="$black1"
-                  width="94%"
-                  fontFamily="$body"
-                  fontWeight="500"
-                  fontSize={13}
-                  marginTop={10}
-                  lineHeight={"$1"}
-                >
-                  Your washe account verification was unsuccessful & rejected by
-                  the admin
-                </Text>
-                <TouchableOpacity onPress={() => setOpenVerification(true)}>
-                  <XStack>
-                    <Text color="$red1" fontSize={12} marginTop={10}>
-                      View rejection reason
-                    </Text>
-                  </XStack>
-                </TouchableOpacity>
-              </YStack>
-              <View
-                width={55}
-                height={88}
-                position="absolute"
-                right={10}
-                top={"0%"}
-              >
-                <Image
-                  source={Sand}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </View>
-            </XStack>
-          </View>
-        ) : (
-          user?.verificationDocument?.isPending && (
-            <View
-              marginTop={23}
-              padding={20}
-              width="100%"
-              height="auto"
-              backgroundColor="$primary6"
-              borderRadius={10}
+            All information provided have been reviewed by the admin. You can
+            now start using Washe
+          </Text>
+        </View>
+        {/* <View
+          marginTop={23}
+          padding={20}
+          width="100%"
+          height={130}
+          backgroundColor="$primary8"
+          borderRadius={10}
+          position="relative"
+        >
+          <XStack justifyContent="space-between" alignItems="center">
+            <Text
+              fontSize={15}
+              fontFamily="$body"
+              fontWeight="600"
+              color="$primary7"
             >
-              <XStack justifyContent="space-between" alignItems="center">
-                <Text
-                  fontSize={15}
-                  fontFamily="$body"
-                  fontWeight="600"
-                  color="$secondary7"
-                >
-                  Verification in progress
-                </Text>
-                <Close />
-              </XStack>
+              Verification unsuccessful
+            </Text>
+          </XStack>
+          <XStack justifyContent="space-between">
+            <YStack width="80%">
               <Text
                 color="$black1"
-                width="80%"
+                width="94%"
                 fontFamily="$body"
                 fontWeight="500"
                 fontSize={13}
                 marginTop={10}
                 lineHeight={"$1"}
               >
-                Information provided is being reviewed by the admin.
-                Verification takes 2-5 business days.
+                Your washe account verification was unsuccessful & rejected by
+                the admin
               </Text>
+              <TouchableOpacity onPress={() => setOpenVerification(true)}>
+                <XStack>
+                  <Text color="$red1" fontSize={12} marginTop={10}>
+                    View rejection reason
+                  </Text>
+                </XStack>
+              </TouchableOpacity>
+            </YStack>
+            <View
+              width={55}
+              height={88}
+              position="absolute"
+              right={10}
+              top={"0%"}
+            >
+              <Image source={Sand} style={{ width: "100%", height: "100%" }} />
             </View>
-          )
-        )}
-
+          </XStack>
+        </View> */}
         <TouchableOpacity onPress={() => setAddPayment(true)}>
           <View
             marginTop={23}
@@ -337,7 +219,10 @@ export const Home = ({ navigation }: AppStackScreenProps<"tabs">) => {
             </XStack>
           </View>
         </TouchableOpacity>
-        <OngoingRequests />
+        <OngoingRequests
+          paymentModal={paymentModal}
+          setPaymentModal={setPaymentModal}
+        />
         <YStack
           backgroundColor="$secondary8"
           marginTop={20}
@@ -350,26 +235,19 @@ export const Home = ({ navigation }: AppStackScreenProps<"tabs">) => {
           <View>
             <FlatList
               ListEmptyComponent={<EmptyRequest />}
-              data={data?.data?.filter(
-                (elem: any) => elem.status === "pending"
+              data={LaundryRequests.filter(
+                (elem) => elem.status === "completed"
               )}
               keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    handleRequestPress(item);
-                    setOneRequestId(item.id);
-                  }}
-                >
+              renderItem={(item) => (
+                <TouchableOpacity onPress={() => setShowModal(true)}>
                   <Request
-                    status={item?.status as any}
+                    status={item.item.status as any}
                     show={true}
-                    date={moment(item?.created_at).format(
-                      "Do MMM YYYY, hh:mm A"
-                    )}
-                    name={item?.laundryRequestService.name}
+                    date={item.item.date}
+                    name={item.item.name}
                   />
-                  {item?.id === data?.data?.length ? null : (
+                  {item.item.id === LaundryRequests.length ? null : (
                     <View borderBottomWidth={1} borderBottomColor="$black4" />
                   )}
                 </TouchableOpacity>
@@ -387,13 +265,12 @@ export const Home = ({ navigation }: AppStackScreenProps<"tabs">) => {
         close={() => {
           setShowModal(false);
         }}
-        show_button={true}
         button={
           <Button
-            loading={isPending}
             title="Re-request"
             onPress={() => {
-              handleReMakeRequest();
+              setShowModal(false);
+              setPaymentModal(true);
             }}
           />
         }
@@ -404,14 +281,10 @@ export const Home = ({ navigation }: AppStackScreenProps<"tabs">) => {
         />
       </FormModal>
 
-      <FormModal
+      {/* <FormModal
         visible={paymentModal}
         setVisible={setPaymentModal}
         goBack={true}
-        onGoBack={() => {
-          setPaymentModal(false)
-          setShowModal(true)
-        }}
         title="Payment"
         text="To confirm please select your preferred payment method"
         close={() => {
@@ -431,7 +304,7 @@ export const Home = ({ navigation }: AppStackScreenProps<"tabs">) => {
         }
       >
         <PaymentForm />
-      </FormModal>
+      </FormModal> */}
 
       <FormModal
         visible={addPayment}
@@ -481,17 +354,7 @@ export const Home = ({ navigation }: AppStackScreenProps<"tabs">) => {
         close={() => setOpenVerification(false)}
         title="Verification Unsuccessful"
         text="25th Jun 2023, 04:45 PM"
-        button={
-          <Button
-            title="Update Information"
-            onPress={() =>
-              navigation.navigate("onboarding", {
-                screen: "create_account",
-                params: { isUpdate: true },
-              })
-            }
-          />
-        }
+        button={<Button title="Update Information" onPress={() => null} />}
         show_button={true}
       >
         <YStack
