@@ -17,7 +17,7 @@ export const ContactForm = () => {
   const theme = useTheme();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const isButtonDisabled = !message;
+
   const [user] = useAtom(persistentUserAtom);
   const { mutate, isPending } = useContactUs();
   const {
@@ -54,6 +54,7 @@ export const ContactForm = () => {
       });
     },
   });
+  const isButtonDisabled = !values?.message;
   return (
     <ScrollView style={{ width: "84%" }}>
       <YStack
@@ -107,7 +108,7 @@ export const ContactForm = () => {
       <View paddingTop={35}>
         <Button
           loading={isPending}
-          disabled={isButtonDisabled}
+          disabled={isButtonDisabled} 
           title="Send message"
           onPress={() => handleSubmit()}
         />
