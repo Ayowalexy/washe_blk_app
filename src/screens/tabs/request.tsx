@@ -80,6 +80,9 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
     }
   }, [selected_payment_id, oneLaundryRequest]);
 
+  const [saveRequest, setSaveRequest] = useState(false);
+  const toggleSwitch = () => setSaveRequest((previousState) => !previousState);
+
   const handleSubmit = () => {
     const request = {
       laundryRequestServiceId: oneLaundryRequest.laundryRequestServiceId,
@@ -180,9 +183,9 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
               </>
             )}
             <FlatList
-              data={datas?.data?.filter(
-                (elem: any) => elem.status === "pending"
-              ).slice(0, 3)}
+              data={datas?.data
+                ?.filter((elem: any) => elem.status === "pending")
+                .slice(0, 3)}
               ListEmptyComponent={
                 <EmptyRequest
                   onPress={() => setOpenModal(true)}
@@ -286,6 +289,8 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         text="Please make sure services selected are correct before confirming."
       >
         <SaveForm
+          isEnabled={saveRequest}
+          toggleSwitch={() => toggleSwitch()}
           setOpenConfirmation={setOpenConfirmation}
           setPaymentModal={setPaymentModal}
         />

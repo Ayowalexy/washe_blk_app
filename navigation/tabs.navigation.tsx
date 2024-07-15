@@ -77,7 +77,7 @@ export const BottomTabNavigation = () => {
       <Tab.Screen name="Home" component={Home as any} />
       <Tab.Screen name="request" component={Requests as any} />
       <Tab.Screen name="notifications" component={NotificationsPage as any} />
-      <Tab.Screen name="settings" component={Settings} />
+      <Tab.Screen name="settings" component={Settings as any} />
     </Tab.Navigator>
   );
 };

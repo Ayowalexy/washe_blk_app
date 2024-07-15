@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { ImageBackground, ScrollView, StyleSheet } from "react-native";
 import { View } from "../libs/view";
 import { XStack, YStack, useTheme } from "tamagui";
@@ -11,13 +12,17 @@ import {
 import { Dispatch, SetStateAction } from "react";
 import { useGetLaundryType } from "../../api/queries";
 import moment from "moment";
+import ToggleSwitch from "toggle-switch-react-native";
 
-type props = {
+type Props = {
   setOpenConfirmation: Dispatch<SetStateAction<boolean>>;
   setPaymentModal: Dispatch<SetStateAction<boolean>>;
+  isEnabled: boolean;
   loading?: boolean;
+  toggleSwitch: () => void;
 };
-export const SaveForm = ({ setOpenConfirmation, setPaymentModal }: props) => {
+
+export const SaveForm = ({ isEnabled, toggleSwitch }: Props) => {
   const theme = useTheme();
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
 
@@ -29,6 +34,7 @@ export const SaveForm = ({ setOpenConfirmation, setPaymentModal }: props) => {
         (elem: any) => elem.id === oneLaundryRequest.laundryRequestTypeId
       )?.name
     : null;
+
   return (
     <>
       <View width="100%" paddingHorizontal={28} paddingBottom={150}>
@@ -107,7 +113,9 @@ export const SaveForm = ({ setOpenConfirmation, setPaymentModal }: props) => {
                 <Text color={theme?.black1?.val} fontSize={15}>
                   {moment(oneLaundryRequest.pickupDate).format("Do MMM YY")},
                 </Text>
-                <Text>{oneLaundryRequest.pickupTime}</Text>
+                <Text color={theme?.black1?.val} fontSize={15}>
+                  {oneLaundryRequest.pickupTime}
+                </Text>
               </XStack>
               <View
                 borderBottomWidth={1}
@@ -232,11 +240,25 @@ export const SaveForm = ({ setOpenConfirmation, setPaymentModal }: props) => {
               </XStack>
             </YStack>
           </View>
+          <XStack marginTop={10} gap={8} marginBottom={10}>
+            <ToggleSwitch
+              isOn={isEnabled}
+              onColor="#00D158"
+              offColor="#F9FAFB"
+              labelStyle={{ color: "black", fontWeight: "900" }}
+              size="small"
+              onToggle={toggleSwitch}
+            />
+            <Text color={theme?.black1?.val} fontSize={14}>
+              Save request to be used in the future
+            </Text>
+          </XStack>
         </ScrollView>
       </View>
     </>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     height: 149,
@@ -252,5 +274,9 @@ const styles = StyleSheet.create({
   },
   scrollview: {
     height: "95%",
+  },
+  savebtn: {
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

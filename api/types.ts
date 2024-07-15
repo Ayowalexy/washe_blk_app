@@ -86,10 +86,19 @@ export type ContactUsDTO = {
   message: string;
 };
 
-
+export type useForgotPasswordDTO = {
+  email: string;
+};
+export type useVerifyOtpDTO = {
+  email: string;
+  otp: string;
+};
 export type CreditCatDTO = {
   number: string;
   cvv: string;
   exp_month: number;
   exp_year: number;
-}
+};
+export type useResetPasswordDTO = {
+  password: string;
+};

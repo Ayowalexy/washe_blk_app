@@ -37,3 +37,10 @@ export function useGetPaymentMethods() {
     queryKey: ["payment-cards"],
   });
 }
+export function useGetSavedRequests() {
+  return useQuery({
+    queryFn: () => api.get(`/requests/saved-requests`).then((resp) => resp.data),
+    queryKey: ["saved-requests"],
+    enabled: true,
+  });
+}

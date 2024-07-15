@@ -15,7 +15,6 @@ import { PaymentForm } from "./payment-modal";
 import { useMakePayment } from "../../api/mutations";
 import { LaundryRequests } from "../../src/atoms";
 import { useNavigation } from "@react-navigation/native";
-import { HomeStackParamList } from "../../navigation/home.navigation";
 
 type props = {
   paymentModal: boolean;
@@ -23,7 +22,7 @@ type props = {
 };
 export const OngoingRequests = ({ paymentModal, setPaymentModal }: props) => {
   const { refetch, data } = useGetRequests();
-  console.log(data?.data, 'all')
+  console.log(data?.data, "all");
   const navigation = useNavigation<any>();
   const itemWidth =
     data?.data?.length === 1 ? DEVICE_WIDTH - 80 : DEVICE_WIDTH * 0.56;
@@ -87,36 +86,35 @@ export const OngoingRequests = ({ paymentModal, setPaymentModal }: props) => {
           )}
         />
         <View>
-        <FormModal
-        visible={paymentModal}
-        setVisible={setPaymentModal}
-        goBack={false}
-       
-        title="Payment"
-        text="To confirm please select your preferred payment method"
-        close={() => {
-          setPaymentModal(false);
-        }}
-        button={
-          <Button
-            color="#00D158"
-            title={`Pay $${
-              Number(oneLaundryRequest?.tax ?? 0) +
-              Number(oneLaundryRequest?.total_amount ?? 0)
-            }`}
-            loading={loading}
-            disabled={!Boolean(selected_payment_id)}
-            onPress={() => {
-              handleMayPayment();
+          <FormModal
+            visible={paymentModal}
+            setVisible={setPaymentModal}
+            goBack={false}
+            title="Payment"
+            text="To confirm please select your preferred payment method"
+            close={() => {
+              setPaymentModal(false);
             }}
-          />
-        }
-      >
-        <PaymentForm
-          setSelectedPaymentId={setSelectedPaymentId}
-          selected_payment_id={selected_payment_id}
-        />
-      </FormModal>
+            button={
+              <Button
+                color="#00D158"
+                title={`Pay $${
+                  Number(oneLaundryRequest?.tax ?? 0) +
+                  Number(oneLaundryRequest?.total_amount ?? 0)
+                }`}
+                loading={loading}
+                disabled={!Boolean(selected_payment_id)}
+                onPress={() => {
+                  handleMayPayment();
+                }}
+              />
+            }
+          >
+            <PaymentForm
+              setSelectedPaymentId={setSelectedPaymentId}
+              selected_payment_id={selected_payment_id}
+            />
+          </FormModal>
         </View>
       </View>
     </YStack>

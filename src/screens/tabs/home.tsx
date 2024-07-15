@@ -43,7 +43,11 @@ import { useAtom } from "jotai";
 import { LaundryRequests } from "../../atoms";
 import { HomeCard } from "../../../components/home-card";
 import Toast from "react-native-toast-message";
-import { useGetLaundryServices, useGetRequests } from "../../../api/queries";
+import {
+  useGetLaundryServices,
+  useGetRequests,
+  useGetSavedRequests,
+} from "../../../api/queries";
 
 type HomeScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
@@ -64,8 +68,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const { mutateAsync, isPending: loading } = useMakePayment();
   const { mutate, isPending } = useMakeLaundryRequest();
   const { refetch } = useGetRequests();
+  const { refetch: saved, data: allSavedRequests } = useGetSavedRequests();
   const theme = useTheme();
   const { data } = useGetLaundryServices();
+  console.log(allSavedRequests?.[0]?.laundryService, "allsaved");
+
   const handleMayPayment = useCallback(async () => {
     try {
       const response = await mutateAsync({
@@ -92,6 +99,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     setOpenRequest(false);
     setOpenConfirmation(true);
   };
+  const [saveRequest, setSaveRequest] = useState(false);
+  const toggleSwitch = () => setSaveRequest((previousState) => !previousState);
 
   const handleSubmit = () => {
     const request = {
@@ -106,6 +115,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
       bleach: oneLaundryRequest.bleach,
       dye: oneLaundryRequest.dye,
       dyeColor: oneLaundryRequest.dyeColor,
+      saveRequest: saveRequest,
     };
     mutate(request, {
       onSuccess: async (data) => {
@@ -123,6 +133,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           laundryRequestId: data?.data?.data?.id,
         });
         const { data: allRequests } = await refetch();
+        const { data: allSavedRequests } = await saved();
         console.log("All Requests:", allRequests);
       },
       onError: (error: any) => {
@@ -225,17 +236,17 @@ export const Home = ({ navigation }: HomeScreenProps) => {
               ListEmptyComponent={
                 <EmptyRequest onPress={() => setOpenModal(true)} />
               }
-              data={laundry.filter((elem) => elem.status === "saved")}
+              data={allSavedRequests?.data}
               keyExtractor={(item) => item.id.toString()}
-              renderItem={(item) => (
+              renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => setShowModal(true)}>
                   <Request
-                    status={item.item.status as any}
-                    show={true}
-                    date={item.item.date}
-                    name={item.item.name}
+                    // status={i}
+                    show={false}
+                    date={item?.date}
+                    name={JSON.stringify(item?.laundryService)}
                   />
-                  {item.item.id === laundry.length ? null : (
+                  {item?.id === laundry.length ? null : (
                     <View borderBottomWidth={1} borderBottomColor="$black4" />
                   )}
                 </TouchableOpacity>
@@ -264,6 +275,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         }
       >
         <SaveForm
+          toggleSwitch={() => toggleSwitch()}
+          isEnabled={saveRequest}
           setOpenConfirmation={setOpenConfirmation}
           setPaymentModal={setPaymentModal}
         />
@@ -429,6 +442,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         text="Please make sure services selected are correct before confirming."
       >
         <SaveForm
+          isEnabled={saveRequest}
+          toggleSwitch={() => toggleSwitch()}
           setOpenConfirmation={setOpenConfirmation}
           setPaymentModal={setPaymentModal}
         />

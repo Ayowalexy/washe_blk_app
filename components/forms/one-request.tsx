@@ -61,7 +61,7 @@ export const Request = ({
           </Text>
         </YStack>
       </XStack>
-      {status === "pending" && (
+      {status === "pending" ? (
         <YStack
           width={width}
           backgroundColor={"$white1"}
@@ -96,8 +96,7 @@ export const Request = ({
             {date}
           </Text>
         </YStack>
-      )}
-      {status === "processing" && (
+      ) : (
         <YStack
           width={width}
           backgroundColor={"$white1"}

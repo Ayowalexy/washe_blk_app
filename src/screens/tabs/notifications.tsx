@@ -46,29 +46,30 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
               >
                 {date}
               </Text>
-              {requests.map((request: any) => (
-                <View
-                  key={request.id}
-                  backgroundColor={theme?.lightGrey?.val}
-                  paddingHorizontal={20}
-                >
-                  <TouchableOpacity onPress={() => setOpenConfirmation(true)}>
-                  <Request
-                      top_img={false}
-                      showImg={true}
-                      width="100%"
-                      status={request.status}
-                      show={false}
-                      img={request.img}
-                      time={request.date}
-                      name={request.name}
-                    />
-                  </TouchableOpacity>
-                  {request.id === requests.length ? null : (
-                    <View borderBottomWidth={1} borderBottomColor="$black4" />
-                  )}
-                </View>
-              ))}
+              {Array.isArray(requests) &&
+                requests.map((request: any) => (
+                  <View
+                    key={request.id}
+                    backgroundColor={theme?.lightGrey?.val}
+                    paddingHorizontal={20}
+                  >
+                    <TouchableOpacity onPress={() => setOpenConfirmation(true)}>
+                      <Request
+                        top_img={false}
+                        showImg={true}
+                        width="100%"
+                        status={request.status}
+                        show={false}
+                        time={request.date}
+                        name={request.name}
+                      />
+                    </TouchableOpacity>
+                    {request.id === Array.isArray(requests) &&
+                    request.length ? null : (
+                      <View borderBottomWidth={1} borderBottomColor="$black4" />
+                    )}
+                  </View>
+                ))}
             </View>
           ))}
         </YStack>
@@ -90,7 +91,10 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
         title="Request History"
         text="View details of your previous requests."
       >
-        <SaveForm />
+        <SaveForm
+          setOpenConfirmation={setOpenConfirmation}
+          setPaymentModal={setPaymentModal}
+        />
       </FormModal>
 
       <FormModal
