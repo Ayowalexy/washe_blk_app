@@ -10,7 +10,7 @@ export function useGetCurrentUser() {
 }
 export function useGetRequests() {
   return useQuery({
-    queryFn: () => api.get(`/requests?descending=false`).then((resp) => resp.data),
+    queryFn: () => api.get(`/requests?descending=true`).then((resp) => resp.data),
     queryKey: ["user-requests"],
     enabled: true,
   });

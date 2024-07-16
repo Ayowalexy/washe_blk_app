@@ -48,6 +48,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
   const { mutateAsync, isPending: loading } = useMakePayment();
   const { data } = useGetLaundryServices();
   const { data: datas } = useGetRequests();
+  const [openTracking, setOpenTracking] = useState(false);
 
   const handleOpenRequest = () => {
     setOpenModal(false);
@@ -131,8 +132,11 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
       <TabLayout>
         <View paddingBottom={70}>
           <OngoingRequests
+            openTracking={openTracking}
+            setOpenTracking={setOpenTracking}
             setPaymentModal={setPaymentModal}
             paymentModal={paymentModal}
+            setOpenConfirmation={setOpenConfirmation}
           />
           <View
             position="relative"
@@ -288,12 +292,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         title="Confirmation"
         text="Please make sure services selected are correct before confirming."
       >
-        <SaveForm
-          isEnabled={saveRequest}
-          toggleSwitch={() => toggleSwitch()}
-          setOpenConfirmation={setOpenConfirmation}
-          setPaymentModal={setPaymentModal}
-        />
+        <SaveForm />
       </FormModal>
 
       <FormModal

@@ -1,4 +1,4 @@
-import { YStack } from "tamagui";
+import { YStack, useTheme } from "tamagui";
 import { Text } from "../libs/text";
 import { View } from "../libs/view";
 import { FlatList } from "react-native";
@@ -13,22 +13,42 @@ import { FormModal } from "../form-modal";
 import { Button } from "../button";
 import { PaymentForm } from "./payment-modal";
 import { useMakePayment } from "../../api/mutations";
-import { LaundryRequests } from "../../src/atoms";
+import {
+  LaundryRequests,
+  laundryRequestServiceNameAtom,
+} from "../../src/atoms";
 import { useNavigation } from "@react-navigation/native";
+import { TrackForm } from "./track-form";
 
 type props = {
   paymentModal: boolean;
+  openTracking: boolean;
   setPaymentModal: Dispatch<SetStateAction<boolean>>;
+  setOpenConfirmation: Dispatch<SetStateAction<boolean>>;
+  setOpenTracking: Dispatch<SetStateAction<boolean>>;
 };
-export const OngoingRequests = ({ paymentModal, setPaymentModal }: props) => {
+export const OngoingRequests = ({
+  paymentModal,
+  setOpenConfirmation,
+  setPaymentModal,
+  setOpenTracking,
+
+  openTracking,
+}: props) => {
+  const theme = useTheme();
   const { refetch, data } = useGetRequests();
-  console.log(data?.data, "all");
+  // console.log(data?.data, "all");
   const navigation = useNavigation<any>();
   const itemWidth =
     data?.data?.length === 1 ? DEVICE_WIDTH - 80 : DEVICE_WIDTH * 0.56;
   const [selected_payment_id, setSelectedPaymentId] = useState("");
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
   const { mutateAsync, isPending: loading } = useMakePayment();
+  const [LaundryServiceName, setLaundryServiceName] = useAtom(
+    laundryRequestServiceNameAtom
+  );
+  const [trackDetails, setTrackdetails] = useState([]);
+
   const handleMayPayment = useCallback(async () => {
     try {
       const response = await mutateAsync({
@@ -63,22 +83,24 @@ export const OngoingRequests = ({ paymentModal, setPaymentModal }: props) => {
           showsHorizontalScrollIndicator={false}
           style={{ width: DEVICE_WIDTH, paddingBottom: 30 }}
           contentContainerStyle={{ gap: 15 }}
-          data={data?.data?.filter((elem: any) => elem.status === "pending")}
+          data={data?.data?.filter(
+            (elem: any) => elem?.transaction?.status === "success"
+          )}
           horizontal
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View width={itemWidth}>
               <RequestCard
                 onPress={() => {
-                  setPaymentModal(true);
+                  setOpenTracking(true);
                   setOneLaundryRequest({
-                    ...oneLaundryRequest,
-                    tax: 0,
-                    total_amount: item?.fee ?? 0,
-                    laundryRequestId: item?.id,
+                    ...item,
+                    laundryRequestTypeId: item.laundryRequestType.id,
                   });
+                  setLaundryServiceName(item.laundryRequestService.name);
+                  setTrackdetails(item.requestTrackingLogs);
                 }}
-                text={"Your laundry request is currently pending"}
+                text={"Your laundry request is currently being processed"}
                 status={item?.status as any}
                 date={moment(item?.created_at).format("Do MMM YYYY, hh:mm A")}
               />
@@ -86,6 +108,29 @@ export const OngoingRequests = ({ paymentModal, setPaymentModal }: props) => {
           )}
         />
         <View>
+          <FormModal
+            visible={openTracking}
+            setVisible={setOpenTracking}
+            show_button={false}
+            close={() => setOpenTracking(false)}
+            title="Track Request"
+            text="View status updates of your laundry request."
+          >
+            <TrackForm trackDetails={trackDetails} />
+            <View
+              width={"100%"}
+              height="auto"
+              padding={20}
+              marginTop={27}
+              borderWidth={1}
+              borderRadius={12}
+              borderColor={theme?.black4?.val}
+            >
+              <Text color={theme?.primary2?.val} fontSize={15}>
+                Request Tracking
+              </Text>
+            </View>
+          </FormModal>
           <FormModal
             visible={paymentModal}
             setVisible={setPaymentModal}

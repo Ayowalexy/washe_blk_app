@@ -92,8 +92,6 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
         text="View details of your previous requests."
       >
         <SaveForm
-          setOpenConfirmation={setOpenConfirmation}
-          setPaymentModal={setPaymentModal}
         />
       </FormModal>
 

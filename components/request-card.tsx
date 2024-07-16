@@ -51,7 +51,7 @@ export const RequestCard = ({ text, date, status, onPress }: props) => {
       <TouchableOpacity onPress={onPress}>
         <XStack alignItems="center" marginTop={20}>
           <Text fontSize={12} color={theme?.secondary5?.val} marginRight={3}>
-            Make payment
+            Track your request
           </Text>
           <Arrow color="#006B2D" />
         </XStack>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImageBackground, ScrollView, StyleSheet } from "react-native";
 import { View } from "../libs/view";
 import { XStack, YStack, useTheme } from "tamagui";
@@ -15,25 +15,27 @@ import moment from "moment";
 import ToggleSwitch from "toggle-switch-react-native";
 
 type Props = {
-  setOpenConfirmation: Dispatch<SetStateAction<boolean>>;
-  setPaymentModal: Dispatch<SetStateAction<boolean>>;
-  isEnabled: boolean;
-  loading?: boolean;
   toggleSwitch: () => void;
 };
 
-export const SaveForm = ({ isEnabled, toggleSwitch }: Props) => {
+export const SaveForm = () => {
   const theme = useTheme();
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
+  const [laundryType, setLaundryType] = useState("");
 
   const { refetch, data } = useGetLaundryType();
   const [LaundryServiceName] = useAtom(laundryRequestServiceNameAtom);
 
-  const serviceName = Array.isArray(data?.data)
-    ? data.data.find(
-        (elem: any) => elem.id === oneLaundryRequest.laundryRequestTypeId
-      )?.name
-    : null;
+  useEffect(() => {
+    if (data?.data) {
+      const serviceName = Array.isArray(data?.data)
+        ? data.data.find(
+            (elem: any) => elem.id === oneLaundryRequest.laundryRequestTypeId
+          )?.name
+        : null;
+      setLaundryType(serviceName);
+    }
+  }, [data?.data, oneLaundryRequest]);
 
   return (
     <>
@@ -87,7 +89,7 @@ export const SaveForm = ({ isEnabled, toggleSwitch }: Props) => {
                     marginTop={5}
                     textTransform="capitalize"
                   >
-                    {serviceName}
+                    {laundryType}
                   </Text>
                 </YStack>
               </View>
@@ -114,7 +116,7 @@ export const SaveForm = ({ isEnabled, toggleSwitch }: Props) => {
                   {moment(oneLaundryRequest.pickupDate).format("Do MMM YY")},
                 </Text>
                 <Text color={theme?.black1?.val} fontSize={15}>
-                  {oneLaundryRequest.pickupTime}
+                  {moment(oneLaundryRequest.pickupTime).format('HH: mm A')}
                 </Text>
               </XStack>
               <View
@@ -240,19 +242,7 @@ export const SaveForm = ({ isEnabled, toggleSwitch }: Props) => {
               </XStack>
             </YStack>
           </View>
-          <XStack marginTop={10} gap={8} marginBottom={10}>
-            <ToggleSwitch
-              isOn={isEnabled}
-              onColor="#00D158"
-              offColor="#F9FAFB"
-              labelStyle={{ color: "black", fontWeight: "900" }}
-              size="small"
-              onToggle={toggleSwitch}
-            />
-            <Text color={theme?.black1?.val} fontSize={14}>
-              Save request to be used in the future
-            </Text>
-          </XStack>
+         
         </ScrollView>
       </View>
     </>
