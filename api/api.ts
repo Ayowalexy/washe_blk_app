@@ -15,6 +15,7 @@ api.interceptors.request.use(
     async (config) => {
         const result = await getToken("accessToken")
         console.log(config.url)
+        console.log(result)
         config.headers = { ...config.headers } as AxiosRequestHeaders;
         if (result) {
             config.headers["Authorization"] = `Bearer ${result}`;

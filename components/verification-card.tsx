@@ -102,7 +102,7 @@ export const VerificationCard = ({ setOpenVerification }: props) => {
           </XStack>
         </View>
       ) : (
-        user?.verificationDocument?.isPending && (
+        user?.isVerified === false && (
           <View
             marginTop={23}
             padding={20}

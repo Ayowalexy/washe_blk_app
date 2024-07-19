@@ -22,7 +22,7 @@ import { toastConfig } from "../components/ui/toast-config";
 type Props = {
   children: ReactNode;
 };
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export default function AppProvider({ children }: Props) {
   const colorScheme = useColorScheme();

@@ -80,7 +80,7 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
   const [openContact, setOpenContact] = useState(false);
   const [openList, setOpenList] = useState(false);
   const [selected, setSelected] = useState(1);
-  const [user] = useAtom(persistentUserAtom);
+  const [user, setUser] = useAtom(persistentUserAtom);
 
   const handleSelect = (id: number) => {
     setSelected(id);
@@ -109,8 +109,8 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
   const handleLogout = async () => {
     try {
       await deleteToken("accessToken");
-      navigation.navigate('onboarding', {
-        screen: 'login'
+      navigation.navigate("onboarding", {
+        screen: "login",
       });
     } catch (error) {
       console.log(error);

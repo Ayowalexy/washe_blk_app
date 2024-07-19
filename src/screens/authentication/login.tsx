@@ -47,8 +47,10 @@ export const Login = ({ navigation }: LoginScreenProps) => {
       mutate(values, {
         onSuccess: async (response) => {
           await saveToken("accessToken", response?.data?.token);
+          console.log(response?.data?.token, 'response?.data?.token')
           const { data } = await refetch();
           setUser(data?.data);
+          console.log(data.data, 'data.data')
           Toast.show({
             type: "customSuccess",
             text1: "Logged in successfully",

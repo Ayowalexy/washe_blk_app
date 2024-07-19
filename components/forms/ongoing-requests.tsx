@@ -7,7 +7,7 @@ import { DEVICE_WIDTH } from "../../src/constants";
 import { RequestCard } from "../request-card";
 import { useGetRequests } from "../../api/queries";
 import moment from "moment";
-import { Dispatch, useCallback, useState } from "react";
+import { Dispatch, useCallback, useEffect, useState } from "react";
 import { SetStateAction, useAtom } from "jotai";
 import { FormModal } from "../form-modal";
 import { Button } from "../button";
@@ -19,6 +19,7 @@ import {
 } from "../../src/atoms";
 import { useNavigation } from "@react-navigation/native";
 import { TrackForm } from "./track-form";
+import axios from "axios";
 
 type props = {
   paymentModal: boolean;
@@ -36,8 +37,8 @@ export const OngoingRequests = ({
   openTracking,
 }: props) => {
   const theme = useTheme();
-  const { refetch, data } = useGetRequests();
-  // console.log(data?.data, "all");
+  const { refetch, data, isError } = useGetRequests();
+console.log(data, '---')
   const navigation = useNavigation<any>();
   const itemWidth =
     data?.data?.length === 1 ? DEVICE_WIDTH - 80 : DEVICE_WIDTH * 0.56;
@@ -65,6 +66,7 @@ export const OngoingRequests = ({
       console.log(e);
     }
   }, [selected_payment_id, oneLaundryRequest]);
+
   return (
     <YStack
       backgroundColor="$secondary8"

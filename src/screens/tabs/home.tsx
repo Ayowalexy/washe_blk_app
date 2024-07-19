@@ -55,6 +55,7 @@ import {
 } from "../../../api/queries";
 import { OneSavedRequest } from "../../../components/forms/one-saved-request";
 import ToggleSwitch from "toggle-switch-react-native";
+import { VerificationCard } from "../../../components/verification-card";
 
 type HomeScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
@@ -85,7 +86,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const { refetch: saved, data: allSavedRequests } = useGetSavedRequests();
   const theme = useTheme();
   const { data } = useGetLaundryServices();
-
+  console.log(allSavedRequests?.data, 'allSavedRequestsallSavedRequests')
   const handleMayPayment = useCallback(async () => {
     try {
       const response = await mutateAsync({
@@ -197,38 +198,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     <TabLayout>
       <View paddingBottom={100}>
         <HomeCard onPress={() => setOpenModal(true)} />
-        <View
-          marginTop={23}
-          padding={20}
-          width="100%"
-          height="auto"
-          backgroundColor="$primary6"
-          borderRadius={10}
-        >
-          <XStack justifyContent="space-between" alignItems="center">
-            <Text
-              fontSize={15}
-              fontFamily="$body"
-              fontWeight="600"
-              color="$secondary7"
-            >
-              Verification Successful
-            </Text>
-            <Close />
-          </XStack>
-          <Text
-            color="$black3"
-            width="94%"
-            fontFamily="$body"
-            fontWeight="500"
-            fontSize={13}
-            marginTop={10}
-            lineHeight={"$1"}
-          >
-            All information provided have been reviewed by the admin. You can
-            now start using Washe
-          </Text>
-        </View>
+
+        <VerificationCard setOpenVerification={setOpenVerification} />
 
         <TouchableOpacity onPress={() => setAddPayment(true)}>
           <View
