@@ -36,14 +36,26 @@ import {
   Request,
   NewLaundryRequest,
   RequestForm,
+  TrackForm,
 } from "../../../components/forms";
 import { SuccessModal } from "../../../components/modal";
-import { useMakeLaundryRequest, useMakePayment } from "../../../api/mutations";
+import {
+  useMakeLaundryRequest,
+  useMakePayment,
+  useReMakeLaundryRequest,
+} from "../../../api/mutations";
 import { useAtom } from "jotai";
-import { LaundryRequests } from "../../atoms";
+import { LaundryRequests, laundryRequestServiceNameAtom } from "../../atoms";
 import { HomeCard } from "../../../components/home-card";
 import Toast from "react-native-toast-message";
-import { useGetLaundryServices, useGetRequests } from "../../../api/queries";
+import {
+  useGetLaundryServices,
+  useGetRequests,
+  useGetSavedRequests,
+} from "../../../api/queries";
+import { OneSavedRequest } from "../../../components/forms/one-saved-request";
+import ToggleSwitch from "toggle-switch-react-native";
+import { VerificationCard } from "../../../components/verification-card";
 
 type HomeScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
@@ -58,14 +70,23 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const [openModal, setOpenModal] = useState(false);
   const [openVerification, setOpenVerification] = useState(false);
   const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [openTracking, setOpenTracking] = useState(false);
   const [selected_payment_id, setSelectedPaymentId] = useState("");
   const [openRequest, setOpenRequest] = useState(false);
+  const [LaundryServiceName, setLaundryServiceName] = useAtom(
+    laundryRequestServiceNameAtom
+  );
+  const [savedRequestId, setSavedRequestId] = useState("");
+
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
   const { mutateAsync, isPending: loading } = useMakePayment();
+  const { mutate: Remake, isPending: isLoading } = useReMakeLaundryRequest();
   const { mutate, isPending } = useMakeLaundryRequest();
   const { refetch } = useGetRequests();
+  const { refetch: saved, data: allSavedRequests } = useGetSavedRequests();
   const theme = useTheme();
   const { data } = useGetLaundryServices();
+  console.log(allSavedRequests?.data, 'allSavedRequestsallSavedRequests')
   const handleMayPayment = useCallback(async () => {
     try {
       const response = await mutateAsync({
@@ -92,6 +113,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     setOpenRequest(false);
     setOpenConfirmation(true);
   };
+  const [saveRequest, setSaveRequest] = useState(false);
+  const toggleSwitch = () => setSaveRequest((previousState) => !previousState);
 
   const handleSubmit = () => {
     const request = {
@@ -106,6 +129,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
       bleach: oneLaundryRequest.bleach,
       dye: oneLaundryRequest.dye,
       dyeColor: oneLaundryRequest.dyeColor,
+      saveRequest: saveRequest,
     };
     mutate(request, {
       onSuccess: async (data) => {
@@ -123,7 +147,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           laundryRequestId: data?.data?.data?.id,
         });
         const { data: allRequests } = await refetch();
-        console.log("All Requests:", allRequests);
+        const { data: allSavedRequests } = await saved();
       },
       onError: (error: any) => {
         Toast.show({
@@ -136,42 +160,46 @@ export const Home = ({ navigation }: HomeScreenProps) => {
       },
     });
   };
+  const handleRemakeRequest = () => {
+    const requestId = {
+      laundryRequestId: savedRequestId,
+    };
+    Remake(requestId, {
+      onSuccess: async (data) => {
+        Toast.show({
+          type: "customSuccess",
+          text1: "Request re-made successfully",
+        });
+        console.log(data?.data.id, "data?.data?.data?.id");
+        setOpenConfirmation(false);
+        setPaymentModal(true);
+        setOneLaundryRequest({
+          ...oneLaundryRequest,
+          tax: 0,
+          total_amount: data?.data.amount ?? 0,
+          laundryRequestId: data?.data?.id,
+        });
+        const { data: allRequests } = await refetch();
+        const { data: allSavedRequests } = await saved();
+      },
+      onError: (error: any) => {
+        Toast.show({
+          type: "customError",
+          text1:
+            JSON.stringify(error?.response?.data) ||
+            "An error occured, try again",
+        });
+        console.log(error.response.data, "rrr");
+      },
+    });
+  };
+  console.log(savedRequestId, "savedreq");
   return (
     <TabLayout>
       <View paddingBottom={100}>
         <HomeCard onPress={() => setOpenModal(true)} />
-        <View
-          marginTop={23}
-          padding={20}
-          width="100%"
-          height="auto"
-          backgroundColor="$primary6"
-          borderRadius={10}
-        >
-          <XStack justifyContent="space-between" alignItems="center">
-            <Text
-              fontSize={15}
-              fontFamily="$body"
-              fontWeight="600"
-              color="$secondary7"
-            >
-              Verification Successful
-            </Text>
-            <Close />
-          </XStack>
-          <Text
-            color="$black3"
-            width="94%"
-            fontFamily="$body"
-            fontWeight="500"
-            fontSize={13}
-            marginTop={10}
-            lineHeight={"$1"}
-          >
-            All information provided have been reviewed by the admin. You can
-            now start using Washe
-          </Text>
-        </View>
+
+        <VerificationCard setOpenVerification={setOpenVerification} />
 
         <TouchableOpacity onPress={() => setAddPayment(true)}>
           <View
@@ -208,8 +236,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           </View>
         </TouchableOpacity>
         <OngoingRequests
-          paymentModal={paymentModal}
+          openTracking={openTracking}
+          setOpenTracking={setOpenTracking}
           setPaymentModal={setPaymentModal}
+          paymentModal={paymentModal}
+          setOpenConfirmation={setOpenConfirmation}
         />
         <YStack
           backgroundColor="$secondary8"
@@ -225,17 +256,26 @@ export const Home = ({ navigation }: HomeScreenProps) => {
               ListEmptyComponent={
                 <EmptyRequest onPress={() => setOpenModal(true)} />
               }
-              data={laundry.filter((elem) => elem.status === "saved")}
+              data={allSavedRequests?.data}
               keyExtractor={(item) => item.id.toString()}
-              renderItem={(item) => (
-                <TouchableOpacity onPress={() => setShowModal(true)}>
-                  <Request
-                    status={item.item.status as any}
-                    show={true}
-                    date={item.item.date}
-                    name={item.item.name}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setOneLaundryRequest({
+                      ...item,
+                      LaundryServiceName: item?.laundryService.name,
+                      laundryRequestTypeId: item.laundryType.id,
+                    });
+                    setLaundryServiceName(item.laundryService.name);
+                    setSavedRequestId(item.id);
+                    setShowModal(true);
+                  }}
+                >
+                  <OneSavedRequest
+                    date={item?.date}
+                    name={item?.laundryService.name}
                   />
-                  {item.item.id === laundry.length ? null : (
+                  {index < allSavedRequests.data?.length - 1 && (
                     <View borderBottomWidth={1} borderBottomColor="$black4" />
                   )}
                 </TouchableOpacity>
@@ -255,18 +295,15 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         }}
         button={
           <Button
+            loading={isLoading}
             title="Re-request"
             onPress={() => {
-              setShowModal(false);
-              setPaymentModal(true);
+              handleRemakeRequest();
             }}
           />
         }
       >
-        <SaveForm
-          setOpenConfirmation={setOpenConfirmation}
-          setPaymentModal={setPaymentModal}
-        />
+        <SaveForm />
       </FormModal>
 
       <FormModal
@@ -416,7 +453,20 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         setVisible={setOpenConfirmation}
         show_button={true}
         button={
-          <View paddingTop={25}>
+          <View paddingTop={0}>
+            <XStack gap={8} marginBottom={20}>
+              <ToggleSwitch
+                isOn={saveRequest}
+                onColor="#00D158"
+                offColor="#F9FAFB"
+                labelStyle={{ color: "black", fontWeight: "900" }}
+                size="small"
+                onToggle={toggleSwitch}
+              />
+              <Text color={theme?.black1?.val} fontSize={14}>
+                Save request to be used in the future
+              </Text>
+            </XStack>
             <Button
               loading={isPending}
               title="Proceed"
@@ -428,30 +478,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         title="Confirmation"
         text="Please make sure services selected are correct before confirming."
       >
-        <SaveForm
-          setOpenConfirmation={setOpenConfirmation}
-          setPaymentModal={setPaymentModal}
-        />
+        <SaveForm />
       </FormModal>
     </TabLayout>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    height: 144,
-    width: "100%",
-  },
-  card: {
-    width: "100%",
-    height: "100%",
-  },
-  cardImage: {
-    borderRadius: 20,
-  },
-
-  view: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingTop: 10,
-  },
-});

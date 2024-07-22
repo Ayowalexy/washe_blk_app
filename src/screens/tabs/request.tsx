@@ -48,6 +48,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
   const { mutateAsync, isPending: loading } = useMakePayment();
   const { data } = useGetLaundryServices();
   const { data: datas } = useGetRequests();
+  const [openTracking, setOpenTracking] = useState(false);
 
   const handleOpenRequest = () => {
     setOpenModal(false);
@@ -79,6 +80,9 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
       console.log(e);
     }
   }, [selected_payment_id, oneLaundryRequest]);
+
+  const [saveRequest, setSaveRequest] = useState(false);
+  const toggleSwitch = () => setSaveRequest((previousState) => !previousState);
 
   const handleSubmit = () => {
     const request = {
@@ -128,8 +132,11 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
       <TabLayout>
         <View paddingBottom={70}>
           <OngoingRequests
+            openTracking={openTracking}
+            setOpenTracking={setOpenTracking}
             setPaymentModal={setPaymentModal}
             paymentModal={paymentModal}
+            setOpenConfirmation={setOpenConfirmation}
           />
           <View
             position="relative"
@@ -180,9 +187,9 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
               </>
             )}
             <FlatList
-              data={datas?.data?.filter(
-                (elem: any) => elem.status === "pending"
-              ).slice(0, 3)}
+              data={datas?.data
+                ?.filter((elem: any) => elem.status === "pending")
+                .slice(0, 3)}
               ListEmptyComponent={
                 <EmptyRequest
                   onPress={() => setOpenModal(true)}
@@ -285,10 +292,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         title="Confirmation"
         text="Please make sure services selected are correct before confirming."
       >
-        <SaveForm
-          setOpenConfirmation={setOpenConfirmation}
-          setPaymentModal={setPaymentModal}
-        />
+        <SaveForm />
       </FormModal>
 
       <FormModal

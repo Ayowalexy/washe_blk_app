@@ -80,3 +80,7 @@ export const createPaymentMethodValidationSchema = Yup.object().shape({
   exp: Yup.string().required('Required'),
   cvc: Yup.string().required()
 })
+
+export const forgotPasswordValidationSchema = Yup.object().shape({
+  email: Yup.string().email().required('Email address is required'),
+});

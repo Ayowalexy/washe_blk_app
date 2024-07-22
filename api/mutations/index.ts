@@ -1,8 +1,20 @@
 import api from "../api";
 import { useMutation } from "@tanstack/react-query";
-import { ContactUsDTO, CreateAccountDTO, CreditCatDTO, LaundryReRequestDTO, LaundryRequestDTO, SubmitDocumentDTO, UpdateAccountDTO, loginDTO } from "../types";
+import {
+  ContactUsDTO,
+  CreateAccountDTO,
+  CreditCatDTO,
+  LaundryReRequestDTO,
+  LaundryRequestDTO,
+  SubmitDocumentDTO,
+  UpdateAccountDTO,
+  loginDTO,
+  useForgotPasswordDTO,
+  useResetPasswordDTO,
+  useVerifyOtpDTO,
+} from "../types";
 import axios from "axios";
-import { Buffer } from 'buffer';
+import { Buffer } from "buffer";
 
 export function useSignUp() {
   return useMutation({
@@ -50,18 +62,20 @@ export function useContactUs() {
 export function useCreateCard() {
   return useMutation({
     mutationFn: (data: CreditCatDTO) =>
-      axios.post('https://api.stripe.com/v1/payment_methods', null, {
+      axios.post("https://api.stripe.com/v1/payment_methods", null, {
         headers: {
-          'Authorization': `Basic ${Buffer.from(`${process.env.EXPO_PUBLIC_STRIPE_SK}:`).toString('base64')}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${Buffer.from(
+            `${process.env.EXPO_PUBLIC_STRIPE_SK}:`
+          ).toString("base64")}`,
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         params: {
-          type: 'card',
-          'card[number]': data.number,
-          'card[exp_month]': data.exp_month,
-          'card[exp_year]': data.exp_year,
-          'card[cvc]': data.cvv,
-        }
+          type: "card",
+          "card[number]": data.number,
+          "card[exp_month]": data.exp_month,
+          "card[exp_year]": data.exp_year,
+          "card[cvc]": data.cvv,
+        },
       }),
   });
 }
@@ -77,5 +91,23 @@ export function useMakePayment() {
   return useMutation({
     mutationFn: (data: Record<string, string | boolean>) =>
       api.post("/requests/pay", data).then((resp) => resp.data),
+  });
+}
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (data: useForgotPasswordDTO) =>
+      api.post("/auth/forget-password", data).then((resp) => resp),
+  });
+}
+export function useVerifyOtpEndpoint() {
+  return useMutation({
+    mutationFn: (data: useVerifyOtpDTO) =>
+      api.post("/auth/verify-forget-password", data).then((resp) => resp),
+  });
+}
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (data: useResetPasswordDTO) =>
+      api.post("/auth/reset-password", data).then((resp) => resp),
   });
 }

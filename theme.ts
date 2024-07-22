@@ -102,6 +102,7 @@ export const tokens = createTokens({
     blue2: "#63A3FD",
     border1: "#3185FC",
     lightGrey: "#F6F8F9",
+    darkGrey: '#E6E6E6'
   },
 });
 

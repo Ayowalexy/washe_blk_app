@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { ImageBackground, ScrollView, StyleSheet } from "react-native";
 import { View } from "../libs/view";
 import { XStack, YStack, useTheme } from "tamagui";
@@ -11,24 +12,31 @@ import {
 import { Dispatch, SetStateAction } from "react";
 import { useGetLaundryType } from "../../api/queries";
 import moment from "moment";
+import ToggleSwitch from "toggle-switch-react-native";
 
-type props = {
-  setOpenConfirmation: Dispatch<SetStateAction<boolean>>;
-  setPaymentModal: Dispatch<SetStateAction<boolean>>;
-  loading?: boolean;
+type Props = {
+  toggleSwitch: () => void;
 };
-export const SaveForm = ({ setOpenConfirmation, setPaymentModal }: props) => {
+
+export const SaveForm = () => {
   const theme = useTheme();
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
+  const [laundryType, setLaundryType] = useState("");
 
   const { refetch, data } = useGetLaundryType();
   const [LaundryServiceName] = useAtom(laundryRequestServiceNameAtom);
 
-  const serviceName = Array.isArray(data?.data)
-    ? data.data.find(
-        (elem: any) => elem.id === oneLaundryRequest.laundryRequestTypeId
-      )?.name
-    : null;
+  useEffect(() => {
+    if (data?.data) {
+      const serviceName = Array.isArray(data?.data)
+        ? data.data.find(
+            (elem: any) => elem.id === oneLaundryRequest.laundryRequestTypeId
+          )?.name
+        : null;
+      setLaundryType(serviceName);
+    }
+  }, [data?.data, oneLaundryRequest]);
+
   return (
     <>
       <View width="100%" paddingHorizontal={28} paddingBottom={150}>
@@ -81,7 +89,7 @@ export const SaveForm = ({ setOpenConfirmation, setPaymentModal }: props) => {
                     marginTop={5}
                     textTransform="capitalize"
                   >
-                    {serviceName}
+                    {laundryType}
                   </Text>
                 </YStack>
               </View>
@@ -107,7 +115,9 @@ export const SaveForm = ({ setOpenConfirmation, setPaymentModal }: props) => {
                 <Text color={theme?.black1?.val} fontSize={15}>
                   {moment(oneLaundryRequest.pickupDate).format("Do MMM YY")},
                 </Text>
-                <Text>{oneLaundryRequest.pickupTime}</Text>
+                <Text color={theme?.black1?.val} fontSize={15}>
+                  {moment(oneLaundryRequest.pickupTime).format('HH: mm A')}
+                </Text>
               </XStack>
               <View
                 borderBottomWidth={1}
@@ -232,11 +242,13 @@ export const SaveForm = ({ setOpenConfirmation, setPaymentModal }: props) => {
               </XStack>
             </YStack>
           </View>
+         
         </ScrollView>
       </View>
     </>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     height: 149,
@@ -252,5 +264,9 @@ const styles = StyleSheet.create({
   },
   scrollview: {
     height: "95%",
+  },
+  savebtn: {
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

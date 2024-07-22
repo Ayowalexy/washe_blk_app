@@ -37,7 +37,7 @@ export const toastConfig = {
         width="auto"
         paddingHorizontal={20}
         borderRadius={14}
-        backgroundColor={"$primary1"}
+        backgroundColor={'$black1'}
       >
         <Text fontFamily="$body" fontSize={16} fontWeight="500">
           🚫

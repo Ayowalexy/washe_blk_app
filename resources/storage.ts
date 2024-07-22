@@ -6,3 +6,6 @@ export const getToken = async (key: string): Promise<string | null> => {
   const value = await SecureStore.getItemAsync(key);
   return value ?? null;
 };
+
+export const deleteToken = async (key: string) =>
+  await SecureStore.deleteItemAsync(key);

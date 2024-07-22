@@ -35,7 +35,7 @@ export const NewLaundryRequest: React.FC<Props> = ({ data }) => {
 
   return (
     <View style={styles.content}>
-      {data.map((elem, id) => (
+      {data?.map((elem, id) => (
         <TouchableOpacity
           style={styles.flexItem}
           key={id}

@@ -36,6 +36,10 @@ import { SuccessModal } from "../../../components/modal";
 import { AvatarList } from "../../../components/avatar";
 import { UserData, persistentUserAtom } from "../../atoms";
 import { useAtom } from "jotai";
+import { deleteToken } from "../../../resources/storage";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AppRootStackParamsList } from "../../../navigation/app.roots.types";
+import { BottomTabParamList } from "../../../navigation/tabs.navigation";
 
 const List = [
   {
@@ -60,7 +64,11 @@ const List = [
   },
 ];
 
-export const Settings = () => {
+type SettingScreenProps = NativeStackScreenProps<
+  AppRootStackParamsList,
+  "home_stack"
+>;
+export const Settings = ({ navigation }: SettingScreenProps) => {
   const theme = useTheme();
   const [openEdit, setOpenEdit] = useState(false);
   const [openAddress, setOpenAddress] = useState(false);
@@ -72,7 +80,7 @@ export const Settings = () => {
   const [openContact, setOpenContact] = useState(false);
   const [openList, setOpenList] = useState(false);
   const [selected, setSelected] = useState(1);
-  const [user] = useAtom(persistentUserAtom);
+  const [user, setUser] = useAtom(persistentUserAtom);
 
   const handleSelect = (id: number) => {
     setSelected(id);
@@ -96,7 +104,18 @@ export const Settings = () => {
         break;
     }
   };
-  console.log(user, 'current')
+  console.log(user, "current");
+
+  const handleLogout = async () => {
+    try {
+      await deleteToken("accessToken");
+      navigation.navigate("onboarding", {
+        screen: "login",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View
       height={DEVICE_HEIGHT}
@@ -191,19 +210,21 @@ export const Settings = () => {
             </YStack>
           )}
         />
-        <XStack
-          alignItems="center"
-          marginTop={22}
-          borderColor={theme?.black4?.val}
-          borderWidth={1}
-          padding={20}
-          borderRadius={12}
-        >
-          <LogoutIcon />
-          <Text color={theme?.black1?.val} fontSize={15} marginLeft={13}>
-            Log Out
-          </Text>
-        </XStack>
+        <TouchableOpacity onPress={() => handleLogout()}>
+          <XStack
+            alignItems="center"
+            marginTop={22}
+            borderColor={theme?.black4?.val}
+            borderWidth={1}
+            padding={20}
+            borderRadius={12}
+          >
+            <LogoutIcon />
+            <Text color={theme?.black1?.val} fontSize={15} marginLeft={13}>
+              Log Out
+            </Text>
+          </XStack>
+        </TouchableOpacity>
       </ScrollView>
       <FormModal
         visible={openEdit}
