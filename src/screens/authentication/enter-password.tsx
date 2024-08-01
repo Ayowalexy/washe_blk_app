@@ -23,8 +23,7 @@ type EnterPasswordScreenProps = NativeStackScreenProps<
 >;
 export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
   const { mutate, isPending } = useSignUp();
-  const [userdata] = useAtom(UserData);
-
+  const [userdata, setUserdata] = useAtom(UserData);
   const {
     handleBlur,
     handleChange,
@@ -48,6 +47,12 @@ export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
         phoneNumber: userdata.phoneNumber,
         password: values.password,
       };
+      setUserdata({
+        firstName: userdata.firstName,
+        lastName: userdata.lastName,
+        phoneNumber: userdata.phoneNumber,
+        email: userdata.email,
+      });
       console.log(newUser);
 
       mutate(newUser, {
@@ -55,18 +60,20 @@ export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
           console.log(data, "data");
           Toast.show({
             type: "customSuccess",
-            text1: "Confirm the OTP we sent to you",
+            text1: "Account created successfully",
           });
-          await saveToken('accessToken', data?.data?.token?.token)
-          console.log(data?.data?.token?.token)
+          await saveToken("accessToken", data?.data?.token?.token);
+          console.log(data?.data?.token?.token, 'token saved');
           navigation.navigate("user_details");
         },
         onError: (error: any) => {
           Toast.show({
             type: "customError",
-            text1: JSON.stringify(error?.response?.data) || "An error occured, try again",
+            text1:
+              error?.response?.data?.errors[0]?.message ||
+              "An error occured, try again",
           });
-          console.log(error, "rrr");
+          console.log(error.response?.data?.errors[0]?.message, "rrr");
         },
       });
     },

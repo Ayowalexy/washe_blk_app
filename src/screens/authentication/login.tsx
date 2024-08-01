@@ -21,13 +21,16 @@ import { persistentUserAtom } from "../../atoms";
 import { useAtom } from "jotai";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-type LoginScreenProps = NativeStackScreenProps<AppRootStackParamsList, "onboarding">;
+type LoginScreenProps = NativeStackScreenProps<
+  AppRootStackParamsList,
+  "onboarding"
+>;
 
 export const Login = ({ navigation }: LoginScreenProps) => {
   const theme = useTheme();
   const { mutate, isPending } = useLogin();
   const { refetch } = useGetCurrentUser();
-  const [, setUser] = useAtom(persistentUserAtom);
+  const [user, setUser] = useAtom(persistentUserAtom);
   const {
     handleBlur,
     handleChange,
@@ -47,10 +50,10 @@ export const Login = ({ navigation }: LoginScreenProps) => {
       mutate(values, {
         onSuccess: async (response) => {
           await saveToken("accessToken", response?.data?.token);
-          console.log(response?.data?.token, 'response?.data?.token')
+          console.log(response?.data?.token, "response?.data?.token");
           const { data } = await refetch();
           setUser(data?.data);
-          console.log(data.data, 'data.data')
+          console.log(data.data, "data.data");
           Toast.show({
             type: "customSuccess",
             text1: "Logged in successfully",
@@ -63,14 +66,15 @@ export const Login = ({ navigation }: LoginScreenProps) => {
           Toast.show({
             type: "customError",
             text1:
-              JSON.stringify(error?.response?.data?.message) ||
+              error?.response?.data?.errors[0]?.message ||
               "An error occurred, try again",
           });
+          console.log(error?.response?.data.message);
         },
       });
     },
   });
-
+console.log(user, 'user')
   return (
     <View height={DEVICE_HEIGHT} backgroundColor="$white1">
       <KeyboardAwareScrollView

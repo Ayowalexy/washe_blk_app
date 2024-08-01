@@ -86,7 +86,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const { refetch: saved, data: allSavedRequests } = useGetSavedRequests();
   const theme = useTheme();
   const { data } = useGetLaundryServices();
-  console.log(allSavedRequests?.data, 'allSavedRequestsallSavedRequests')
+  console.log(allSavedRequests?.data, "allSavedRequestsallSavedRequests");
   const handleMayPayment = useCallback(async () => {
     try {
       const response = await mutateAsync({
@@ -96,6 +96,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
       });
       console.log(response, "responsee");
       setPaymentModal(false);
+      setOneLaundryRequest({} as any)
       navigation.navigate("home_stack", {
         screen: "payment_successful",
       });
@@ -148,6 +149,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         });
         const { data: allRequests } = await refetch();
         const { data: allSavedRequests } = await saved();
+        console.log(allSavedRequests, "allsaved");
       },
       onError: (error: any) => {
         Toast.show({
@@ -298,7 +300,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             loading={isLoading}
             title="Re-request"
             onPress={() => {
-              handleRemakeRequest();
+              setShowModal(false);
+              setOpenRequest(true);
+              setOneLaundryRequest({
+                ...oneLaundryRequest,
+              });
             }}
           />
         }

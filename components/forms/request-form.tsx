@@ -3,7 +3,7 @@ import { Text } from "../libs/text";
 import { View } from "../libs/view";
 import { Select } from "./select";
 import { Radio } from "./radio";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Button } from "../button";
 import { useAtom } from "jotai";
@@ -39,6 +39,16 @@ const request = [
     value: false,
   },
 ];
+const detergentTypes = [
+  {
+    name: "Scented",
+    id: 1
+  },
+  {
+    name: "Unscented",
+    id: 2
+  }
+]
 
 type props = {
   setOpenConfirmation: Dispatch<SetStateAction<boolean>>;
@@ -54,7 +64,9 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
   const [bleachActive, setBleachActive] = useState<number | null>(null);
   const [DyeActive, setDyeActive] = useState<number | null>(null);
 
-  const [laundryServiceId] = useAtom(laundryRequestServiceIdAtom);
+  const [laundryServiceId, setLaundryServiceId] = useAtom(
+    laundryRequestServiceIdAtom
+  );
 
   const handleTimeFrameActive = (id: string) => {
     setTimeFrameActive(id);
@@ -79,6 +91,8 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
   const { refetch, data } = useGetLaundryType();
   const [dye, setDye] = useState<"Yes" | "No">("No");
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
+  console.log(oneLaundryRequest?.laundryService?.id, "one laundr");
+
   const {
     handleBlur,
     handleChange,
@@ -118,6 +132,46 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
       setOpenConfirmation(true);
     },
   });
+  useEffect(() => {
+    console.log("oneLaundryRequest:", oneLaundryRequest);
+    if (Object.keys(oneLaundryRequest).length !== 0) {
+      const prefilledValues = {
+        laundryRequestServiceId: laundryServiceId,
+        laundryRequestTypeId: oneLaundryRequest.laundryRequestTypeId || "",
+        pickupDate: oneLaundryRequest.pickupDate || "",
+        pickupTime: oneLaundryRequest.pickupTime || "",
+        timeframe: oneLaundryRequest.timeframe || "",
+        detergentType: oneLaundryRequest.detergentType || "",
+        waterTemperature: oneLaundryRequest.waterTemperature || "",
+        softener: oneLaundryRequest.softener ? "Yes" : "No",
+        bleach: oneLaundryRequest.bleach ? "Yes" : "No",
+        dye: oneLaundryRequest.dye ? "Yes" : "No",
+        dyeColor: oneLaundryRequest.dyeColor || "",
+      };
+      console.log(prefilledValues, "pre fill");
+      setValues(prefilledValues);
+    }
+  }, [oneLaundryRequest, setValues]);
+
+  useEffect(() => {
+    setTimeFrameActive(values.timeframe);
+    setDetergentTypeActive(
+      ["scented", "unscented"].indexOf(values.detergentType)
+    );
+    setWaterTemp(["cold", "hot"].indexOf(values.waterTemperature));
+    setFabricSoftActive(
+      request.findIndex((req) => req.name === values.softener)
+    );
+    setBleachActive(["Yes", "No"].indexOf(values.bleach));
+    setDyeActive(["Yes", "No"].indexOf(values.dye));
+    setDye(values.dye === "Yes" ? "Yes" : "No");
+  }, [values]);
+
+  useEffect(() => {
+    if (!laundryServiceId && oneLaundryRequest?.laundryService?.id) {
+      setLaundryServiceId(oneLaundryRequest?.laundryService.id);
+    }
+  }, [laundryServiceId, oneLaundryRequest, setLaundryServiceId]);
   return (
     <View
       width={"100%"}
@@ -144,6 +198,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
                   }))
                 : []
             }
+            defaultValue={values.laundryRequestTypeId}
             placeholder="Select Laundry type"
             hasError={
               !!errors.laundryRequestTypeId && touched.laundryRequestTypeId
@@ -240,7 +295,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
           </Text>
           <YStack>
             <XStack marginTop={20} gap={"16%"}>
-              {["Scented", "Unscented"].map((elem, id) => (
+              {["scented", "unscented"].map((elem, id) => (
                 <XStack
                   height={48}
                   padding={10}
@@ -278,11 +333,11 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
           </Text>
           <YStack>
             <XStack marginTop={20} gap={"16%"}>
-              {["Cold", "Hot"].map((elem, id) => (
+              {["cold", "hot"].map((elem, index) => (
                 <XStack
                   height={48}
                   padding={10}
-                  key={id}
+                  key={index}
                   gap={8}
                   width="47%"
                   borderWidth={1}
@@ -290,9 +345,9 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
                   borderRadius={8}
                 >
                   <Radio
-                    active={waterTemp === id}
+                    active={waterTemp === index}
                     handleActive={(value) => {
-                      handleWaterTemp(id);
+                      handleWaterTemp(index);
                       setFieldValue("waterTemperature", value);
                     }}
                     id={elem}
@@ -429,6 +484,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
           <Select
             hasError={!!errors.dyeColor && touched.dyeColor}
             error={errors.dyeColor}
+            defaultValue={values.dyeColor}
             extraStyles={{ marginTop: 10 }}
             onChange={(value) => setFieldValue("dyeColor", value.value)}
             options={

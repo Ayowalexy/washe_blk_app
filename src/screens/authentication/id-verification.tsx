@@ -14,11 +14,12 @@ import * as DocumentPicker from "expo-document-picker";
 import { useState } from "react";
 import { SuccessModal } from "../../../components/modal";
 import { AppStackScreenProps } from "../../../navigation/app.roots.types";
-import { AddressAtom } from "../../atoms";
+import { AddressAtom, persistentUserAtom } from "../../atoms";
 import { useAtom } from "jotai";
 import { useSubmitDocument } from "../../../api/mutations";
 import { useFormik } from "formik";
 import Toast from "react-native-toast-message";
+import { useGetCurrentUser } from "../../../api/queries";
 
 type idVerificationScreenProps = NativeStackScreenProps<
   AuthenticationStackParamsList,
@@ -33,13 +34,10 @@ export const IdVerification = ({
   const { mutate, isPending } = useSubmitDocument();
   const [fileSizeKB, setFileSizeKB] = useState(0);
   const [visible, setVisible] = useState(false);
+  const { refetch } = useGetCurrentUser();
+  const [user, setUser] = useAtom(persistentUserAtom);
 
-  const {
-    handleSubmit,
-    values,
-    setFieldValue,
-    resetForm,
-  } = useFormik({
+  const { handleSubmit, values, setFieldValue, resetForm } = useFormik({
     initialValues: {
       fileName: "",
       fileUrl: "",
@@ -53,20 +51,22 @@ export const IdVerification = ({
       console.log(newUser);
 
       mutate(newUser, {
-        onSuccess: (data) => {
-          console.log(data, "data");
+        onSuccess: async (data) => {
+          console.log(data, "datas");
           Toast.show({
             type: "customSuccess",
             text1: "Confirm the OTP we sent to you",
           });
+          const { data: datas } = await refetch();
+          console.log(datas?.data, 'user saved');
+          setUser(datas?.data);
           setVisible(true);
         },
         onError: (error: any) => {
           Toast.show({
             type: "customError",
             text1:
-              JSON.stringify(error?.response?.data) ||
-              "An error occurred, try again",
+              error?.response?.data.message || "An error occurred, try again",
           });
           console.log(error?.response?.data, "rrr");
         },

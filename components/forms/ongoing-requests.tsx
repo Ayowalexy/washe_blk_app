@@ -38,7 +38,7 @@ export const OngoingRequests = ({
 }: props) => {
   const theme = useTheme();
   const { refetch, data, isError } = useGetRequests();
-console.log(data, '---')
+// console.log(data, '---')
   const navigation = useNavigation<any>();
   const itemWidth =
     data?.data?.length === 1 ? DEVICE_WIDTH - 80 : DEVICE_WIDTH * 0.56;
