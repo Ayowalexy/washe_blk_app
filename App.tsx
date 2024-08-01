@@ -1,11 +1,26 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 // import { AppStackNavigation } from "./navigation/root.navigation";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useCallback } from "react";
 import AppProvider from "./provider/app-provider";
 import { RootNavigator } from "./navigation/root.navigation";
+// import {
+//   GoogleSignin,
+//   GoogleSigninButton,
+// } from "@react-native-google-signin/google-signin";
+
+// if (Platform.OS === "android") {
+//   GoogleSignin.configure({
+//     iosClientId:
+//       "com.googleusercontent.apps.747966698616-nlc46s0ne6f609fu36bqvjt3a3lmooau",
+//     webClientId:
+//       "676810860447-33heupb16mst3efpvl2lkm2pdavoivlr.apps.googleusercontent.com",
+//     offlineAccess: false,
+//     scopes: ["https://www.googleapis.com/auth/youtube.readonly"],
+//   });
+// }
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({

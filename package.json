@@ -7,11 +7,12 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "start:dev": "NODE_ENV=development npx expo start"
+    "start:dev": "NODE_ENV=development npx expo start -c"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-native-community/datetimepicker": "^8.1.1",
+    "@react-native-google-signin/google-signin": "^12.2.1",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",

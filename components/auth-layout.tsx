@@ -12,12 +12,14 @@ export const AuthLayout = ({
   title = "Create your account",
   subtitle = "Help us get to know you",
   text = "By joining you agree to our Terms and our Privacy Policy",
+  googleAuth,
 }: {
   children: ReactNode;
   auth?: boolean;
   title?: string;
   subtitle?: string;
   text?: string;
+  googleAuth?: VoidFunction;
 }) => {
   const theme = useTheme();
   return (
@@ -38,7 +40,7 @@ export const AuthLayout = ({
             fontFamily="$body"
             fontWeight="600"
             color="$primary2"
-            textAlign='center'
+            textAlign="center"
           >
             {subtitle}
           </Text>
@@ -61,7 +63,12 @@ export const AuthLayout = ({
               justifyContent="center"
               gap={20}
             >
-              <YStack width="47%" height={90} style={styles.card}>
+              <YStack
+                onPress={googleAuth}
+                width="47%"
+                height={90}
+                style={styles.card}
+              >
                 <Google />
                 <Text fontSize={15} fontFamily="$body" fontWeight="500">
                   Google

@@ -13,21 +13,30 @@ import { Text } from "../../../components/libs/text";
 import { Arrow } from "../../../utils/assets";
 import { useFormik } from "formik";
 import { loginValidationSchema } from "../../../schema/validation";
-import { useLogin } from "../../../api/mutations";
+import { useLogin, useGoogleAuth } from "../../../api/mutations";
 import { saveToken } from "../../../resources/storage";
 import { useGetCurrentUser } from "../../../api/queries";
 import Toast from "react-native-toast-message";
 import { persistentUserAtom } from "../../atoms";
 import { useAtom } from "jotai";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+// import {
+//   GoogleSignin,
+//   GoogleSigninButton,
+// } from "@react-native-google-signin/google-signin";
 
-type LoginScreenProps = NativeStackScreenProps<AppRootStackParamsList, "onboarding">;
+
+type LoginScreenProps = NativeStackScreenProps<
+  AppRootStackParamsList,
+  "onboarding"
+>;
 
 export const Login = ({ navigation }: LoginScreenProps) => {
   const theme = useTheme();
   const { mutate, isPending } = useLogin();
   const { refetch } = useGetCurrentUser();
-  const [, setUser] = useAtom(persistentUserAtom);
+  const [user, setUser] = useAtom(persistentUserAtom);
+  const {mutateAsync, isPending: loading} = useGoogleAuth()
   const {
     handleBlur,
     handleChange,
@@ -47,10 +56,10 @@ export const Login = ({ navigation }: LoginScreenProps) => {
       mutate(values, {
         onSuccess: async (response) => {
           await saveToken("accessToken", response?.data?.token);
-          console.log(response?.data?.token, 'response?.data?.token')
+          console.log(response?.data?.token, "response?.data?.token");
           const { data } = await refetch();
           setUser(data?.data);
-          console.log(data.data, 'data.data')
+          console.log(data.data, "data.data");
           Toast.show({
             type: "customSuccess",
             text1: "Logged in successfully",
@@ -63,13 +72,29 @@ export const Login = ({ navigation }: LoginScreenProps) => {
           Toast.show({
             type: "customError",
             text1:
-              JSON.stringify(error?.response?.data?.message) ||
+              error?.response?.data?.errors[0]?.message ||
               "An error occurred, try again",
           });
+          console.log(error?.response?.data.message);
         },
       });
     },
   });
+
+  // const signIn = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const userInfo = await GoogleSignin.signIn();
+  //     console.log(userInfo, 'userInfo')
+  //     if (userInfo?.idToken) {
+  //       await mutateAsync({
+    // idToken: userInfo?.idToken
+  // });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <View height={DEVICE_HEIGHT} backgroundColor="$white1">
@@ -84,6 +109,7 @@ export const Login = ({ navigation }: LoginScreenProps) => {
             title="Log in to your account"
             text="Access your washe account"
             subtitle="Welcome back"
+            // googleAuth={signIn}
           >
             <View>
               <InputBox

@@ -14,6 +14,10 @@ import { signUpValidationSchema } from "../../../schema/validation";
 import { useAtom } from "jotai";
 import { UserData } from "../../atoms";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+// import {
+//   GoogleSignin,
+//   GoogleSigninButton,
+// } from "@react-native-google-signin/google-signin";
 
 type CreateAccountScreenProps = NativeStackScreenProps<
   AuthenticationStackParamsList,
@@ -56,6 +60,21 @@ export const CreateAccount = ({
     },
   });
 
+  // const signIn = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const userInfo = await GoogleSignin.signIn();
+  //     console.log(userInfo, 'userInfo')
+  //     if (userInfo?.idToken) {
+  //       await mutateAsync({
+  // idToken: userInfo?.idToken
+  // });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   return (
     <View height={DEVICE_HEIGHT} backgroundColor="$white1">
       <KeyboardAwareScrollView
@@ -65,6 +84,7 @@ export const CreateAccount = ({
       >
         <View paddingTop={106}>
           <AuthLayout
+            // googleAuth={signIn}
             text={
               !isUpdate
                 ? "By joining you agree to our Terms & and our Privacy Policy"

@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { Modal, StyleSheet } from "react-native";
 import { View } from "./libs/view";
 import { YStack, useTheme } from "tamagui";
@@ -8,8 +9,10 @@ import { Button } from "./button";
 import { Dispatch, SetStateAction } from "react";
 import { useAtom } from "jotai";
 import { UserData, persistentUserAtom } from "../src/atoms";
+import { saveToken } from "../resources/storage";
+import { useGetCurrentUser } from "../api/queries";
 
-type props = {
+type Props = {
   title: string;
   text: string;
   text2?: string;
@@ -18,6 +21,7 @@ type props = {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
 };
+
 export const SuccessModal = ({
   title,
   text,
@@ -26,9 +30,11 @@ export const SuccessModal = ({
   disabled = false,
   visible,
   setVisible,
-}: props) => {
+}: Props) => {
   const theme = useTheme();
-  const [userdata] = useAtom(persistentUserAtom)
+  const [user, setUser] = useAtom(persistentUserAtom);
+  const [loading, setLoading] = useState(false);
+
   return (
     <Modal
       animationType="slide"
@@ -47,7 +53,7 @@ export const SuccessModal = ({
               fontFamily="$body"
               fontWeight="500"
             >
-              Welldone, {`${userdata?.firstName} ${userdata?.lastName}`}
+              Welldone, {`${user?.firstName} ${user?.lastName}`}
             </Text>
             <Text
               fontSize={24}
@@ -90,13 +96,18 @@ export const SuccessModal = ({
             top="95%"
             left="6%"
           >
-            <Button title="Done" onPress={onPress} disabled={disabled} />
+            <Button
+              title="Done"
+              onPress={onPress}
+              disabled={loading || disabled}
+            />
           </View>
         </View>
       </View>
     </Modal>
   );
 };
+
 const styles = StyleSheet.create({
   modalContainer: {
     width: DEVICE_WIDTH,

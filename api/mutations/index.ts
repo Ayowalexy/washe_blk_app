@@ -111,3 +111,11 @@ export function useResetPassword() {
       api.post("/auth/reset-password", data).then((resp) => resp),
   });
 }
+
+
+export function useGoogleAuth() {
+  return useMutation({
+    mutationFn: (data: Record<string, string>) =>
+      api.post("/auth/google", data).then((resp) => resp),
+  });
+}

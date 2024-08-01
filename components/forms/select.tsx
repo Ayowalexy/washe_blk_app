@@ -45,11 +45,11 @@ export const Select = ({
       </View>
     );
   };
-  // useEffect(() => {
-  //   if (defaultValue){
-  //       setValue(defaultValue)
-  //   }
-  // },[defaultValue])
+  useEffect(() => {
+    if (defaultValue){
+        setValue(defaultValue)
+    }
+  },[defaultValue])
   return (
     <View style={[{ width: "100%", marginBottom: 20 }, extraStyles]}>
       <Text fontSize={14} marginBottom={-14} color="$black1">

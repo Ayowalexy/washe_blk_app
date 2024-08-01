@@ -26,10 +26,10 @@ export const NewLaundryRequest: React.FC<Props> = ({ data }) => {
   const handleActive = (id: number) => {
     setActive(id);
   };
-  const [LaundryServiceId, setLaundryServiceId] = useAtom(
+  const [laundryServiceId, setLaundryServiceId] = useAtom(
     laundryRequestServiceIdAtom
   );
-  const [LaundryServiceName, setLaundryServiceName] = useAtom(
+  const [laundryServiceName, setLaundryServiceName] = useAtom(
     laundryRequestServiceNameAtom
   );
 
