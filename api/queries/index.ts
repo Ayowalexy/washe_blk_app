@@ -51,8 +51,37 @@ export function useGetSavedRequests() {
   queryClient.invalidateQueries({ queryKey: ["saved-requests"] });
   return useQuery({
     queryFn: () =>
-      api.get(`/requests/saved-requests`).then((resp) => resp.data).catch(() => []),
+      api
+        .get(`/requests/saved-requests`)
+        .then((resp) => resp.data)
+        .catch(() => []),
     queryKey: ["saved-requests"],
+    enabled: true,
+    staleTime: 1,
+  });
+}
+export function useGetNotifications() {
+  queryClient.invalidateQueries({ queryKey: ["notifications"] });
+  return useQuery({
+    queryFn: () =>
+      api
+        .get(`/notifications`)
+        .then((resp) => resp.data)
+        .catch(() => []),
+    queryKey: ["notifications"],
+    enabled: true,
+    staleTime: 1,
+  });
+}
+export function useGetAvatars() {
+  queryClient.invalidateQueries({ queryKey: ["avatars"] });
+  return useQuery({
+    queryFn: () =>
+      api
+        .get(`/avatar`)
+        .then((resp) => resp.data)
+        .catch(() => []),
+    queryKey: ["avatars"],
     enabled: true,
     staleTime: 1,
   });

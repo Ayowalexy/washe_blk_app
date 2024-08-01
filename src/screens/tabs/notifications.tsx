@@ -16,6 +16,8 @@ import { Button } from "../../../components/button";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppRootStackParamsList } from "../../../navigation/app.roots.types";
 import { BottomTabParamList } from "../../../navigation/tabs.navigation";
+import { useGetNotifications } from "../../../api/queries";
+import moment from "moment";
 
 type NotificationScreenProps = NativeStackScreenProps<
   BottomTabParamList,
@@ -25,6 +27,18 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
   const theme = useTheme();
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
+
+  const { data } = useGetNotifications();
+  console.log(data?.data, "notifications");
+
+  const groupedRequests = data?.data?.reduce((acc: any, request: any) => {
+    const date = moment(request.createdAt).format("YYYY-MM-DD");
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(request);
+    return acc;
+  }, {});
   return (
     <View
       height={DEVICE_HEIGHT}
@@ -35,19 +49,19 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text paddingTop={30}>Notifications</Text>
-        <YStack>
-          {Object.entries(groupedLaundryRequests).map(([date, requests]) => (
-            <View key={date}>
-              <Text
-                fontSize={13}
-                color={theme?.black3?.val}
-                paddingVertical={20}
-                textTransform="uppercase"
-              >
-                {date}
-              </Text>
-              {Array.isArray(requests) &&
-                requests.map((request: any) => (
+        <YStack marginTop={20}>
+          {/* {groupedRequests &&
+            Object.keys(groupedRequests).map((date) => (
+              <View key={date}>
+                <Text
+                  fontSize={13}
+                  color={theme?.black3?.val}
+                  paddingVertical={20}
+                  textTransform="uppercase"
+                >
+                  {date}
+                </Text>
+                {groupedRequests[date].map((request: any, index: any) => (
                   <View
                     key={request.id}
                     backgroundColor={theme?.lightGrey?.val}
@@ -64,12 +78,33 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
                         name={request.name}
                       />
                     </TouchableOpacity>
-                    {request.id === Array.isArray(requests) &&
-                    request.length ? null : (
+                    {index !== groupedRequests[date].length - 1 && (
                       <View borderBottomWidth={1} borderBottomColor="$black4" />
                     )}
                   </View>
                 ))}
+              </View>
+            ))} */}
+          {data?.data.map((request: any, index: any) => (
+            <View
+              key={request.id}
+              backgroundColor={theme?.lightGrey?.val}
+              paddingHorizontal={20}
+            >
+              <TouchableOpacity onPress={() => setOpenConfirmation(true)}>
+                <Request
+                  top_img={false}
+                  showImg={true}
+                  width="100%"
+                  status={request.status}
+                  show={false}
+                  time={request.date}
+                  name={request.title}
+                />
+              </TouchableOpacity>
+              {index !== data.data.length - 1 && (
+                <View borderBottomWidth={1} borderBottomColor="$black4" />
+              )}
             </View>
           ))}
         </YStack>
@@ -91,8 +126,7 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
         title="Request History"
         text="View details of your previous requests."
       >
-        <SaveForm
-        />
+        <SaveForm />
       </FormModal>
 
       <FormModal
