@@ -314,7 +314,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
                     }}
                     id={elem}
                   />
-                  <Text fontSize={14} color="$black1">
+                  <Text fontSize={14} color="$black1" textTransform='capitalize'>
                     {elem}
                   </Text>
                 </XStack>
@@ -352,7 +352,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
                     }}
                     id={elem}
                   />
-                  <Text fontSize={14} color="$black1">
+                  <Text fontSize={14} color="$black1" textTransform='capitalize'>
                     {elem}
                   </Text>
                 </XStack>

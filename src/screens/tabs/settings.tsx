@@ -40,6 +40,7 @@ import { deleteToken } from "../../../resources/storage";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppRootStackParamsList } from "../../../navigation/app.roots.types";
 import { BottomTabParamList } from "../../../navigation/tabs.navigation";
+import { useGetAvatars } from "../../../api/queries";
 
 const List = [
   {
@@ -106,6 +107,9 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
   };
   console.log(user, "current");
 
+  const { data } = useGetAvatars();
+  console.log(user?.avatar, "avatars");
+
   const handleLogout = async () => {
     try {
       await deleteToken("accessToken");
@@ -143,7 +147,10 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
                 onPress={() => setOpenList(true)}
               >
                 <View width={74} height={74}>
-                  <Image source={userImg} style={styles.user} />
+                  <Image
+                    source={user?.avatar ? { uri: user?.avatar } : userImg}
+                    style={styles.user}
+                  />
                 </View>
                 <View position="absolute" top={40} right={-4}>
                   <EditIcon />
@@ -357,19 +364,22 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
         <View width="70%" marginLeft={"5%"}>
           <FlatList
             contentContainerStyle={styles.contentContainer}
-            data={AvatarList}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
+            data={data?.data}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
               <TouchableOpacity onPress={() => handleSelect(item.id)}>
-                {selected === item?.id ? (
+                {selected === index ? (
                   <View height={78} width={78} borderRadius={50}>
                     <View width={74} height={74} borderRadius={50}>
-                      <Image source={item.img} style={styles.cardImg} />
+                      <Image
+                        source={{ uri: item.url }}
+                        style={styles.cardImg}
+                      />
                     </View>
                   </View>
                 ) : (
                   <View width={74} height={74} borderRadius={50}>
-                    <Image source={item.img} style={styles.cardImg} />
+                    <Image source={{ uri: item.url }} style={styles.cardImg} />
                   </View>
                 )}
               </TouchableOpacity>
