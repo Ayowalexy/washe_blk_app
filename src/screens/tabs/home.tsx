@@ -86,7 +86,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const { refetch: saved, data: allSavedRequests } = useGetSavedRequests();
   const theme = useTheme();
   const { data } = useGetLaundryServices();
-  console.log(allSavedRequests?.data, 'allSavedRequestsallSavedRequests')
   const handleMayPayment = useCallback(async () => {
     try {
       const response = await mutateAsync({
@@ -137,7 +136,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           type: "customSuccess",
           text1: "Request created successfully",
         });
-        console.log(data?.data?.data?.id, "data?.data?.data?.id");
         setOpenConfirmation(false);
         setPaymentModal(true);
         setOneLaundryRequest({
@@ -164,13 +162,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const requestId = {
       laundryRequestId: savedRequestId,
     };
+    console.log(requestId, 'requestId--')
     Remake(requestId, {
       onSuccess: async (data) => {
         Toast.show({
           type: "customSuccess",
           text1: "Request re-made successfully",
         });
-        console.log(data?.data.id, "data?.data?.data?.id");
         setOpenConfirmation(false);
         setPaymentModal(true);
         setOneLaundryRequest({
@@ -183,17 +181,16 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         const { data: allSavedRequests } = await saved();
       },
       onError: (error: any) => {
+        console.log(error.response.data, "rrr");
         Toast.show({
           type: "customError",
           text1:
             JSON.stringify(error?.response?.data) ||
             "An error occured, try again",
         });
-        console.log(error.response.data, "rrr");
       },
     });
   };
-  console.log(savedRequestId, "savedreq");
   return (
     <TabLayout>
       <View paddingBottom={100}>

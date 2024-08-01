@@ -66,7 +66,7 @@ export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
             type: "customError",
             text1: JSON.stringify(error?.response?.data) || "An error occured, try again",
           });
-          console.log(error, "rrr");
+          console.log(error?.response?.data, "rrr");
         },
       });
     },
