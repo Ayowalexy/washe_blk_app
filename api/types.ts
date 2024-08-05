@@ -81,6 +81,7 @@ export type UpdateAccountDTO = {
   lastName?: string;
   email?: string;
   phoneNumber?: string;
+  avatar?:string
 };
 export type ContactUsDTO = {
   message: string;
