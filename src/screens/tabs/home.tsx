@@ -155,10 +155,10 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         Toast.show({
           type: "customError",
           text1:
-            JSON.stringify(error?.response?.data) ||
+            JSON.stringify(error?.response?.data.errors[0].message) ||
             "An error occured, try again",
         });
-        console.log(error, "rrr");
+        console.log(error?.response?.data.errors[0].message, "rrr");
       },
     });
   };
@@ -328,10 +328,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         button={
           <Button
             color="#00D158"
-            title={`Pay $${
-              Number(oneLaundryRequest?.tax ?? 0) +
+            title={`Pay $${Number(oneLaundryRequest?.tax ?? 0) +
               Number(oneLaundryRequest?.total_amount ?? 0)
-            }`}
+              }`}
             loading={loading}
             disabled={!Boolean(selected_payment_id)}
             onPress={() => {
@@ -469,9 +468,11 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 size="small"
                 onToggle={toggleSwitch}
               />
-              <Text color={theme?.black1?.val} fontSize={14}>
-                Save request to be used in the future
-              </Text>
+              <TouchableOpacity onPress={() => toggleSwitch()}>
+                <Text color={theme?.black1?.val} fontSize={14}>
+                  Save request to be used in the future
+                </Text>
+              </TouchableOpacity>
             </XStack>
             <Button
               loading={isPending}

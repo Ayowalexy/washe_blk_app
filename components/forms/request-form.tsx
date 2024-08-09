@@ -91,7 +91,6 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
   const { refetch, data } = useGetLaundryType();
   const [dye, setDye] = useState<"Yes" | "No">("No");
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
-  console.log(oneLaundryRequest?.laundryService?.id, "one laundr");
 
   const {
     handleBlur,
