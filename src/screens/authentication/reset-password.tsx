@@ -37,9 +37,9 @@ export const ResetPassword = ({ navigation }: ResetPasswordScreenProps) => {
               type: "customSuccess",
               text1: "password updated successfully",
             });
-            navigation.navigate('onboarding', {
-              screen: 'login'
-            })
+            navigation.navigate("onboarding", {
+              screen: "login",
+            });
           },
           onError: (error: any) => {
             Toast.show({
@@ -71,12 +71,14 @@ export const ResetPassword = ({ navigation }: ResetPasswordScreenProps) => {
                   onBlur={handleBlur("password")}
                   hasError={!!errors.password && touched.password}
                   error={errors.password}
+                  secureTextEntry={true}
                   label="Password"
                   placeholder="Enter your password"
                 />
                 <InputBox
                   onChangeText={handleChange("password_confirmation")}
                   onBlur={handleBlur("password_confirmation")}
+                  secureTextEntry={true}
                   hasError={
                     !!errors.password_confirmation &&
                     touched.password_confirmation
@@ -102,7 +104,7 @@ export const ResetPassword = ({ navigation }: ResetPasswordScreenProps) => {
           <View width="80%">
             <Button
               loading={isPending}
-              title="Send code"
+              title="Reset password"
               onPress={() => handleSubmit()}
             />
           </View>
