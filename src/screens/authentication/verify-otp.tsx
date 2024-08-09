@@ -111,7 +111,7 @@ export const VerifyOtp = ({ navigation }: VerifyOtpScreenProps) => {
           <View width="80%">
             <Button
               //   loading={isPending}
-              title="Send code"
+              title="Verify code"
               onPress={() => handleVerifyOtp()}
             />
           </View>

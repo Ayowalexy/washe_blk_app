@@ -89,7 +89,7 @@ export const ForgotPassword = ({ navigation }: ForgotPasswordScreenProps) => {
                   hasError={!!errors.email && touched.email}
                   error={errors.email}
                   label="Email address"
-                  placeholder="First name"
+                  placeholder="Email address"
                 />
               </View>
             </AuthLayout>

@@ -40,7 +40,9 @@ import { deleteToken } from "../../../resources/storage";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppRootStackParamsList } from "../../../navigation/app.roots.types";
 import { BottomTabParamList } from "../../../navigation/tabs.navigation";
-import { useGetAvatars } from "../../../api/queries";
+import { useGetAvatars, useGetCurrentUser } from "../../../api/queries";
+import { useUpdateProfile } from "../../../api/mutations";
+import Toast from "react-native-toast-message";
 
 const List = [
   {
@@ -82,6 +84,9 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
   const [openList, setOpenList] = useState(false);
   const [selected, setSelected] = useState(1);
   const [user, setUser] = useAtom(persistentUserAtom);
+  const [selectedImage, setSelectedImage] = useState("");
+  const { mutate, isPending } = useUpdateProfile();
+  const { refetch } = useGetCurrentUser();
 
   const handleSelect = (id: number) => {
     setSelected(id);
@@ -119,6 +124,32 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
     } catch (error) {
       console.log(error);
     }
+  };
+  const handleEditProfilePic = (url: string) => {
+    const details = {
+      avatar: url,
+    };
+    mutate(details, {
+      onSuccess: async (response) => {
+        const { data } = await refetch();
+        console.log(data.data, "data.data");
+        setOpenList(false)
+        setUser(data?.data);
+        Toast.show({
+          type: "customSuccess",
+          text1: "User updated successfully",
+        });
+      },
+      onError: (error: any) => {
+        Toast.show({
+          type: "customError",
+          text1:
+            JSON.stringify(error?.response?.data?.message) ||
+            "An error occured, try again",
+        });
+        console.log(error?.response?.data?.message);
+      },
+    });
   };
   return (
     <View
@@ -367,7 +398,10 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
             data={data?.data}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => (
-              <TouchableOpacity onPress={() => handleSelect(item.id)}>
+              <TouchableOpacity onPress={() => {
+                handleSelect(item.id)
+                handleEditProfilePic(item.url)
+              }}>
                 {selected === index ? (
                   <View height={78} width={78} borderRadius={50}>
                     <View width={74} height={74} borderRadius={50}>
