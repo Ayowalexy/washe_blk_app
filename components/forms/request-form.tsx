@@ -14,6 +14,8 @@ import { colors } from "../ui/colors";
 import { useFormik } from "formik";
 import { laundryRequestValidationSchema } from "../../schema/validation";
 import moment from "moment";
+import { InputBox } from "../input";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const list = [
   {
@@ -178,8 +180,11 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
       paddingHorizontal={25}
       marginTop={20}
     >
-      <ScrollView
+      <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+        enableOnAndroid={true}
+        keyboardShouldPersistTaps="handled"
         style={styles.scrollview}
       >
         <View>
@@ -192,9 +197,9 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
             options={
               Array.isArray(data?.data)
                 ? data?.data.map((elem: any) => ({
-                    label: elem.name,
-                    value: elem.id,
-                  }))
+                  label: elem.name,
+                  value: elem.id,
+                }))
                 : []
             }
             defaultValue={values.laundryRequestTypeId}
@@ -480,7 +485,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
           </YStack>
         </YStack>
         <View>
-          <Select
+          {/* <Select
             hasError={!!errors.dyeColor && touched.dyeColor}
             error={errors.dyeColor}
             defaultValue={values.dyeColor}
@@ -495,9 +500,20 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
                 : []
             }
             placeholder="Select dye color"
-          />
+          /> */}
+          {
+            dye ? <InputBox
+              label=""
+              onChangeText={handleChange("dyeColor")}
+              onBlur={handleBlur("dyeColor")}
+              hasError={!!errors.dyeColor && touched.dyeColor}
+              error={errors.dyeColor}
+              placeholder="Dye color"
+              defaultValue={values.dyeColor}
+            /> : null
+          }
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <View paddingTop={25}>
         <Button title="Next" onPress={handleSubmit} />
       </View>
@@ -507,6 +523,6 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
 
 const styles = StyleSheet.create({
   scrollview: {
-    height: "83%",
+    height: "80%",
   },
 });
