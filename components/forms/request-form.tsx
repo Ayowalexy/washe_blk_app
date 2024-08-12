@@ -502,13 +502,13 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
             placeholder="Select dye color"
           /> */}
           {
-            dye ? <InputBox
+            values.dye === 'Yes' ? <InputBox
               label=""
               onChangeText={handleChange("dyeColor")}
               onBlur={handleBlur("dyeColor")}
               hasError={!!errors.dyeColor && touched.dyeColor}
               error={errors.dyeColor}
-              placeholder="Dye color"
+              placeholder="Dye color"  
               defaultValue={values.dyeColor}
             /> : null
           }

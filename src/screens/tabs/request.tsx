@@ -28,6 +28,7 @@ import { useMakeLaundryRequest } from "../../../api/mutations";
 import Toast from "react-native-toast-message";
 import { useMakePayment } from "../../../api/mutations";
 import moment from "moment";
+import ToggleSwitch from "toggle-switch-react-native";
 
 type RequestScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
@@ -97,6 +98,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
       bleach: oneLaundryRequest.bleach,
       dye: oneLaundryRequest.dye,
       dyeColor: oneLaundryRequest.dyeColor,
+      saveRequest
     };
     mutate(request, {
       onSuccess: async (data) => {
@@ -123,7 +125,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
             JSON.stringify(error?.response?.data) ||
             "An error occured, try again",
         });
-        console.log(error, "rrr");
+        console.log(error?.response?.data, "rrr");
       },
     });
   };
@@ -280,14 +282,30 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         setVisible={setOpenConfirmation}
         show_button={true}
         button={
-          <View paddingTop={25}>
-            <Button
-              loading={isPending}
-              title="Proceed"
-              onPress={() => handleSubmit()}
+          <View paddingTop={0}>
+          <XStack gap={8} marginBottom={20}>
+            <ToggleSwitch
+              isOn={saveRequest}
+              onColor="#00D158"
+              offColor="#F9FAFB"
+              labelStyle={{ color: "black", fontWeight: "900" }}
+              size="small"
+              onToggle={toggleSwitch}
             />
-          </View>
+            <TouchableOpacity onPress={() => toggleSwitch()}>
+              <Text color={theme?.black1?.val} fontSize={14}>
+                Save request to be used in the future
+              </Text>
+            </TouchableOpacity>
+          </XStack>
+          <Button
+            loading={isPending}
+            title="Proceed"
+            onPress={() => handleSubmit()}
+          />
+        </View>
         }
+        
         close={() => setOpenConfirmation(false)}
         title="Confirmation"
         text="Please make sure services selected are correct before confirming."
@@ -311,10 +329,9 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         button={
           <Button
             color="#00D158"
-            title={`Pay $${
-              Number(oneLaundryRequest?.tax ?? 0) +
+            title={`Pay $${Number(oneLaundryRequest?.tax ?? 0) +
               Number(oneLaundryRequest?.total_amount ?? 0)
-            }`}
+              }`}
             loading={loading}
             disabled={!Boolean(selected_payment_id)}
             onPress={() => {
