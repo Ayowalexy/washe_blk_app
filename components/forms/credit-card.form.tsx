@@ -5,7 +5,7 @@ import { Text } from "../libs/text";
 import { InputBox } from "../input";
 import { Button } from "../button";
 import { SuccessModal } from "../modal";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { useFormik } from "formik";
 import { createPaymentMethodValidationSchema } from "../../schema/validation";
 import { useCreateCard, useAddCard } from "../../api/mutations";
@@ -38,7 +38,7 @@ export const CreditCard = ({ onPress }: props) => {
     onSubmit: async (values) => {
       try {
         const response = await mutateAsync({
-          number: values.number,
+          number: values.number.split(' ').join(''),
           exp_month: Number(values.exp.split("/")[0]),
           exp_year: Number(
             new Date()
@@ -60,6 +60,16 @@ export const CreditCard = ({ onPress }: props) => {
     },
   });
 
+  const formatCardNumber = useCallback((text: string) => {
+    const cleaned = text.replace(/\D+/g, "");
+    const formatted = cleaned.replace(/(\d{4})(?=\d)/g, "$1 ");
+    return formatted;
+  }, []);
+
+  const onChange = useCallback((text: string) => {
+    setFieldValue("number", formatCardNumber(text));
+  }, []);
+
   return (
     <>
       <View width={"100%"} paddingHorizontal={28}>
@@ -73,7 +83,8 @@ export const CreditCard = ({ onPress }: props) => {
                 label="Card number"
                 keyboardType="number-pad"
                 placeholder="0000 0000 0000 0000"
-                onChangeText={handleChange("number")}
+                onChangeText={onChange}
+                value={values.number}
                 onBlur={handleBlur("number")}
                 hasError={!!errors.number && touched.number}
                 error={errors.number}
@@ -82,21 +93,18 @@ export const CreditCard = ({ onPress }: props) => {
                 label="Expiry date"
                 keyboardType="number-pad"
                 placeholder="MM/YY"
-                onChangeText={(text) => {
-                  setFieldValue("exp", text);
-                }}
                 value={values.exp.toString()}
                 onBlur={handleBlur("exp")}
-                onKeyPress={(event) => {
-                  if (
-                    event.nativeEvent.key === "Backspace" &&
-                    values.exp.toString().length === 3
-                  ) {
-                    setFieldValue("exp", values.exp.toString().slice(0, 2));
-                  } else if (values.exp.toString().length === 2) {
-                    setFieldValue("exp", values.exp.toString().concat("/"));
+                onChangeText={(text) => {
+                  if (text.length === 3 && values.exp.length === 4) {
+                    setFieldValue("exp", text.slice(0, 2));
+                  } else if (text.length === 2 && !text.includes("/")) {
+                    setFieldValue("exp", text.concat("/"));
+                  } else {
+                    setFieldValue("exp", text);
                   }
                 }}
+                maxLength={5}
                 hasError={!!errors.exp && touched.exp}
                 error={errors.exp}
               />

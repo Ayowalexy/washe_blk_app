@@ -74,12 +74,12 @@ export const AuthLayout = ({
                   Google
                 </Text>
               </YStack>
-              <YStack width="47%" height={90} style={styles.card}>
+              {/* <YStack width="47%" height={90} style={styles.card}>
                 <Facebook />
                 <Text fontSize={15} fontFamily="$body" fontWeight="500">
                   Facebook
                 </Text>
-              </YStack>
+              </YStack> */}
             </XStack>
             <XStack
               gap={10}

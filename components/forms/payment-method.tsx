@@ -17,30 +17,30 @@ const PaymentMethods = [
     name: "Credit/Debit Card",
     text: "Use your bank card information",
   },
-  {
-    img: Stripe,
-    id: 2,
-    name: "Stripe",
-    text: "Lorem ipsum dolor sit amet consectetur",
-  },
-  {
-    img: Paypal,
-    id: 3,
-    name: "Paypal",
-    text: "Lorem ipsum dolor sit amet consectetur",
-  },
-  {
-    img: ApplePay,
-    id: 4,
-    name: "Apple Pay",
-    text: "Lorem ipsum dolor sit amet consectetur",
-  },
-  {
-    img: GooglePay,
-    id: 5,
-    name: "Google pay",
-    text: "Lorem ipsum dolor sit amet consectetur",
-  },
+  // {
+  //   img: Stripe,
+  //   id: 2,
+  //   name: "Stripe",
+  //   text: "Lorem ipsum dolor sit amet consectetur",
+  // },
+  // {
+  //   img: Paypal,
+  //   id: 3,
+  //   name: "Paypal",
+  //   text: "Lorem ipsum dolor sit amet consectetur",
+  // },
+  // {
+  //   img: ApplePay,
+  //   id: 4,
+  //   name: "Apple Pay",
+  //   text: "Lorem ipsum dolor sit amet consectetur",
+  // },
+  // {
+  //   img: GooglePay,
+  //   id: 5,
+  //   name: "Google pay",
+  //   text: "Lorem ipsum dolor sit amet consectetur",
+  // },
 ];
 
 export const PaymentMethod = ({ onPress }: { onPress: () => void }) => {

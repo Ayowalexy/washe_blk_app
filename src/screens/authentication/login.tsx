@@ -25,7 +25,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 //   GoogleSigninButton,
 // } from "@react-native-google-signin/google-signin";
 
-
 type LoginScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
   "onboarding"
@@ -36,7 +35,7 @@ export const Login = ({ navigation }: LoginScreenProps) => {
   const { mutate, isPending } = useLogin();
   const { refetch } = useGetCurrentUser();
   const [user, setUser] = useAtom(persistentUserAtom);
-  const {mutateAsync, isPending: loading} = useGoogleAuth()
+  const { mutateAsync, isPending: loading } = useGoogleAuth();
   const {
     handleBlur,
     handleChange,
@@ -81,20 +80,26 @@ export const Login = ({ navigation }: LoginScreenProps) => {
     },
   });
 
-  // const signIn = async () => {
-  //   try {
-  //     await GoogleSignin.hasPlayServices();
-  //     const userInfo = await GoogleSignin.signIn();
-  //     console.log(userInfo, 'userInfo')
-  //     if (userInfo?.idToken) {
-  //       await mutateAsync({
-    // idToken: userInfo?.idToken
-  // });
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const signIn = async () => {
+    // try {
+    //   await GoogleSignin.hasPlayServices();
+    //   const userInfo = await GoogleSignin.signIn();
+    //   // console.log(userInfo, 'userInfo')
+    //   if (userInfo?.idToken) {
+    //     const response = await mutateAsync({
+    //       idToken: userInfo?.idToken,
+    //     });
+    //     console.log(response, 'reponse')
+    //   }
+    // } catch (error) {
+    //   Toast.show({
+    //     type: "customError",
+    //     text1:
+    //       error?.response?.data?.message ||
+    //       "An error occurred, try again",
+    //   });
+    // }
+  };
 
   return (
     <View height={DEVICE_HEIGHT} backgroundColor="$white1">
@@ -109,7 +114,7 @@ export const Login = ({ navigation }: LoginScreenProps) => {
             title="Log in to your account"
             text="Access your washe account"
             subtitle="Welcome back"
-            // googleAuth={signIn}
+            googleAuth={signIn}
           >
             <View>
               <InputBox
