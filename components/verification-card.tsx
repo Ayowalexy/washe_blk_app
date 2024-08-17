@@ -10,8 +10,9 @@ import { Dispatch, SetStateAction } from "react";
 
 type props = {
   setOpenVerification: Dispatch<SetStateAction<boolean>>;
+  close: () => void
 };
-export const VerificationCard = ({ setOpenVerification }: props) => {
+export const VerificationCard = ({ setOpenVerification, close }: props) => {
   const [user] = useAtom(persistentUserAtom);
   return (
     <>
@@ -33,7 +34,9 @@ export const VerificationCard = ({ setOpenVerification }: props) => {
             >
               Verification Successful
             </Text>
-            <Close />
+            <TouchableOpacity onPress={close}>
+              <Close />
+            </TouchableOpacity>
           </XStack>
           <Text
             color="$black3"

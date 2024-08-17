@@ -6,7 +6,6 @@ import { RequestFilter } from "../../../components/request-filter";
 import { YStack, useTheme } from "tamagui";
 import { PaymentForm, Request, SaveForm } from "../../../components/forms";
 import {
-  LaundryRequests,
   groupedLaundryRequests,
 } from "../../../components/laundry-request";
 import { DEVICE_HEIGHT } from "../../constants";
@@ -18,6 +17,10 @@ import { AppRootStackParamsList } from "../../../navigation/app.roots.types";
 import { BottomTabParamList } from "../../../navigation/tabs.navigation";
 import { useGetNotifications } from "../../../api/queries";
 import moment from "moment";
+import { useReMakeLaundryRequest } from "../../../api/mutations";
+import Toast from "react-native-toast-message";
+import { useAtom } from "jotai";
+import { LaundryRequests } from "../../atoms";
 
 type NotificationScreenProps = NativeStackScreenProps<
   BottomTabParamList,
@@ -27,8 +30,9 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
   const theme = useTheme();
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
+  const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
 
-  const { data } = useGetNotifications();
+  const { data, refetch } = useGetNotifications();
   console.log(data?.data, "notifications");
 
   const groupedRequests = data?.data?.reduce((acc: any, request: any) => {
@@ -39,6 +43,42 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
     acc[date].push(request);
     return acc;
   }, {});
+
+  const [savedRequestId, setSavedRequestId] = useState("");
+  const { mutate: Remake, isPending: isLoading } = useReMakeLaundryRequest();
+
+  const handleRemakeRequest = () => {
+    const requestId = {
+      laundryRequestId: savedRequestId,
+    };
+    Remake(requestId, {
+      onSuccess: async (data) => {
+        Toast.show({
+          type: "customSuccess",
+          text1: "Request re-made successfully",
+        });
+        console.log(data.data.data, "dataaa");
+        setOpenConfirmation(false);
+        setPaymentModal(true);
+        setOneLaundryRequest({
+          ...oneLaundryRequest,
+          tax: 0,
+          total_amount: data?.data?.data.amount ?? 0,
+          laundryRequestId: data?.data?.data?.id,
+        });
+        const { data: allNotifications } = await refetch();
+      },
+      onError: (error: any) => {
+        Toast.show({
+          type: "customError",
+          text1:
+            JSON.stringify(error?.response?.data) ||
+            "An error occured, try again",
+        });
+        console.log(error.response.data, "rrr");
+      },
+    });
+  };
   return (
     <View
       height={DEVICE_HEIGHT}
@@ -91,14 +131,17 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
               backgroundColor={theme?.lightGrey?.val}
               paddingHorizontal={20}
             >
-              <TouchableOpacity onPress={() => setOpenConfirmation(true)}>
+              <TouchableOpacity onPress={() => {
+                // setSavedRequestId(request.id);
+                // setOpenConfirmation(true)
+              }}>
                 <Request
-                  top_img={false}
-                  showImg={true}
+                  top_img={true}
+                  showImg={false}
                   width="100%"
                   status={request.status}
-                  show={false}
-                  time={request.date}
+                  show={true}
+                  time={moment(request.createdAt).format('Do MMM YY, hh:mm A')}
                   name={request.title}
                 />
               </TouchableOpacity>
@@ -114,10 +157,9 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
         setVisible={setOpenConfirmation}
         button={
           <Button
-            title="Proceed"
+            title="Re-request"
             onPress={() => {
-              setOpenConfirmation(false);
-              setPaymentModal(true);
+              handleRemakeRequest()
             }}
           />
         }

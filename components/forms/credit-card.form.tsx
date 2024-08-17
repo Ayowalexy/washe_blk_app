@@ -9,6 +9,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { useFormik } from "formik";
 import { createPaymentMethodValidationSchema } from "../../schema/validation";
 import { useCreateCard, useAddCard } from "../../api/mutations";
+import { useGetPaymentMethods } from "../../api/queries";
 
 type props = {
   //   setShow: Dispatch<SetStateAction<boolean>>;
@@ -19,7 +20,7 @@ export const CreditCard = ({ onPress }: props) => {
   const theme = useTheme();
   const { mutateAsync, isPending } = useCreateCard();
   const { mutateAsync: addCard, isPending: loading } = useAddCard();
-
+  const { data, refetch } = useGetPaymentMethods();
   const {
     handleBlur,
     handleChange,
@@ -54,6 +55,9 @@ export const CreditCard = ({ onPress }: props) => {
           isDefault: true,
         });
         onPress();
+        const refetchedData = await refetch();
+        const { data } = refetchedData;
+
       } catch (e) {
         console.log(e);
       }

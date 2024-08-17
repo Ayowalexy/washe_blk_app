@@ -85,9 +85,7 @@ export const OngoingRequests = ({
           showsHorizontalScrollIndicator={false}
           style={{ width: DEVICE_WIDTH, paddingBottom: 30 }}
           contentContainerStyle={{ gap: 15 }}
-          data={data?.data?.filter(
-            (elem: any) => elem?.transaction?.status === "success"
-          )}
+          data={data?.data}
           horizontal
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
@@ -158,6 +156,7 @@ export const OngoingRequests = ({
             }
           >
             <PaymentForm
+            setPaymentModal={setPaymentModal}
               setSelectedPaymentId={setSelectedPaymentId}
               selected_payment_id={selected_payment_id}
             />

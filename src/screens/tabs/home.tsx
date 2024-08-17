@@ -20,9 +20,10 @@ import {
   Washing,
   Close,
 } from "../../../utils/assets";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LaundryRequests as laundry } from "../../../components/laundry-request";
 import { EmptyRequest } from "../../../components/empty-request";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FormModal } from "../../../components/form-modal";
 import { Button } from "../../../components/button";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -45,7 +46,7 @@ import {
   useReMakeLaundryRequest,
 } from "../../../api/mutations";
 import { useAtom } from "jotai";
-import { LaundryRequests, laundryRequestServiceNameAtom } from "../../atoms";
+import { LaundryRequests, laundryRequestServiceNameAtom, openVerificationStateAtom } from "../../atoms";
 import { HomeCard } from "../../../components/home-card";
 import Toast from "react-native-toast-message";
 import {
@@ -76,8 +77,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const [LaundryServiceName, setLaundryServiceName] = useAtom(
     laundryRequestServiceNameAtom
   );
-  const [savedRequestId, setSavedRequestId] = useState("");
+  const [openVerificationState, setOpenVerificationState] = useAtom(openVerificationStateAtom);
 
+  const [savedRequestId, setSavedRequestId] = useState("");
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
   const { mutateAsync, isPending: loading } = useMakePayment();
   const { mutate: Remake, isPending: isLoading } = useReMakeLaundryRequest();
@@ -194,12 +196,18 @@ export const Home = ({ navigation }: HomeScreenProps) => {
       },
     });
   };
+
   return (
     <TabLayout>
       <View paddingBottom={100}>
         <HomeCard onPress={() => setOpenModal(true)} />
 
-        <VerificationCard setOpenVerification={setOpenVerification} />
+        {
+          openVerificationState
+          && <VerificationCard
+            close={() => setOpenVerificationState(false)}
+            setOpenVerification={setOpenVerification} />
+        }
 
         <TouchableOpacity onPress={() => setAddPayment(true)}>
           <View
@@ -338,6 +346,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         }
       >
         <PaymentForm
+          setPaymentModal={setPaymentModal}
           setSelectedPaymentId={setSelectedPaymentId}
           selected_payment_id={selected_payment_id}
         />

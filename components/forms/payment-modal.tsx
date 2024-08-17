@@ -16,17 +16,28 @@ import { Radio } from "./radio";
 import { useGetPaymentMethods } from "../../api/queries";
 import { useAtom } from "jotai";
 import { LaundryRequests, persistentUserAtom } from "../../src/atoms";
+import { FormModal } from "../form-modal";
+import { PaymentMethod } from "./payment-method";
+import { CreditCard } from "./credit-card.form";
+import { ContactForm } from "./contact-form";
+import { SuccessModal } from "../modal";
 
 type Prop = {
   selected_payment_id: string;
   setSelectedPaymentId: Dispatch<SetStateAction<string>>;
+  setPaymentModal: Dispatch<SetStateAction<boolean>>
 };
 
 export const PaymentForm: FC<Prop> = ({
   selected_payment_id,
   setSelectedPaymentId,
+  setPaymentModal
 }) => {
   const theme = useTheme();
+  const [openPaymentMethod, setOpenPaymentMethod] = useState(false);
+  const [openCard, setOpenCard] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [openContact, setOpenContact] = useState(false);
   const { data } = useGetPaymentMethods();
   const [oneLaundryRequest] = useAtom(LaundryRequests);
   const [user] = useAtom(persistentUserAtom);
@@ -135,77 +146,109 @@ export const PaymentForm: FC<Prop> = ({
             <Text color={theme?.black3?.val} fontSize={13}>
               Select Payment Information
             </Text>
-            <FlatList
-              data={Array.isArray(data?.data?.data) ? data?.data?.data : []}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={(item) => (
-                <YStack marginTop={20}>
-                  <XStack justifyContent="space-between">
-                    <XStack>
-                      <View
-                        width={36}
-                        height={24}
-                        backgroundColor={theme?.white1?.val}
-                        style={styles.atm}
-                        justifyContent="center"
-                        alignItems="center"
-                        paddingVertical={15}
-                        paddingHorizontal={20}
-                      >
-                        <AtmCard />
-                      </View>
-                      <YStack marginLeft={14}>
-                        <Text color={theme?.black1?.val} fontSize={15}>
-                          {item?.item?.billing_details?.name ??
-                            `${user?.firstName} ${user?.lastName}`}
-                        </Text>
-                        {
-                          <XStack alignItems="center">
-                            <XStack alignItems="center">
-                              {Array(4)
-                                .fill("_")
-                                .map((elem, index) => (
-                                  <Star key={index} />
-                                ))}
-                            </XStack>
-                            <Text
-                              marginLeft={4}
-                              color={theme?.black3?.val}
-                              fontSize={12}
-                            >
-                              {item.item?.exp_month}
+            {
+              data?.data?.data.length ?
+                <FlatList
+                  data={Array.isArray(data?.data?.data) ? data?.data?.data : []}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={(item) => (
+                    <YStack marginTop={20}>
+                      <XStack justifyContent="space-between">
+                        <XStack>
+                          <View
+                            width={36}
+                            height={24}
+                            backgroundColor={theme?.white1?.val}
+                            style={styles.atm}
+                            justifyContent="center"
+                            alignItems="center"
+                            paddingVertical={15}
+                            paddingHorizontal={20}
+                          >
+                            <AtmCard />
+                          </View>
+                          <YStack marginLeft={14}>
+                            <Text color={theme?.black1?.val} fontSize={15}>
+                              {item?.item?.billing_details?.name ??
+                                `${user?.firstName} ${user?.lastName}`}
                             </Text>
-                            <View
-                              borderLeftColor={theme?.black3?.val}
-                              borderLeftWidth={1}
-                              height={10}
-                              marginHorizontal={6}
-                            />
-                            <Text color={theme?.black3?.val} fontSize={12}>
-                              {item.item?.card?.exp_month}
-                            </Text>
-                            <View
-                              borderLeftColor={theme?.black3?.val}
-                              borderLeftWidth={1}
-                              height={10}
-                              marginHorizontal={6}
-                            />
-                            <Text color={theme?.black3?.val} fontSize={12}>
-                              {item.item?.card?.last4}
-                            </Text>
-                          </XStack>
-                        }
-                      </YStack>
-                    </XStack>
-                    <Radio
-                      selected_payment_id={selected_payment_id === item.item.id}
-                      handleActive={() => handleActive(item.item.id)}
-                      id={item?.item?.id}
+                            {
+                              <XStack alignItems="center">
+                                <XStack alignItems="center">
+                                  {Array(4)
+                                    .fill("_")
+                                    .map((elem, index) => (
+                                      <Star key={index} />
+                                    ))}
+                                </XStack>
+                                <Text
+                                  marginLeft={4}
+                                  color={theme?.black3?.val}
+                                  fontSize={12}
+                                >
+                                  {item.item?.exp_month}
+                                </Text>
+                                <View
+                                  borderLeftColor={theme?.black3?.val}
+                                  borderLeftWidth={1}
+                                  height={10}
+                                  marginHorizontal={6}
+                                />
+                                <Text color={theme?.black3?.val} fontSize={12}>
+                                  {item.item?.card?.exp_month}
+                                </Text>
+                                <View
+                                  borderLeftColor={theme?.black3?.val}
+                                  borderLeftWidth={1}
+                                  height={10}
+                                  marginHorizontal={6}
+                                />
+                                <Text color={theme?.black3?.val} fontSize={12}>
+                                  {item.item?.card?.last4}
+                                </Text>
+                              </XStack>
+                            }
+                          </YStack>
+                        </XStack>
+                        <Radio
+                          active={selected_payment_id === item.item.id}
+                          id={item.item.id}
+                          handleActive={() => handleActive(item.item.id)}
+                        />
+                      </XStack>
+                    </YStack>
+                  )}
+                /> :
+                <>
+                  <PaymentMethod
+                    onPress={() => {
+                      setOpenPaymentMethod(false);
+                      setOpenCard(true);
+                    }}
+                  />
+                  <FormModal
+                    visible={openCard}
+                    setVisible={setOpenCard}
+                    close={() => setOpenCard(false)}
+                    title="Credit/Debit Card"
+                    text="Please enter payment details."
+                    show_button={false}
+                  >
+                    <CreditCard
+                      onPress={() => {
+                        setOpenCard(false);
+                        setOpenSuccess(true);
+                      }}
                     />
-                  </XStack>
-                </YStack>
-              )}
-            />
+                  </FormModal>
+                  <SuccessModal
+                    onPress={() => setOpenSuccess(false)}
+                    text="You can now start making laundry request with washe"
+                    title="Your credit card was added successfully "
+                    visible={openSuccess}
+                    setVisible={setOpenSuccess}
+                  /></>
+            }
           </View>
         </ScrollView>
       </View>
@@ -248,3 +291,7 @@ const styles = StyleSheet.create({
     borderColor: "#DFE2E2",
   },
 });
+
+
+
+

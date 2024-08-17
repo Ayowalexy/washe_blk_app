@@ -38,6 +38,7 @@ export const LaundryRequests = atom<LaundryRequestProps>(
 );
 export const AddressAtom = atom("");
 // atoms.ts
+export const openVerificationStateAtom = atom(true);
 export const laundryRequestServiceIdAtom = atom("");
 export const OnelaundryRequestAtom = atom("");
 export const laundryRequestServiceNameAtom = atom("");

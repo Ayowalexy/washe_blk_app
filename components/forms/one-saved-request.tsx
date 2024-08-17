@@ -29,6 +29,9 @@ export const OneSavedRequest = ({
           </View>
         )}
         <YStack>
+          <Text marginLeft={10} fontSize={12} paddingRight={20}>
+            {name.charAt(0).toUpperCase() + name.slice(1)}
+          </Text>
           <Text
             fontSize={12}
             color={"$black3"}
@@ -37,10 +40,6 @@ export const OneSavedRequest = ({
             marginLeft={10}
           >
             {date}
-          </Text>
-
-          <Text marginLeft={10} fontSize={12} paddingRight={20}>
-            {name}
           </Text>
         </YStack>
       </XStack>
