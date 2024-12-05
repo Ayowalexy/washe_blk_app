@@ -4,7 +4,7 @@ import { View } from "../libs/view";
 import { Select } from "./select";
 import { Radio } from "./radio";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { Platform, ScrollView, StyleSheet } from "react-native";
 import { Button } from "../button";
 import { useAtom } from "jotai";
 import { LaundryRequests, laundryRequestServiceIdAtom } from "../../src/atoms";
@@ -53,10 +53,11 @@ const detergentTypes = [
 ]
 
 type props = {
-  setOpenConfirmation: Dispatch<SetStateAction<boolean>>;
+  setOpenConfirmation?: Dispatch<SetStateAction<boolean>>;
+  closeRequest?: () => void
 };
 
-export const RequestForm = ({ setOpenConfirmation }: props) => {
+export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
   const [timeFrameActive, setTimeFrameActive] = useState<string>("normal");
   const [detergentTypeActive, setDetergentTypeActive] = useState<number | null>(
     null
@@ -130,9 +131,12 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
         bleach: values.bleach === "Yes" ? true : false,
         dye: values.dye === "Yes" ? true : false,
       });
-      setOpenConfirmation(true);
+      if (closeRequest) {
+        closeRequest(); 
+      }
     },
   });
+
   useEffect(() => {
     console.log("oneLaundryRequest:", oneLaundryRequest);
     if (Object.keys(oneLaundryRequest).length !== 0) {
@@ -236,7 +240,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
           </Text>
           <YStack>
             <View>
-              <XStack marginTop={20} gap={"16%"}>
+              <XStack marginTop={20} gap={Platform.OS === 'android' ? 15 : '16%'}>
                 {list.slice(0, 2).map((elem) => (
                   <XStack
                     height={48}
@@ -298,7 +302,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
             Detergent Type
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={"16%"}>
+            <XStack marginTop={20} gap={Platform.OS === 'android' ? 8 : "16%"}>
               {["scented", "unscented"].map((elem, id) => (
                 <XStack
                   height={48}
@@ -336,7 +340,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
             Water Temperature
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={"16%"}>
+            <XStack marginTop={20} gap={Platform.OS === 'android' ? 8 : "16%"}>
               {["cold", "hot"].map((elem, index) => (
                 <XStack
                   height={48}
@@ -374,7 +378,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
             Fabric Softener
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={"16%"}>
+            <XStack marginTop={20} gap={Platform.OS === 'android' ? 8 : "16%"}>
               {request.map((elem, id) => (
                 <XStack
                   height={48}
@@ -412,7 +416,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
             Bleach
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={"16%"}>
+            <XStack marginTop={20} gap={Platform.OS === 'android' ? 8 : "16%"}>
               {["Yes", "No"].map((elem, id) => (
                 <XStack
                   height={48}
@@ -450,7 +454,7 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
             Dye
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={"16%"}>
+            <XStack marginTop={20} gap={Platform.OS === 'android' ? 8 : "16%"}>
               {["Yes", "No"].map((elem, id) => (
                 <XStack
                   height={48}
@@ -508,14 +512,16 @@ export const RequestForm = ({ setOpenConfirmation }: props) => {
               onBlur={handleBlur("dyeColor")}
               hasError={!!errors.dyeColor && touched.dyeColor}
               error={errors.dyeColor}
-              placeholder="Dye color"  
+              placeholder="Dye color"
               defaultValue={values.dyeColor}
             /> : null
           }
         </View>
       </KeyboardAwareScrollView>
       <View paddingTop={25}>
-        <Button title="Next" onPress={handleSubmit} />
+        <Button title="Next" onPress={() => {
+          handleSubmit()
+        }} />
       </View>
     </View>
   );

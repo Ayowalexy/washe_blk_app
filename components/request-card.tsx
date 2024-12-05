@@ -1,6 +1,5 @@
 import {
   Image,
-  ImageSourcePropType,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";

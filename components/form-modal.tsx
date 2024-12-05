@@ -1,4 +1,4 @@
-import { Modal, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { Modal, Platform, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { View } from "./libs/view";
 import { XStack, YStack, useTheme } from "tamagui";
 import { Arrow, ArrowBack, CloseIcon, SuccessIcon2 } from "../utils/assets";
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   iconContainer2: {
     position: "absolute",
-    top: 165,
+    top: Platform.OS === 'android' ? 130 : 165,
     marginHorizontal: "auto",
     flexDirection: "row",
     justifyContent: "flex-end",

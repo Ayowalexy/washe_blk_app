@@ -15,10 +15,10 @@ import moment from "moment";
 import ToggleSwitch from "toggle-switch-react-native";
 
 type Props = {
-  toggleSwitch: () => void;
+time?: string
 };
 
-export const SaveForm = () => {
+export const SaveForm = ({time}: Props) => {
   const theme = useTheme();
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
   const [laundryType, setLaundryType] = useState("");
@@ -30,13 +30,13 @@ export const SaveForm = () => {
     if (data?.data) {
       const serviceName = Array.isArray(data?.data)
         ? data.data.find(
-            (elem: any) => elem.id === oneLaundryRequest.laundryRequestTypeId
-          )?.name
+          (elem: any) => elem.id === oneLaundryRequest.laundryRequestTypeId
+        )?.name
         : null;
       setLaundryType(serviceName);
     }
   }, [data?.data, oneLaundryRequest]);
-
+  console.log(oneLaundryRequest, 'oneLaundryRequest.pickupTime')
   return (
     <>
       <View width="100%" paddingHorizontal={28} paddingBottom={150}>
@@ -116,7 +116,7 @@ export const SaveForm = () => {
                   {moment(oneLaundryRequest.pickupDate).format("Do MMM YY")},
                 </Text>
                 <Text color={theme?.black1?.val} fontSize={15}>
-                  {moment(oneLaundryRequest.pickupTime).format('HH: mm A')}
+                  {time}
                 </Text>
               </XStack>
               <View
@@ -133,10 +133,10 @@ export const SaveForm = () => {
                 {oneLaundryRequest.timeframe === "same_day"
                   ? "Same day"
                   : oneLaundryRequest.timeframe === "2_days"
-                  ? "2 days"
-                  : oneLaundryRequest.timeframe === "normal"
-                  ? "Normal"
-                  : ""}
+                    ? "2 days"
+                    : oneLaundryRequest.timeframe === "normal"
+                      ? "Normal"
+                      : ""}
               </Text>
             </YStack>
           </View>
@@ -189,7 +189,7 @@ export const SaveForm = () => {
               <XStack
                 justifyContent="space-between"
                 alignItems="flex-start"
-                gap={"3%"}
+                gap={4}
               >
                 <YStack width={"47%"} alignItems="flex-start">
                   <Text color={theme?.black3?.val} fontSize={13}>
@@ -216,7 +216,7 @@ export const SaveForm = () => {
               <XStack
                 justifyContent="space-between"
                 alignItems="flex-start"
-                gap={"3%"}
+                gap={4}
                 marginTop={20}
               >
                 <YStack width={"47%"} alignItems="flex-start">
@@ -242,7 +242,7 @@ export const SaveForm = () => {
               </XStack>
             </YStack>
           </View>
-         
+
         </ScrollView>
       </View>
     </>

@@ -18,5 +18,3 @@ export const Avatar10 = require("../assets/images/png/avatar10.png");
 export const Avatar11 = require("../assets/images/png/avatar11.png");
 export const Avatar12 = require("../assets/images/png/avatar12.png");
 export const Sand = require("../assets/images/png/sand.png");
-
-

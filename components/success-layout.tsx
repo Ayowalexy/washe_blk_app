@@ -3,11 +3,9 @@ import { Text } from "./libs/text";
 import { View } from "./libs/view";
 import { SuccessIcon } from "../utils/assets";
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../src/constants";
-import { Image, ImageBackground, StyleSheet } from "react-native";
+import { Image, ImageBackground, Platform, StyleSheet } from "react-native";
 import { CardImg, SuccessGif } from "../utils/assets-png";
 import { Button } from "./button";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AuthenticationStackParamsList } from "../navigation/onboarding";
 import { useNavigation } from "@react-navigation/native";
 
 type props = {
@@ -40,7 +38,7 @@ export const SuccessLayout = ({
   const navigation = useNavigation();
   return (
     <View
-      height={DEVICE_HEIGHT}
+      height={Platform.OS === 'ios' ? DEVICE_HEIGHT : DEVICE_HEIGHT + 100}
       width={DEVICE_WIDTH}
       backgroundColor="$primary3"
     >

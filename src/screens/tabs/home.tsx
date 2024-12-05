@@ -2,6 +2,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Platform,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
@@ -57,6 +58,7 @@ import {
 import { OneSavedRequest } from "../../../components/forms/one-saved-request";
 import ToggleSwitch from "toggle-switch-react-native";
 import { VerificationCard } from "../../../components/verification-card";
+import moment from "moment";
 
 type HomeScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
@@ -111,6 +113,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     setOpenModal(false);
     setOpenRequest(true);
   };
+  const handleCloseRequest = () => {
+    setOpenRequest(false);
+  };
 
   const handleOpenConfirmation = () => {
     setOpenRequest(false);
@@ -136,12 +141,14 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     };
     mutate(request, {
       onSuccess: async (data) => {
-        Toast.show({
-          type: "customSuccess",
-          text1: "Request created successfully",
-        });
+        // Toast.show({
+        //   type: "customSuccess",
+        //   text1: "Request created successfully",
+        // });
         setOpenConfirmation(false);
-        setPaymentModal(true);
+        setTimeout(() => {
+          setPaymentModal(true);
+        }, 200);
         setOneLaundryRequest({
           ...oneLaundryRequest,
           tax: 0,
@@ -163,6 +170,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
       },
     });
   };
+
+
   const handleRemakeRequest = () => {
     const requestId = {
       laundryRequestId: savedRequestId,
@@ -315,13 +324,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           />
         }
       >
-        <SaveForm />
+        <SaveForm time={moment(oneLaundryRequest.pickupTime).format('hh:mm A')} />
       </FormModal>
 
       <FormModal
         visible={paymentModal}
         setVisible={setPaymentModal}
-        goBack={true}
+        goBack={Platform.OS === 'android' ? false : true}
         onGoBack={() => {
           setPaymentModal(false);
           setOpenConfirmation(true);
@@ -457,7 +466,10 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         title="New Laundry Request"
         text="Start a new request by letting us know what services you need"
       >
-        <RequestForm setOpenConfirmation={handleOpenConfirmation} />
+        <RequestForm closeRequest={() => {
+          setOpenRequest(false)
+          setOpenConfirmation(true)
+        }} />
       </FormModal>
 
       <FormModal
@@ -492,7 +504,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         title="Confirmation"
         text="Please make sure services selected are correct before confirming."
       >
-        <SaveForm />
+        <SaveForm time={moment(oneLaundryRequest.pickupTime, 'hh:mm').format('hh:mm A')} />
       </FormModal>
     </TabLayout>
   );

@@ -102,7 +102,8 @@ export const Login = ({ navigation }: LoginScreenProps) => {
   };
 
   return (
-    <View height={DEVICE_HEIGHT} backgroundColor="$white1">
+    <View height={Platform.OS === 'android' ? DEVICE_HEIGHT + 100 : DEVICE_HEIGHT}
+      backgroundColor="$white1">
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}

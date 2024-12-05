@@ -41,7 +41,7 @@ export default function App() {
     return null;
   }
   return (
-    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+    <View style={{ flex: 1, height: 'auto', }} onLayout={onLayoutRootView}>
       <AppProvider>
         <RootNavigator />
       </AppProvider>
@@ -52,7 +52,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "red",
     alignItems: "center",
     justifyContent: "center",
   },

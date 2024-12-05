@@ -37,16 +37,23 @@ export const DatePicker = ({
 
   const onDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (event.type === "set" && selectedDate) {
-      const currentDate: Date = selectedDate;
-      onChange(currentDate);
+      onChange(selectedDate);
       setShowPicker(false);
     } else if (event.type === "dismissed") {
       setShowPicker(false);
     }
   };
 
-  const formattedDate =
-    mode === "date" ? value.toLocaleDateString() : value.toLocaleTimeString();
+  const formatDate = (date: Date | undefined) => {
+    if (date && date instanceof Date && !isNaN(date.getTime())) {
+      return mode === "date"
+        ? date.toLocaleDateString()
+        : date.toLocaleTimeString();
+    }
+    return "";
+  };
+
+  const formattedDate = formatDate(value);
 
   return (
     <YStack>

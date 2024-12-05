@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { TouchableOpacity, TouchableOpacityProps, ActivityIndicator, StyleSheet } from "react-native";
 import { View } from "./libs/view";
 import { Text } from "./libs/text";
@@ -13,15 +13,19 @@ interface ButtonProps extends Partial<TouchableOpacityProps> {
   textColor?: string;
   disabled?: boolean;
   loading?: boolean;
+  icon?: ReactNode
+  showIcon?: boolean
 }
 
 export const Button = ({
   title,
   color = "$primary3",
   onPress,
+  icon,
   fontSize = 16,
   textColor = "$white1",
   disabled,
+  showIcon = false,
   loading = false,
   ...otherProps
 }: ButtonProps) => {
@@ -48,7 +52,13 @@ export const Button = ({
           >
             {title}
           </Text>
+
         )}
+        {
+          showIcon && <View style={{ position: 'absolute', right: 30 }}>
+            {icon}
+          </View>
+        }
       </View>
     </TouchableOpacity>
   );
@@ -64,9 +74,11 @@ const styles = StyleSheet.create({
     height: 62,
     borderRadius: 100,
     display: "flex",
+    flexDirection: 'row',
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 16,
+    position: 'relative'
   },
 });
