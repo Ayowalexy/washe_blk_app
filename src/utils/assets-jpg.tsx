@@ -1,0 +1,1 @@
+export const washeMan = require("../../assets/images/jpg/washe-man.jpeg")
