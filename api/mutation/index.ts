@@ -1,7 +1,22 @@
 import api from "../api";
 import { useMutation } from "@tanstack/react-query";
-import { ContactUsDTO, CreateAccountDTO, CreditCatDTO, loginDTO, SubmitDocumentDTO, UpdateAccountDTO, UpdatePricingDTO, UpdateStatus, useAcceptRequestDTO, useChangePasswordDTO, useForgotPasswordDTO, useResetPasswordDTO, useVerifyOtpDTO } from "../types";
+import {
+  ContactUsDTO,
+  CreateAccountDTO,
+  CreditCatDTO,
+  loginDTO,
+  SubmitDocumentDTO,
+  UpdateAccountDTO,
+  UpdatePricingDTO,
+  UpdateStatus,
+  useAcceptRequestDTO,
+  useChangePasswordDTO,
+  useForgotPasswordDTO,
+  useResetPasswordDTO,
+  useVerifyOtpDTO,
+} from "../types";
 import axios from "axios";
+import { Buffer } from "buffer";
 
 export function useSignUp() {
   return useMutation({

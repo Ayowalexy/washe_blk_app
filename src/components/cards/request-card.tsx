@@ -94,7 +94,7 @@ export const RequestCard = ({
         <XStack alignItems="center" marginTop={3} gap={2}>
           <Anchor />
           <Text fontSize={12} color="$black3">
-            {location.length > 12
+            {location?.length > 12
               ? `${location.substring(0, 12)}...`
               : location}
           </Text>

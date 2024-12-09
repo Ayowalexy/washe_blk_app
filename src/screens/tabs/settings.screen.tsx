@@ -506,7 +506,6 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
         />
       </FormModal>
       <FormModal
-        height="45%"
         visible={openIdentity}
         setVisible={setOpenIdentity}
         close={() => setOpenIdentity(false)}
@@ -596,7 +595,6 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
         visible={openSuccess}
         onPress={() => {
           setOpenSuccess(false);
-          setEditIdentity(true);
         }}
         setVisible={setOpenSuccess}
         onReject={() => null}

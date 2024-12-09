@@ -88,7 +88,7 @@ export const UserCard = ({
                   fontSize={12}
                   color={theme?.black3?.val}
                 >
-                  {location.length > 17
+                  {location?.length > 17
                     ? `${location.substring(0, 17)}...`
                     : location}
                 </Text>
