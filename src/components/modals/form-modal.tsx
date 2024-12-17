@@ -1,5 +1,11 @@
-import { Modal, Platform, StyleSheet, TouchableOpacity } from "react-native";
-import { XStack, YStack, useTheme } from "tamagui";
+import {
+  Modal,
+  Platform,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { ViewStyle, XStack, YStack, useTheme } from "tamagui";
 import { Children, Dispatch, ReactNode, SetStateAction } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { ArrowBack, CloseIcon } from "../../utils/assets";
@@ -14,6 +20,7 @@ type props = {
   button?: ReactNode;
   close: () => void;
   title: string;
+  modalStyles?: StyleProp<ViewStyle>;
   text: string;
   show_button?: boolean;
   visible: boolean;
@@ -31,6 +38,7 @@ export const FormModal = ({
   visible,
   setVisible,
   onGoBack,
+  modalStyles,
   height = "75%",
 }: props) => {
   const theme = useTheme();

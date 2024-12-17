@@ -51,3 +51,11 @@ export function useToggleAvailability() {
   });
   
 }
+export function useToggle2FA() {
+  return useQuery({
+    queryFn: () => api.get(`/toggle-2fa`).then((resp) => resp.data),
+    queryKey: ["toggle-2fa"],
+    enabled: true
+  });
+  
+}

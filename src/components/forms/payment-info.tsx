@@ -9,15 +9,17 @@ import { useGetPaymentMethods } from "../../../api/queries";
 
 export const PaymentInfo = () => {
   const theme = useTheme();
-    const { data } = useGetPaymentMethods();
+  const { data } = useGetPaymentMethods();
   const [user] = useAtom(persistentUserAtom);
   return (
     <>
       <FlatList
-        style={{ width: "100%" }}
+        style={{ width: "100%"}}
         data={Array.isArray(data?.data?.data) ? data?.data?.data : []}
         // data={[]}
-        keyExtractor={(item) => null as any}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: 200}}
+        keyExtractor={(item) => item}
         renderItem={(item) => (
           <YStack
             width="80%"

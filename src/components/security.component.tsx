@@ -7,6 +7,7 @@ import { Text } from "../libs/Text";
 import ToggleSwitch from "toggle-switch-react-native";
 import { useAtom } from "jotai";
 import { TwoFactorAuthenticationState } from "../atoms";
+import { useToggle2FA } from "../../api/queries";
 
 const SecurityList = [
   {
@@ -28,9 +29,21 @@ type Props = {
 export const Security = ({ onPress, open }: Props) => {
   const theme = useTheme();
   const [open2FA, setOpen2FA] = useAtom(TwoFactorAuthenticationState);
+  const { refetch } = useToggle2FA();
+  
+  const handleToggleAvailability = async () => {
+    try {
+      const response = await refetch();
+      if (response.data.status) {
+        setOpen2FA(response.data.message.includes("turned on"));
+        console.log(response.data.message, 'kdk')
 
-  const toggle = () => {
-    setOpen2FA((previousState) => !previousState);
+      } else {
+        console.error("Failed to toggle availability");
+      }
+    } catch (error) {
+      console.error("Error toggling availability:", error);
+    }
   };
   return (
     <View>
@@ -98,8 +111,8 @@ export const Security = ({ onPress, open }: Props) => {
                 onColor="#00D158"
                 offColor="#D9D9D9"
                 labelStyle={{ color: "black", fontWeight: "900" }}
-                size='large'
-                onToggle={toggle}
+                size="large"
+                onToggle={handleToggleAvailability}
               />
             </XStack>
           </TouchableOpacity>

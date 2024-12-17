@@ -1,11 +1,14 @@
 import { ScrollView, StyleSheet } from "react-native";
+import { View } from "../libs/View";
 import { XStack, YStack, useTheme } from "tamagui";
+import { Text } from "../libs/Text";
+import { InputBox } from "./input";
+import { Button } from "../libs/button";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { useFormik } from "formik";
 import { createPaymentMethodValidationSchema } from "../../schema/validation";
-import { InputBox } from "./input";
-import { View } from "../libs/View";
-import { Button } from "../libs/button";
+import { useCreateCard, useAddCard } from "../../api/mutation";
+import { useGetPaymentMethods } from "../../api/queries";
 
 type props = {
   //   setShow: Dispatch<SetStateAction<boolean>>;
@@ -14,9 +17,9 @@ type props = {
 };
 export const CreditCard = ({ onPress }: props) => {
   const theme = useTheme();
-  //   const { mutateAsync, isPending } = useCreateCard();
-  //   const { mutateAsync: addCard, isPending: loading } = useAddCard();
-  //   const { data, refetch } = useGetPaymentMethods();
+  const { mutateAsync, isPending } = useCreateCard();
+  const { mutateAsync: addCard, isPending: loading } = useAddCard();
+  const { data, refetch } = useGetPaymentMethods();
   const {
     handleBlur,
     handleChange,
@@ -33,30 +36,29 @@ export const CreditCard = ({ onPress }: props) => {
     },
     validationSchema: createPaymentMethodValidationSchema,
     onSubmit: async (values) => {
-      //   try {
-      //     const response = await mutateAsync({
-      //       number: values.number.split(' ').join(''),
-      //       exp_month: Number(values.exp.split("/")[0]),
-      //       exp_year: Number(
-      //         new Date()
-      //           .getFullYear()
-      //           .toString()
-      //           .slice(0, 2)
-      //           .concat(values.exp.split("/")[1])
-      //       ),
-      //       cvv: values.cvc,
-      //     });
-      //     await addCard({
-      //       paymentMethodId: response.data?.id,
-      //       isDefault: true,
-      //     });
-      onPress();
-      //     const refetchedData = await refetch();
-      //     const { data } = refetchedData;
-
-      //   } catch (e) {
-      //     console.log(e);
-      //   }
+      try {
+        const response = await mutateAsync({
+          number: values.number.split(" ").join(""),
+          exp_month: Number(values.exp.split("/")[0]),
+          exp_year: Number(
+            new Date()
+              .getFullYear()
+              .toString()
+              .slice(0, 2)
+              .concat(values.exp.split("/")[1])
+          ),
+          cvv: values.cvc,
+        });
+        await addCard({
+          paymentMethodId: response.data?.id,
+          isDefault: true,
+        });
+        onPress();
+        const refetchedData = await refetch();
+        const { data } = refetchedData;
+      } catch (e) {
+        console.log(e);
+      }
     },
   });
 
@@ -119,10 +121,10 @@ export const CreditCard = ({ onPress }: props) => {
               />
             </View>
           </ScrollView>
-          <View paddingTop={33}>
+          <View paddingTop={30}>
             <Button
-              style={{ height: 56 }}
-              //   loading={isPending || loading}
+            style={{height: 56}}
+              isLoading={isPending || loading}
               title="Add card"
               onPress={() => handleSubmit()}
             />

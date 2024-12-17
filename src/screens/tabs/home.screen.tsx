@@ -19,6 +19,12 @@ import {
 } from "../../../assets/images/svg/icons";
 import ToggleSwitch from "toggle-switch-react-native";
 import { useToggleAvailability } from "../../../api/queries";
+import { FormModal } from "../../components/modals/form-modal";
+import { Button } from "../../libs/button";
+import { PaymentInfo } from "../../components/forms";
+import { PaymentMethod } from "../../components/forms/payment-method";
+import { CreditCard } from "../../components/credit-card.component";
+import { SuccessModal } from "../../components/layouts/success-layout";
 
 export const Home = () => {
   const theme = useTheme();
@@ -30,6 +36,10 @@ export const Home = () => {
   const [openVerificationState, setOpenVerificationState] = useAtom(
     openVerificationStateAtom
   );
+  const [openPayment, setOpenPayment] = useState(false);
+  const [openPaymentMethod, setOpenPaymentMethod] = useState(false);
+  const [openCard, setOpenCard] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
 
   const itemWidth =
     LaundryRequests.length === 1 ? DEVICE_WIDTH - 80 : DEVICE_WIDTH * 0.7;
@@ -79,7 +89,7 @@ export const Home = () => {
         setOpenVerification={setOpenVerification}
         close={() => setOpenVerificationState(false)}
       />
-      <TouchableOpacity onPress={() => null}>
+      <TouchableOpacity onPress={() => setOpenPayment(true)}>
         <View
           marginTop={23}
           padding={20}
@@ -114,6 +124,69 @@ export const Home = () => {
         </View>
       </TouchableOpacity>
       <OngoingRequests />
+      <FormModal
+        visible={openPayment}
+        setVisible={setOpenPayment}
+        close={() => setOpenPayment(false)}
+        title="Payment Information"
+        text="Update payment information"
+        show_button={true}
+        button={
+          <Button
+            textSize={14}
+            style={{ height: 56 }}
+            title="Add new payment method"
+            onPress={() => {
+              setOpenPayment(false);
+              setOpenPaymentMethod(true);
+            }}
+          />
+        }
+      >
+        <PaymentInfo />
+      </FormModal>
+      <FormModal
+        visible={openPaymentMethod}
+        setVisible={setOpenPaymentMethod}
+        close={() => setOpenPaymentMethod(false)}
+        title="Select Payment Method"
+        text="Select a option below to add a new payment method"
+        show_button={false}
+      >
+        <PaymentMethod
+          onPress={() => {
+            setOpenPaymentMethod(false);
+            setOpenCard(true);
+          }}
+        />
+      </FormModal>
+      <FormModal
+        visible={openCard}
+        setVisible={setOpenCard}
+        close={() => setOpenCard(false)}
+        title="Credit/Debit Card"
+        text="Please enter payment details."
+        show_button={false}
+      >
+        <CreditCard
+          onPress={() => {
+            setOpenCard(false);
+            setOpenSuccess(true);
+          }}
+        />
+        <SuccessModal
+          visible={openSuccess}
+          onPress={() => {
+            setOpenSuccess(false);
+          }}
+          setVisible={setOpenSuccess}
+          onReject={() => null}
+          title="Your credit card was added successfully "
+          buttonTitle="Done"
+          iconPosition="center"
+          text="You can now start making laundry request with washe"
+        />
+      </FormModal>
     </TabLayout>
   );
 };
