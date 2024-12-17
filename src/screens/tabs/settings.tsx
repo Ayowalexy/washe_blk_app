@@ -343,7 +343,7 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
         setVisible={setOpenPaymentMethod}
         close={() => setOpenPaymentMethod(false)}
         title="Select Payment Method"
-        text="Select a option below to add a new payment method"
+        text="Select an option below to add a new payment method"
         show_button={false}
       >
         <PaymentMethod

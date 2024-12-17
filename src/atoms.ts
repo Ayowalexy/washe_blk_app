@@ -17,7 +17,10 @@ export const UserData = atom<UserDataProps>({} as UserDataProps);
 type LaundryRequestProps = {
   laundryRequestServiceId: string;
   laundryRequestServiceName?: string;
-  laundryRequestTypeId: string;
+  laundryRequestTypes: Array<{
+    laundryRequestTypeId: string;
+    quantity: number;
+  }>;
   laundryRequestTypeName?: string;
   pickupDate: string;
   pickupTime: string;
@@ -27,7 +30,7 @@ type LaundryRequestProps = {
   softener: boolean;
   bleach: boolean;
   dye: boolean;
-  dyeColor: string;
+  dyeColor: string | null;
   tax?: number;
   total_amount?: number;
   laundryRequestId?: string;

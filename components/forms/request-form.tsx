@@ -1,10 +1,16 @@
-import { XStack, YStack } from "tamagui";
+import { Checkbox, Select, useTheme, XStack, YStack } from "tamagui";
 import { Text } from "../libs/text";
 import { View } from "../libs/view";
-import { Select } from "./select";
+import { Select as ViewSelect } from "./select";
 import { Radio } from "./radio";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Platform, ScrollView, StyleSheet } from "react-native";
+import {
+  FlatList,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { Button } from "../button";
 import { useAtom } from "jotai";
 import { LaundryRequests, laundryRequestServiceIdAtom } from "../../src/atoms";
@@ -16,6 +22,7 @@ import { laundryRequestValidationSchema } from "../../schema/validation";
 import moment from "moment";
 import { InputBox } from "../input";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const list = [
   {
@@ -44,19 +51,23 @@ const request = [
 const detergentTypes = [
   {
     name: "Scented",
-    id: 1
+    id: 1,
   },
   {
     name: "Unscented",
-    id: 2
-  }
-]
+    id: 2,
+  },
+];
 
 type props = {
   setOpenConfirmation?: Dispatch<SetStateAction<boolean>>;
-  closeRequest?: () => void
+  closeRequest?: () => void;
 };
 
+interface DropdownItem {
+  label: string;
+  value: number | string;
+}
 export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
   const [timeFrameActive, setTimeFrameActive] = useState<string>("normal");
   const [detergentTypeActive, setDetergentTypeActive] = useState<number | null>(
@@ -90,11 +101,92 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
   const handleDyeActive = (id: number) => {
     setDyeActive(id);
   };
-
+  const [isOpen, setIsOpen] = useState(false);
   const { refetch, data } = useGetLaundryType();
+  console.log(data.data, "laundry types");
   const [dye, setDye] = useState<"Yes" | "No">("No");
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
+  const theme = useTheme();
+  const [selected, setSelected] = useState<DropdownItem | null>(null);
+  const [selectedItems, setSelectedItems] = useState<any[]>([]);
+  const [checked, setChecked] = useState(false);
+  const dropdownOptions: DropdownItem[] = Array.isArray(data?.data)
+    ? data.data.map((elem: any) => ({
+        label: elem.name,
+        value: elem.id,
+      }))
+    : [];
 
+  const handleCheckboxChange = (item: any) => {
+    const isAlreadySelected = selectedItems.find(
+      (selected) => selected.value === item.value
+    );
+
+    if (isAlreadySelected) {
+      setSelectedItems((prev) =>
+        prev.filter((selected) => selected.value !== item.value)
+      );
+    } else {
+      setSelectedItems((prev) => [...prev, item]);
+    }
+  };
+  const [counts, setCounts] = useState<any>({});
+
+  const increaseCount = (item: any): void => {
+    setCounts((prevCounts: any) => ({
+      ...prevCounts,
+      [item.value]: (prevCounts[item.value] || 0) + 1,
+    }));
+  };
+
+  const decreaseCount = (item: any): void => {
+    setCounts((prevCounts: any) => ({
+      ...prevCounts,
+      [item.value]: Math.max((prevCounts[item.value] || 1) - 1, 1), // Ensure the count does not go below 1
+    }));
+  };
+
+  // const {
+  //   handleBlur,
+  //   handleChange,
+  //   handleSubmit,
+  //   errors,
+  //   touched,
+  //   values,
+  //   setValues,
+  //   setFieldValue,
+  //   resetForm,
+  // } = useFormik({
+  //   initialValues: {
+  //     laundryRequestTypes: [{ laundryRequestTypeId: "", quantity: 0 }],
+  //     pickupDate: "",
+  //     pickupTime: "",
+  //     timeframe: "",
+  //     detergentType: "",
+  //     waterTemperature: "",
+  //     softener: "",
+  //     bleach: "",
+  //     dye: "",
+  //     dyeColor: "",
+  //   },
+  //   validationSchema: laundryRequestValidationSchema(dye),
+  //   onSubmit: async (values) => {
+  //     setOneLaundryRequest({
+  //       ...values,
+  //       laundryRequestServiceId: laundryServiceId,
+  //       pickupDate: moment(values.pickupDate).format("YYYY-MM-DD"),
+  //       pickupTime: moment(values.pickupTime).format("HH:mm"),
+  //       detergentType: values.detergentType.toLowerCase(),
+  //       waterTemperature: values.waterTemperature.toLowerCase(),
+  //       softener: values.softener === "Yes" ? true : false,
+  //       bleach: values.bleach === "Yes" ? true : false,
+  //       dye: values.dye === "Yes" ? true : false,
+  //     });
+  //     if (closeRequest) {
+  //       closeRequest();
+  //     }
+  //   },
+  // });
   const {
     handleBlur,
     handleChange,
@@ -107,7 +199,8 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
     resetForm,
   } = useFormik({
     initialValues: {
-      laundryRequestTypeId: "",
+      laundryRequestServiceId: "",
+      laundryRequestTypes: [{ laundryRequestTypeId: "", quantity: 0 }],
       pickupDate: "",
       pickupTime: "",
       timeframe: "",
@@ -120,19 +213,31 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
     },
     validationSchema: laundryRequestValidationSchema(dye),
     onSubmit: async (values) => {
-      setOneLaundryRequest({
-        ...values,
-        laundryRequestServiceId: laundryServiceId,
-        pickupDate: moment(values.pickupDate).format("YYYY-MM-DD"),
-        pickupTime: moment(values.pickupTime).format("HH:mm"),
-        detergentType: values.detergentType.toLowerCase(),
-        waterTemperature: values.waterTemperature.toLowerCase(),
-        softener: values.softener === "Yes" ? true : false,
-        bleach: values.bleach === "Yes" ? true : false,
-        dye: values.dye === "Yes" ? true : false,
-      });
-      if (closeRequest) {
-        closeRequest(); 
+      try {
+        setOneLaundryRequest({
+          laundryRequestServiceId: laundryServiceId,
+          laundryRequestTypes: data.data?.laundryRequestTypes.map(
+            (type: any) => ({
+              laundryRequestTypeId: type.laundryRequestTypeId,
+              quantity: Number(type.quantity),
+            })
+          ),
+          pickupDate: moment(values.pickupDate).format("YYYY-MM-DD"),
+          pickupTime: moment(values.pickupTime).format("HH:mm"),
+          timeframe: values.timeframe.toLowerCase(),
+          detergentType: values.detergentType.toLowerCase(),
+          waterTemperature: values.waterTemperature.toLowerCase(),
+          softener: values.softener === "Yes",
+          bleach: values.bleach === "Yes",
+          dye: values.dye === "Yes",
+          dyeColor: values.dye === "Yes" ? values.dyeColor : null,
+        });
+
+        if (closeRequest) {
+          closeRequest();
+        }
+      } catch (error) {
+        console.error("Error submitting laundry request:", error);
       }
     },
   });
@@ -142,7 +247,9 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
     if (Object.keys(oneLaundryRequest).length !== 0) {
       const prefilledValues = {
         laundryRequestServiceId: laundryServiceId,
-        laundryRequestTypeId: oneLaundryRequest.laundryRequestTypeId || "",
+        laundryRequestTypes: oneLaundryRequest.laundryRequestTypes || [
+          { laundryRequestTypeId: "", quantity: 0 },
+        ],
         pickupDate: oneLaundryRequest.pickupDate || "",
         pickupTime: oneLaundryRequest.pickupTime || "",
         timeframe: oneLaundryRequest.timeframe || "",
@@ -153,7 +260,6 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
         dye: oneLaundryRequest.dye ? "Yes" : "No",
         dyeColor: oneLaundryRequest.dyeColor || "",
       };
-      console.log(prefilledValues, "pre fill");
       setValues(prefilledValues);
     }
   }, [oneLaundryRequest, setValues]);
@@ -191,8 +297,8 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
         keyboardShouldPersistTaps="handled"
         style={styles.scrollview}
       >
-        <View>
-          <Select
+        {/* <View>
+          <ViewSelect
             error={errors.laundryRequestTypeId}
             label="Laundry Type"
             onChange={(value) =>
@@ -201,9 +307,9 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             options={
               Array.isArray(data?.data)
                 ? data?.data.map((elem: any) => ({
-                  label: elem.name,
-                  value: elem.id,
-                }))
+                    label: elem.name,
+                    value: elem.id,
+                  }))
                 : []
             }
             defaultValue={values.laundryRequestTypeId}
@@ -212,6 +318,151 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
               !!errors.laundryRequestTypeId && touched.laundryRequestTypeId
             }
           />
+        </View> */}
+        <View position="relative" zIndex={1000}>
+          <View>
+            <Text fontSize={14} color={theme?.black1} marginBottom={8}>
+              Laundry type
+            </Text>
+            <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
+              <View
+                height={50}
+                width={"100%"}
+                borderWidth={1}
+                borderColor={theme?.black4}
+                backgroundColor="transparent"
+                marginBottom={17}
+                borderRadius={8}
+                flexDirection="row"
+                paddingLeft={10}
+                alignItems="center"
+              >
+                <Text fontSize={12} color="$black1">
+                  {selectedItems.length > 0
+                    ? selectedItems.map((item) => item.label).join(", ") // Display selected labels
+                    : "Select options"}{" "}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            {isOpen && (
+              <View
+                height={355}
+                zIndex={200}
+                style={[styles.dropdown, { position: "absolute", top: 95 }]}
+              >
+                <FlatList
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ width: "90%" }}
+                  data={dropdownOptions}
+                  keyExtractor={(item) => item.value.toString()}
+                  renderItem={({ item }) => {
+                    const isChecked = selectedItems.some(
+                      (selected) => selected.value === item.value
+                    );
+                    const itemCount = counts[item.value] || 1;
+
+                    const increaseCount = () => {
+                      setCounts((prevCounts: any) => ({
+                        ...prevCounts,
+                        [item.value]: (prevCounts[item.value] || 1) + 1,
+                      }));
+                    };
+
+                    const decreaseCount = () => {
+                      setCounts((prevCounts: any) => ({
+                        ...prevCounts,
+                        [item.value]: Math.max(
+                          (prevCounts[item.value] || 1) - 1,
+                          1
+                        ),
+                      }));
+                    };
+
+                    return (
+                      <XStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <TouchableOpacity
+                          onPress={() => {
+                            setSelected(item);
+                            handleCheckboxChange(item);
+                            setFieldValue("laundryRequestTypeId", item.value);
+                          }}
+                        >
+                          <XStack gap={10} marginTop={20}>
+                            <TouchableOpacity
+                              style={[
+                                styles.checkbox,
+                                { borderColor: theme.black3?.val },
+                              ]}
+                              onPress={() => handleCheckboxChange(item)}
+                            >
+                              {isChecked && (
+                                <MaterialIcons
+                                  name="check"
+                                  size={20}
+                                  color={"blue"}
+                                />
+                              )}
+                            </TouchableOpacity>
+                            <Text fontSize={14} width="55%" color="$black1">
+                              {item.label}
+                            </Text>
+                          </XStack>
+                        </TouchableOpacity>
+                        <XStack
+                          marginTop={20}
+                          justifyContent="center"
+                          alignItems="center"
+                          gap={8}
+                          width={"30%"}
+                        >
+                          <TouchableOpacity
+                            onPress={decreaseCount}
+                            style={{
+                              width: 20,
+                              height: 20,
+                              borderRadius: 100,
+                              backgroundColor: theme?.black3?.val,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              marginLeft: 8,
+                            }}
+                          >
+                            <MaterialIcons
+                              name="remove"
+                              color={theme?.white1?.val}
+                              size={16}
+                            />
+                          </TouchableOpacity>
+                          <Text>{itemCount}</Text>
+                          <TouchableOpacity
+                            onPress={increaseCount}
+                            style={{
+                              width: 20,
+                              height: 20,
+                              borderRadius: 100,
+                              backgroundColor: theme?.black3?.val,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              marginLeft: 8,
+                            }}
+                          >
+                            <MaterialIcons
+                              name="add"
+                              color={theme?.white1?.val}
+                              size={16}
+                            />
+                          </TouchableOpacity>
+                        </XStack>
+                      </XStack>
+                    );
+                  }}
+                />
+              </View>
+            )}
+          </View>
         </View>
         <View>
           <DatePicker
@@ -240,7 +491,10 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
           </Text>
           <YStack>
             <View>
-              <XStack marginTop={20} gap={Platform.OS === 'android' ? 15 : '16%'}>
+              <XStack
+                marginTop={20}
+                gap={Platform.OS === "android" ? 15 : "16%"}
+              >
                 {list.slice(0, 2).map((elem) => (
                   <XStack
                     height={48}
@@ -302,7 +556,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             Detergent Type
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={Platform.OS === 'android' ? 8 : "16%"}>
+            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "16%"}>
               {["scented", "unscented"].map((elem, id) => (
                 <XStack
                   height={48}
@@ -322,7 +576,11 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                     }}
                     id={elem}
                   />
-                  <Text fontSize={14} color="$black1" textTransform='capitalize'>
+                  <Text
+                    fontSize={14}
+                    color="$black1"
+                    textTransform="capitalize"
+                  >
                     {elem}
                   </Text>
                 </XStack>
@@ -340,7 +598,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             Water Temperature
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={Platform.OS === 'android' ? 8 : "16%"}>
+            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "16%"}>
               {["cold", "hot"].map((elem, index) => (
                 <XStack
                   height={48}
@@ -360,7 +618,11 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                     }}
                     id={elem}
                   />
-                  <Text fontSize={14} color="$black1" textTransform='capitalize'>
+                  <Text
+                    fontSize={14}
+                    color="$black1"
+                    textTransform="capitalize"
+                  >
                     {elem}
                   </Text>
                 </XStack>
@@ -378,7 +640,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             Fabric Softener
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={Platform.OS === 'android' ? 8 : "16%"}>
+            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "16%"}>
               {request.map((elem, id) => (
                 <XStack
                   height={48}
@@ -416,7 +678,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             Bleach
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={Platform.OS === 'android' ? 8 : "16%"}>
+            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "16%"}>
               {["Yes", "No"].map((elem, id) => (
                 <XStack
                   height={48}
@@ -454,7 +716,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             Dye
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={Platform.OS === 'android' ? 8 : "16%"}>
+            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "16%"}>
               {["Yes", "No"].map((elem, id) => (
                 <XStack
                   height={48}
@@ -505,8 +767,8 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             }
             placeholder="Select dye color"
           /> */}
-          {
-            values.dye === 'Yes' ? <InputBox
+          {values.dye === "Yes" ? (
+            <InputBox
               label=""
               onChangeText={handleChange("dyeColor")}
               onBlur={handleBlur("dyeColor")}
@@ -514,14 +776,17 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
               error={errors.dyeColor}
               placeholder="Dye color"
               defaultValue={values.dyeColor}
-            /> : null
-          }
+            />
+          ) : null}
         </View>
       </KeyboardAwareScrollView>
       <View paddingTop={25}>
-        <Button title="Next" onPress={() => {
-          handleSubmit()
-        }} />
+        <Button
+          title="Next"
+          onPress={() => {
+            handleSubmit();
+          }}
+        />
       </View>
     </View>
   );
@@ -531,4 +796,27 @@ const styles = StyleSheet.create({
   scrollview: {
     height: "80%",
   },
+  dropdown: {
+    width: "100%",
+    borderColor: "#D3DBDF",
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: -8,
+    borderRadius: 10,
+    paddingVertical: 14,
+    backgroundColor: "white",
+    alignSelf: "center",
+  },
+  container: { flexDirection: "row", alignItems: "center" },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 1,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 8,
+  },
+  label: { fontSize: 16 },
 });

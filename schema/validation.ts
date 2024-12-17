@@ -41,17 +41,27 @@ export const loginValidationSchema = Yup.object().shape({
   password: Yup.string().required("password is required"),
 });
 export const laundryRequestValidationSchema = (dye: "No" | "Yes") => {
-
-  const obj:any = {
+  const obj: any = {
     Yes: {
-      dyeColor: Yup.string().required()
+      dyeColor: Yup.string().required(),
     },
     No: {
-      dyeColor: Yup.string().optional()
-    }
-  }
+      dyeColor: Yup.string().optional(),
+    },
+  };
   return Yup.object().shape({
-    laundryRequestTypeId: Yup.string().required("Laundry type is required"),
+    laundryRequestTypes: Yup.array()
+      .of(
+        Yup.object().shape({
+          laundryRequestTypeId: Yup.string().required(
+            "Laundry request type ID is required"
+          ),
+          quantity: Yup.number()
+            .required("Quantity is required")
+            .min(1, "Quantity must be at least 1"),
+        })
+      )
+      .min(1, "At least one laundry request type is required"),
     pickupDate: Yup.string().required("Pickup date is required"),
     pickupTime: Yup.string().required("Pickup time is required"),
     timeframe: Yup.string().required("Timeframe type is required"), // [same_day | normal | 2_days]
@@ -60,7 +70,7 @@ export const laundryRequestValidationSchema = (dye: "No" | "Yes") => {
     softener: Yup.string().required("Is softener required"),
     bleach: Yup.string().required("Is bleach required"),
     dye: Yup.string().required("Is dye required"),
-    ...obj[dye]
+    ...obj[dye],
   });
 };
 export const updateProfileValidationSchema = Yup.object().shape({
@@ -71,16 +81,15 @@ export const updateProfileValidationSchema = Yup.object().shape({
 });
 export const contactUsValidationSchema = Yup.object().shape({
   email: Yup.string().email().optional(),
-  message:  Yup.string().required("Message is required"),
+  message: Yup.string().required("Message is required"),
 });
 
-
 export const createPaymentMethodValidationSchema = Yup.object().shape({
-  number: Yup.number().required('Enter card number'),
-  exp: Yup.string().required('Required'),
-  cvc: Yup.string().required()
-})
+  number: Yup.number().required("Enter card number"),
+  exp: Yup.string().required("Required"),
+  cvc: Yup.string().required(),
+});
 
 export const forgotPasswordValidationSchema = Yup.object().shape({
-  email: Yup.string().email().required('Email address is required'),
+  email: Yup.string().email().required("Email address is required"),
 });

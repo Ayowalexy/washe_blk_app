@@ -13,23 +13,23 @@ export const PaymentInfo = () => {
   const [user] = useAtom(persistentUserAtom);
   return (
     <>
-
       <FlatList
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         data={Array.isArray(data?.data?.data) ? data?.data?.data : []}
         keyExtractor={(item) => item.id.toString()}
         renderItem={(item) => (
-          <YStack width="80%"
+          <YStack
+            width="80%"
             marginTop={30}
             marginHorizontal="auto"
             backgroundColor={theme.secondary3}
-            padding={18}>
+            padding={18}
+          >
             <Text color={theme?.black3?.val} fontSize={12}>
               Payment Information
             </Text>
             <XStack justifyContent="space-between">
               <XStack>
-
                 <YStack>
                   <Text color={theme?.black1?.val} fontSize={15}>
                     {item?.item?.billing_details?.name ??
@@ -73,12 +73,10 @@ export const PaymentInfo = () => {
                   }
                 </YStack>
               </XStack>
-
             </XStack>
-
           </YStack>
         )}
-      /></>
-
+      />
+    </>
   );
 };
