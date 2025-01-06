@@ -1,23 +1,30 @@
-import { Modal, Platform, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
-import { View } from "./libs/view";
-import { XStack, YStack, useTheme } from "tamagui";
-import { Arrow, ArrowBack, CloseIcon, SuccessIcon2 } from "../utils/assets";
-import { Text } from "./libs/text";
-import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../src/constants";
-import { Button } from "./button";
+import {
+  Modal,
+  Platform,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { ViewStyle, XStack, YStack, useTheme } from "tamagui";
 import { Children, Dispatch, ReactNode, SetStateAction } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { ArrowBack, CloseIcon } from "../../utils/assets";
+import { View } from "../../libs/View";
+import { Text } from "../../libs/Text";
+import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../../constants";
 
 type props = {
   children: ReactNode;
+  height?: string;
   goBack?: Boolean;
   button?: ReactNode;
   close: () => void;
   title: string;
+  modalStyles?: StyleProp<ViewStyle>;
   text: string;
   show_button?: boolean;
   visible: boolean;
-  onGoBack?: () => void
+  onGoBack?: () => void;
   setVisible: Dispatch<SetStateAction<boolean>>;
 };
 export const FormModal = ({
@@ -30,11 +37,13 @@ export const FormModal = ({
   show_button = true,
   visible,
   setVisible,
-  onGoBack
+  onGoBack,
+  modalStyles,
+  height = "75%",
 }: props) => {
   const theme = useTheme();
   const navigation = useNavigation();
-  console.log(visible, "Hello")
+  console.log(visible);
   return (
     <Modal
       transparent={true}
@@ -65,7 +74,7 @@ export const FormModal = ({
             </TouchableOpacity>
           )}
         </XStack>
-        <View style={styles.modal}>
+        <View style={styles.modal} height={height}>
           <YStack alignItems="center" paddingTop={5}>
             <YStack
               justifyContent="center"
@@ -113,7 +122,6 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
     backgroundColor: "#FFF",
-    height: "75%",
     paddingTop: 40,
     paddingBottom: 100,
     marginTop: "auto",
@@ -133,7 +141,7 @@ const styles = StyleSheet.create({
   },
   iconContainer2: {
     position: "absolute",
-    top: Platform.OS === 'android' ? 130 : 165,
+    top: Platform.OS === "android" ? 130 : 165,
     marginHorizontal: "auto",
     flexDirection: "row",
     justifyContent: "flex-end",
