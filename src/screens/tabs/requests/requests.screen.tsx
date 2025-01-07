@@ -54,10 +54,11 @@ export const RequestScreen = ({ navigation }: RequestScreenProps) => {
         paddingHorizontal={25}
       >
         <Text
-          fontSize={24}
+          fontSize={22}
           color={theme.black1?.val}
           fontWeight={600}
           letterSpacing={0.15}
+          marginTop={10}
         >
           Requests
         </Text>
