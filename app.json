@@ -25,6 +25,18 @@
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5aa912d1-1ecf-4a46-80a7-dddc3bf53559"
+      }
+    },
+    "owner": "blklabs",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/5aa912d1-1ecf-4a46-80a7-dddc3bf53559"
+    }
   }
 }
