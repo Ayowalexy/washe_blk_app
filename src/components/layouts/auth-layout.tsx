@@ -4,11 +4,12 @@ import { View } from "../../libs/View";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Google, Facebook } from "../../utils/assets";
 import { ReactNode } from "react";
-import { ArrowRight, ButtonIcon } from "../../../assets/images/svg/icons";
 import { Button } from "../../libs/button";
 import { CloseButton } from "../buttons/close-button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { DEVICE_HEIGHT } from "../../constants";
+import { ButtonIcon } from "../../../assets/images/svg/icons/button";
+import { ArrowRight } from "../../../assets/images/svg/icons/arrow-right";
 
 export const AuthLayout = ({
   children,
@@ -43,6 +44,7 @@ export const AuthLayout = ({
         enableOnAndroid={true}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        
       >
         <View paddingTop={30} width={"100%"}>
           <View width="88%" marginHorizontal="auto" flexDirection="column">
@@ -77,7 +79,7 @@ export const AuthLayout = ({
               </Text>
             </View>
             {auth && (
-              <>
+              <View>
                 <XStack
                   width="100%"
                   marginTop={40}
@@ -138,7 +140,7 @@ export const AuthLayout = ({
                     borderBottomColor={theme.borderLine?.val}
                   />
                 </XStack>
-              </>
+              </View>
             )}
             <View paddingTop={40}>{children}</View>
           </View>

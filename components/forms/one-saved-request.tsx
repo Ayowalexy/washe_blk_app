@@ -30,7 +30,7 @@ export const OneSavedRequest = ({
         )}
         <YStack>
           <Text marginLeft={10} fontSize={12} paddingRight={20}>
-            {name.charAt(0).toUpperCase() + name.slice(1)}
+            {name?.charAt(0).toUpperCase() + name.slice(1)}
           </Text>
           <Text
             fontSize={12}

@@ -22,7 +22,7 @@ type Props = {
 export const DatePicker = ({
   mode = "date",
   label,
-  value = new Date(),
+  value,
   onChange,
   datePickerProps,
   hasError,
@@ -30,6 +30,8 @@ export const DatePicker = ({
 }: Props) => {
   const [showPicker, setShowPicker] = useState<boolean>(false);
   const theme = useTheme();
+
+  const validValue = value instanceof Date && !isNaN(value.getTime()) ? value : new Date();
 
   const toggleDatePicker = () => {
     setShowPicker(!showPicker);
@@ -53,7 +55,7 @@ export const DatePicker = ({
     return "";
   };
 
-  const formattedDate = formatDate(value);
+  const formattedDate = formatDate(validValue);
 
   return (
     <YStack>
@@ -92,7 +94,7 @@ export const DatePicker = ({
           mode={mode}
           onChange={onDateChange}
           display="spinner"
-          value={value}
+          value={validValue}
           {...datePickerProps}
         />
       )}

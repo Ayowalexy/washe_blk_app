@@ -48,8 +48,9 @@ export const Request = ({
           )}
 
           <Text marginLeft={10} fontSize={12} paddingRight={20}>
-            {name.charAt(0).toUpperCase() + name.slice(1)}
-          </Text>
+            {/* {name?.charAt(0).toUpperCase() + name.slice(1)} */}
+            {name ? name.charAt(0).toUpperCase() + name.slice(1) : ''}
+            </Text>
           <Text
             marginLeft={10}
             fontSize={12}

@@ -59,13 +59,17 @@ const detergentTypes = [
 
 type props = {
   setOpenConfirmation?: Dispatch<SetStateAction<boolean>>;
-  closeRequest?: () => void;
+  closeRequest: () => void;
 };
 
 interface DropdownItem {
   label: string;
   value: number | string;
 }
+type LaundryRequestType = {
+  laundryRequestTypeId: string;
+  quantity: number;
+};
 export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
   const [timeFrameActive, setTimeFrameActive] = useState<string>("normal");
   const [detergentTypeActive, setDetergentTypeActive] = useState<number | null>(
@@ -115,7 +119,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
     : [];
 
   const handleCheckboxChange = (item: any) => {
-    let arr_ = [...values.laundryRequestTypes]
+    let arr_ = [...values.laundryRequestTypes];
     if (
       values.laundryRequestTypes?.some(
         (entry) => entry.laundryRequestTypeId === item.value
@@ -134,10 +138,10 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
     } else {
       arr_.push({
         laundryRequestTypeId: item.value,
-        quantity: 1
-      })
+        quantity: 1,
+      });
     }
-    arr_ = arr_.filter((entry) => entry.quantity > 0)
+    arr_ = arr_.filter((entry) => entry.quantity > 0);
 
     setFieldValue("laundryRequestTypes", arr_);
   };
@@ -156,7 +160,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
   } = useFormik({
     initialValues: {
       laundryRequestServiceId: "",
-      laundryRequestTypes: [],
+      laundryRequestTypes: [] as LaundryRequestType[],
       pickupDate: "",
       pickupTime: "",
       timeframe: "",
@@ -169,7 +173,6 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
     },
     validationSchema: laundryRequestValidationSchema(dye),
     onSubmit: async (values) => {
-
       try {
         const formattedValues = {
           ...values,
@@ -187,18 +190,21 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
         };
         console.log("Formatted values:", formattedValues);
         setOneLaundryRequest(formattedValues);
-
-        if (closeRequest) {
-          closeRequest();
-        }
       } catch (error) {
         console.error("Error submitting laundry request:", error);
       }
     },
   });
 
+  const getValidTime = (timeString: string) => {
+    if (!timeString) return new Date(); // Return current date if no time is provided
+    const [hours, minutes] = timeString.split(":").map(Number);
+    const currentDate = new Date();
+    currentDate.setHours(hours, minutes, 0, 0); // Set the time on the current date
+    return currentDate;
+  };
+
   useEffect(() => {
-    console.log("reqy:", oneLaundryRequest);
     if (Object.keys(oneLaundryRequest).length !== 0) {
       const prefilledValues = {
         laundryRequestServiceId: laundryServiceId,
@@ -215,7 +221,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
       };
       setValues(prefilledValues as any);
     }
-  }, [oneLaundryRequest, setValues]);
+  }, [oneLaundryRequest, setValues, laundryServiceId]);
 
   useEffect(() => {
     setTimeFrameActive(values.timeframe);
@@ -233,10 +239,11 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
   console.log(values.laundryRequestTypes);
 
   useEffect(() => {
-    if (!laundryServiceId && oneLaundryRequest?.laundryService?.id) {
-      setLaundryServiceId(oneLaundryRequest?.laundryService.id);
+    if (!laundryServiceId && oneLaundryRequest?.laundryRequestServiceId) {
+      setLaundryServiceId(oneLaundryRequest?.laundryRequestServiceId);
     }
   }, [laundryServiceId, oneLaundryRequest, setLaundryServiceId]);
+  // console.log(laundryServiceId, "laun");
   return (
     <View
       width={"100%"}
@@ -278,7 +285,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             </TouchableOpacity>
             {isOpen && (
               <View
-                height={355}
+                height={235}
                 zIndex={200}
                 style={[styles.dropdown, { position: "absolute", top: 95 }]}
               >
@@ -294,57 +301,45 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                     const itemCount = counts[item.value] || 1;
 
                     const increaseCount = () => {
-                      let arr_ = [...values.laundryRequestTypes];
+                      const currentTypes = Array.isArray(values.laundryRequestTypes)
+                        ? values.laundryRequestTypes
+                        : [];
+                    
+                      let arr_ = [...currentTypes];
+                    
                       if (
-                        values.laundryRequestTypes?.some(
+                        currentTypes.some(
                           (entry) => entry.laundryRequestTypeId === item.value
                         )
                       ) {
-                        arr_ = arr_.map((entry) => {
-                          if (entry?.laundryRequestTypeId === item.value) {
-                            return {
-                              ...entry,
-                              quantity: entry.quantity + 1,
-                            };
-                          } else {
-                            return entry;
-                          }
-                        });
+                        arr_ = arr_.map((entry) =>
+                          entry.laundryRequestTypeId === item.value
+                            ? { ...entry, quantity: entry.quantity + 1 }
+                            : entry
+                        );
                       } else {
                         arr_.push({
-                          laundryRequestTypeId: item.value,
+                          laundryRequestTypeId: String(item.value),
                           quantity: 1,
                         });
                       }
-
+                    
                       setFieldValue("laundryRequestTypes", arr_);
                     };
+                    
 
                     const decreaseCount = () => {
-                      let arr_ = [...values.laundryRequestTypes];
-
-                      // Check if the array contains an item with the specified laundryRequestTypeId
-                      if (
-                        values.laundryRequestTypes?.some(
-                          (entry) => entry.laundryRequestTypeId === item.value
-                        )
-                      ) {
-                        arr_ = arr_
-                          .map((entry) => {
-                            if (entry?.laundryRequestTypeId === item.value) {
-                              if (entry.quantity > 0) {
-                                return {
-                                  ...entry,
-                                  quantity: entry.quantity - 1,
-                                };
+                      let arr_ = values.laundryRequestTypes
+                        .map((entry) =>
+                          entry.laundryRequestTypeId === item.value
+                            ? {
+                                ...entry,
+                                quantity: Math.max(0, entry.quantity - 1),
                               }
-                            }
-                            return entry;
-                          })
-                          .filter((entry) => entry.quantity > 0); // Remove entries with quantity 0
-                      }
+                            : entry
+                        )
+                        .filter((entry) => entry.quantity > 0);
 
-                      // Update the field with the modified array
                       setFieldValue("laundryRequestTypes", arr_);
                     };
 
@@ -410,7 +405,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                             />
                           </TouchableOpacity>
                           <Text>
-                            {values.laundryRequestTypes.find(
+                            {values.laundryRequestTypes?.find(
                               (entry) =>
                                 entry?.laundryRequestTypeId === item.value
                             )?.quantity || 0}
@@ -763,6 +758,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
           title="Next"
           onPress={() => {
             handleSubmit();
+            closeRequest();
           }}
         />
       </View>

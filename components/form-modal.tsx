@@ -1,4 +1,10 @@
-import { Modal, Platform, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { View } from "./libs/view";
 import { XStack, YStack, useTheme } from "tamagui";
 import { Arrow, ArrowBack, CloseIcon, SuccessIcon2 } from "../utils/assets";
@@ -17,7 +23,7 @@ type props = {
   text: string;
   show_button?: boolean;
   visible: boolean;
-  onGoBack?: () => void
+  onGoBack?: () => void;
   setVisible: Dispatch<SetStateAction<boolean>>;
 };
 export const FormModal = ({
@@ -30,11 +36,11 @@ export const FormModal = ({
   show_button = true,
   visible,
   setVisible,
-  onGoBack
+  onGoBack,
 }: props) => {
   const theme = useTheme();
   const navigation = useNavigation();
-  console.log(visible, "Hello")
+  // console.log(visible, "Hello")
   return (
     <Modal
       transparent={true}
@@ -133,7 +139,7 @@ const styles = StyleSheet.create({
   },
   iconContainer2: {
     position: "absolute",
-    top: Platform.OS === 'android' ? 130 : 165,
+    top: Platform.OS === "android" ? 130 : 165,
     marginHorizontal: "auto",
     flexDirection: "row",
     justifyContent: "flex-end",

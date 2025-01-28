@@ -15,28 +15,31 @@ import moment from "moment";
 import ToggleSwitch from "toggle-switch-react-native";
 
 type Props = {
-time?: string
+  time?: string;
 };
 
-export const SaveForm = ({time}: Props) => {
+export const SaveForm = ({ time }: Props) => {
   const theme = useTheme();
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
-  const [laundryType, setLaundryType] = useState("");
+  const [laundryType, setLaundryType] = useState([""]);
 
   const { refetch, data } = useGetLaundryType();
   const [LaundryServiceName] = useAtom(laundryRequestServiceNameAtom);
 
   useEffect(() => {
-    if (data?.data) {
-      const serviceName = Array.isArray(data?.data)
-        ? data.data.find(
-          (elem: any) => elem.id === oneLaundryRequest.laundryRequestTypeId
-        )?.name
-        : null;
-      setLaundryType(serviceName);
+    if (data?.data && oneLaundryRequest?.laundryRequestTypes?.length) {
+      const serviceNames = oneLaundryRequest.laundryRequestTypes.map((type) => {
+        const matchedItem = data.data.find(
+          (elem: any) => elem.id === type.laundryRequestTypeId
+        );
+        return matchedItem?.name || null;
+      });
+
+      setLaundryType(serviceNames);
     }
-  }, [data?.data, oneLaundryRequest]);
-  console.log(oneLaundryRequest, 'oneLaundryRequest.pickupTime')
+  }, [data?.data, oneLaundryRequest.laundryRequestTypes]);
+
+  console.log(oneLaundryRequest, "oneLaundryRequest.pickupTime");
   return (
     <>
       <View width="100%" paddingHorizontal={28} paddingBottom={150}>
@@ -88,8 +91,9 @@ export const SaveForm = ({time}: Props) => {
                     fontWeight="500"
                     marginTop={5}
                     textTransform="capitalize"
+                    flexDirection="row"
                   >
-                    {laundryType}
+                    {laundryType.join(", ")}
                   </Text>
                 </YStack>
               </View>
@@ -133,10 +137,10 @@ export const SaveForm = ({time}: Props) => {
                 {oneLaundryRequest.timeframe === "same_day"
                   ? "Same day"
                   : oneLaundryRequest.timeframe === "2_days"
-                    ? "2 days"
-                    : oneLaundryRequest.timeframe === "normal"
-                      ? "Normal"
-                      : ""}
+                  ? "2 days"
+                  : oneLaundryRequest.timeframe === "normal"
+                  ? "Normal"
+                  : ""}
               </Text>
             </YStack>
           </View>
@@ -242,7 +246,6 @@ export const SaveForm = ({time}: Props) => {
               </XStack>
             </YStack>
           </View>
-
         </ScrollView>
       </View>
     </>
@@ -251,7 +254,7 @@ export const SaveForm = ({time}: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: 149,
+    height: 179,
     width: "100%",
     marginTop: 20,
   },

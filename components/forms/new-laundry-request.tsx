@@ -44,6 +44,7 @@ export const NewLaundryRequest: React.FC<Props> = ({ data }) => {
               handleActive(id);
               setLaundryServiceId(elem.id);
               setLaundryServiceName(elem.name);
+              console.log(laundryServiceId, 'kk')
             }}
           >
             <View

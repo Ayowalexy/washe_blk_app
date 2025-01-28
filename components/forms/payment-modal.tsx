@@ -11,7 +11,7 @@ import { Text } from "../libs/text";
 import { CardImg } from "../../utils/assets-png";
 import { AtmCard, Star, Stripe } from "../../utils/assets";
 import { PaymentDetails } from "../payment-details";
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { Radio } from "./radio";
 import { useGetPaymentMethods } from "../../api/queries";
 import { useAtom } from "jotai";
@@ -42,11 +42,16 @@ export const PaymentForm: FC<Prop> = ({
   const [oneLaundryRequest] = useAtom(LaundryRequests);
   const [user] = useAtom(persistentUserAtom);
   const handleActive = (id: string) => {
+    console.log("Selected Payment ID:", id);
     setSelectedPaymentId(id);
+    
   };
   // console.log()
+  useEffect(() => {
+    console.log("Updated Selected Payment ID:", selected_payment_id);
+  }, [selected_payment_id]);
   return (
-    <>
+    <View width='100%'>
       <View width="100%" paddingHorizontal={28} paddingBottom={30}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View width="100%" style={styles.container}>
@@ -219,7 +224,7 @@ export const PaymentForm: FC<Prop> = ({
                     </YStack>
                   )}
                 /> :
-                <>
+                <View>
                   <PaymentMethod
                     onPress={() => {
                       setOpenPaymentMethod(false);
@@ -247,12 +252,12 @@ export const PaymentForm: FC<Prop> = ({
                     title="Your credit card was added successfully "
                     visible={openSuccess}
                     setVisible={setOpenSuccess}
-                  /></>
+                  /></View>
             }
           </View>
         </ScrollView>
       </View>
-    </>
+    </View>
   );
 };
 const styles = StyleSheet.create({

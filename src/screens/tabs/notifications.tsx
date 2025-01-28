@@ -5,9 +5,7 @@ import { ArrowBack } from "../../../utils/assets";
 import { RequestFilter } from "../../../components/request-filter";
 import { YStack, useTheme } from "tamagui";
 import { PaymentForm, Request, SaveForm } from "../../../components/forms";
-import {
-  groupedLaundryRequests,
-} from "../../../components/laundry-request";
+import { groupedLaundryRequests } from "../../../components/laundry-request";
 import { DEVICE_HEIGHT } from "../../constants";
 import { FormModal } from "../../../components/form-modal";
 import { useState } from "react";
@@ -33,7 +31,7 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
 
   const { data, refetch } = useGetNotifications();
-  console.log(data?.data, "notifications");
+  console.log(data, "notificationsuE");
 
   const groupedRequests = data?.data?.reduce((acc: any, request: any) => {
     const date = moment(request.createdAt).format("YYYY-MM-DD");
@@ -90,58 +88,26 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text paddingTop={30}>Notifications</Text>
         <YStack marginTop={20}>
-          {/* {groupedRequests &&
-            Object.keys(groupedRequests).map((date) => (
-              <View key={date}>
-                <Text
-                  fontSize={13}
-                  color={theme?.black3?.val}
-                  paddingVertical={20}
-                  textTransform="uppercase"
-                >
-                  {date}
-                </Text>
-                {groupedRequests[date].map((request: any, index: any) => (
-                  <View
-                    key={request.id}
-                    backgroundColor={theme?.lightGrey?.val}
-                    paddingHorizontal={20}
-                  >
-                    <TouchableOpacity onPress={() => setOpenConfirmation(true)}>
-                      <Request
-                        top_img={false}
-                        showImg={true}
-                        width="100%"
-                        status={request.status}
-                        show={false}
-                        time={request.date}
-                        name={request.name}
-                      />
-                    </TouchableOpacity>
-                    {index !== groupedRequests[date].length - 1 && (
-                      <View borderBottomWidth={1} borderBottomColor="$black4" />
-                    )}
-                  </View>
-                ))}
-              </View>
-            ))} */}
-          {data?.data.map((request: any, index: any) => (
+
+          {data?.data?.map((request: any, index: any) => (
             <View
               key={request.id}
               backgroundColor={theme?.lightGrey?.val}
               paddingHorizontal={20}
             >
-              <TouchableOpacity onPress={() => {
-                // setSavedRequestId(request.id);
-                // setOpenConfirmation(true)
-              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  // setSavedRequestId(request.id);
+                  // setOpenConfirmation(true)
+                }}
+              >
                 <Request
                   top_img={true}
                   showImg={false}
                   width="100%"
                   status={request.status}
                   show={true}
-                  time={moment(request.createdAt).format('Do MMM YY, hh:mm A')}
+                  time={moment(request.createdAt).format("Do MMM YY, hh:mm A")}
                   name={request.title}
                 />
               </TouchableOpacity>
@@ -159,7 +125,7 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
           <Button
             title="Re-request"
             onPress={() => {
-              handleRemakeRequest()
+              handleRemakeRequest();
             }}
           />
         }

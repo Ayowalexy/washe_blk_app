@@ -63,22 +63,8 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
     setOpenConfirmation(false);
     setPaymentModal(true);
   };
-
-  const handleMayPayment = useCallback(async () => {
-    try {
-      const response = await mutateAsync({
-        laundryRequestId: oneLaundryRequest.laundryRequestId as string,
-        paymentMethodId: selected_payment_id,
-      });
-      console.log(response, "responsee");
-      setPaymentModal(false);
-      navigation.navigate("home_stack", {
-        screen: "payment_successful",
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }, [selected_payment_id, oneLaundryRequest]);
+  console.log("Selected Payment ID:", selected_payment_id);
+  console.log("One Laundry Request:", oneLaundryRequest);
 
   const [saveRequest, setSaveRequest] = useState(false);
   const toggleSwitch = () => setSaveRequest((previousState) => !previousState);
@@ -86,7 +72,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
   const handleSubmit = () => {
     const request = {
       laundryRequestServiceId: oneLaundryRequest.laundryRequestServiceId,
-      laundryRequestTypeId: oneLaundryRequest.laundryRequestTypeId,
+      laundryRequestTypes: oneLaundryRequest.laundryRequestTypes,
       pickupDate: oneLaundryRequest.pickupDate,
       pickupTime: oneLaundryRequest.pickupTime,
       detergentType: oneLaundryRequest.detergentType,
@@ -96,7 +82,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
       bleach: oneLaundryRequest.bleach,
       dye: oneLaundryRequest.dye,
       dyeColor: oneLaundryRequest.dyeColor,
-      saveRequest
+      saveRequest,
     };
     mutate(request, {
       onSuccess: async (data) => {
@@ -127,8 +113,38 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
       },
     });
   };
+  const handleMayPayment = useCallback(async () => {
+    console.log(
+      {
+        laundryRequestId: oneLaundryRequest.laundryRequestId as string,
+        paymentMethodId: selected_payment_id,
+        type: "base_fee",
+      },
+      "payload being sent"
+    );
+    try {
+      const payload = {
+        laundryRequestId: oneLaundryRequest.laundryRequestId as string,
+        paymentMethodId: selected_payment_id,
+        type: "base_fee",
+      };
+
+      console.log(payload, "Payload being sent");
+
+      const response = await mutateAsync(payload);
+      console.log(response, "responsee");
+
+      setPaymentModal(false);
+      navigation.navigate("home_stack", {
+        screen: "payment_successful",
+      });
+    } catch (error: any) {
+      console.log(error.response?.data || error.message, "error response");
+    }
+  }, [selected_payment_id, oneLaundryRequest]);
+  console.log(oneLaundryRequest.pickupTime, "oneLaundryRequest.pickupTime");
   return (
-    <>
+    <View>
       <TabLayout>
         <View paddingBottom={70}>
           <OngoingRequests
@@ -174,7 +190,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
               </TouchableOpacity>
             </XStack>
             {datas?.data?.length > 1 && (
-              <>
+              <View>
                 <RequestFilter />
                 <Text
                   textTransform="uppercase"
@@ -184,7 +200,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
                 >
                   25th Jun 2023
                 </Text>
-              </>
+              </View>
             )}
             <FlatList
               data={datas?.data
@@ -228,6 +244,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
           width={56}
           justifyContent="center"
           alignItems="center"
+          marginTop={-50}
           borderRadius={100}
         >
           <PlusIcon />
@@ -272,7 +289,13 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         title="New Laundry Request"
         text="Start a new request by letting us know what services you need"
       >
-        <RequestForm setOpenConfirmation={handleOpenConfirmation} />
+        <RequestForm
+          setOpenConfirmation={handleOpenConfirmation}
+          closeRequest={() => {
+            setOpenRequest(false);
+            setOpenConfirmation(true);
+          }}
+        />
       </FormModal>
 
       <FormModal
@@ -281,34 +304,35 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         show_button={true}
         button={
           <View paddingTop={0}>
-          <XStack gap={8} marginBottom={20}>
-            <ToggleSwitch
-              isOn={saveRequest}
-              onColor="#00D158"
-              offColor="#F9FAFB"
-              labelStyle={{ color: "black", fontWeight: "900" }}
-              size="small"
-              onToggle={toggleSwitch}
+            <XStack gap={8} marginBottom={20}>
+              <ToggleSwitch
+                isOn={saveRequest}
+                onColor="#00D158"
+                offColor="#F9FAFB"
+                labelStyle={{ color: "black", fontWeight: "900" }}
+                size="small"
+                onToggle={toggleSwitch}
+              />
+              <TouchableOpacity onPress={() => toggleSwitch()}>
+                <Text color={theme?.black1?.val} fontSize={14}>
+                  Save request to be used in the future
+                </Text>
+              </TouchableOpacity>
+            </XStack>
+            <Button
+              loading={isPending}
+              title="Proceed"
+              onPress={() => handleSubmit()}
             />
-            <TouchableOpacity onPress={() => toggleSwitch()}>
-              <Text color={theme?.black1?.val} fontSize={14}>
-                Save request to be used in the future
-              </Text>
-            </TouchableOpacity>
-          </XStack>
-          <Button
-            loading={isPending}
-            title="Proceed"
-            onPress={() => handleSubmit()}
-          />
-        </View>
+          </View>
         }
-        
         close={() => setOpenConfirmation(false)}
         title="Confirmation"
         text="Please make sure services selected are correct before confirming."
       >
-        <SaveForm />
+        <SaveForm
+          time={moment(oneLaundryRequest.pickupTime, "hh:mm").format("hh:mm A")}
+        />
       </FormModal>
 
       <FormModal
@@ -327,9 +351,10 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         button={
           <Button
             color="#00D158"
-            title={`Pay $${Number(oneLaundryRequest?.tax ?? 0) +
+            title={`Pay $${
+              Number(oneLaundryRequest?.tax ?? 0) +
               Number(oneLaundryRequest?.total_amount ?? 0)
-              }`}
+            }`}
             loading={loading}
             disabled={!Boolean(selected_payment_id)}
             onPress={() => {
@@ -339,11 +364,12 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         }
       >
         <PaymentForm
+          setPaymentModal={setPaymentModal}
           setSelectedPaymentId={setSelectedPaymentId}
           selected_payment_id={selected_payment_id}
         />
       </FormModal>
-    </>
+    </View>
   );
 };
 

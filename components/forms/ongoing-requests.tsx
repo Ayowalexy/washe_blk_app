@@ -7,7 +7,7 @@ import { DEVICE_WIDTH } from "../../src/constants";
 import { RequestCard } from "../request-card";
 import { useGetRequests } from "../../api/queries";
 import moment from "moment";
-import { Dispatch, useCallback, useEffect, useState } from "react";
+import { Dispatch, useCallback, useState } from "react";
 import { SetStateAction, useAtom } from "jotai";
 import { FormModal } from "../form-modal";
 import { Button } from "../button";

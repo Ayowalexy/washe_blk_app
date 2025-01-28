@@ -90,7 +90,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const { refetch: saved, data: allSavedRequests } = useGetSavedRequests();
   const theme = useTheme();
   const { data } = useGetLaundryServices();
-  console.log(allSavedRequests?.data, "allSavedRequestsallSavedRequests");
+  // console.log(allSavedRequests?.data, "allSavedRequestsallSavedRequests");
   const handleMayPayment = useCallback(async () => {
     try {
       const response = await mutateAsync({
@@ -123,11 +123,10 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   };
   const [saveRequest, setSaveRequest] = useState(false);
   const toggleSwitch = () => setSaveRequest((previousState) => !previousState);
-
   const handleSubmit = () => {
     const request = {
       laundryRequestServiceId: oneLaundryRequest.laundryRequestServiceId,
-      laundryRequestTypeId: oneLaundryRequest.laundryRequestTypeId,
+      laundryRequestTypes: oneLaundryRequest.laundryRequestTypes,
       pickupDate: oneLaundryRequest.pickupDate,
       pickupTime: oneLaundryRequest.pickupTime,
       detergentType: oneLaundryRequest.detergentType,
@@ -137,18 +136,17 @@ export const Home = ({ navigation }: HomeScreenProps) => {
       bleach: oneLaundryRequest.bleach,
       dye: oneLaundryRequest.dye,
       dyeColor: oneLaundryRequest.dyeColor,
-      saveRequest: saveRequest,
+      saveRequest,
     };
     mutate(request, {
       onSuccess: async (data) => {
-        // Toast.show({
-        //   type: "customSuccess",
-        //   text1: "Request created successfully",
-        // });
+        Toast.show({
+          type: "customSuccess",
+          text1: "Request created successfully",
+        });
+        console.log(data?.data?.data?.id, "data?.data?.data?.id");
         setOpenConfirmation(false);
-        setTimeout(() => {
-          setPaymentModal(true);
-        }, 200);
+        setPaymentModal(true);
         setOneLaundryRequest({
           ...oneLaundryRequest,
           tax: 0,
@@ -156,17 +154,16 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           laundryRequestId: data?.data?.data?.id,
         });
         const { data: allRequests } = await refetch();
-        const { data: allSavedRequests } = await saved();
-        console.log(allSavedRequests, "allsaved");
+        console.log("All Requests:", allRequests);
       },
       onError: (error: any) => {
         Toast.show({
           type: "customError",
           text1:
-            JSON.stringify(error?.response?.data.errors[0].message) ||
+            JSON.stringify(error?.response?.data) ||
             "An error occured, try again",
         });
-        console.log(error?.response?.data.errors[0].message, "rrr");
+        console.log(error?.response?.data, "rrr");
       },
     });
   };
