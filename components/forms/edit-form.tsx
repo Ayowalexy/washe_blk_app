@@ -10,6 +10,7 @@ import { updateProfileValidationSchema } from "../../schema/validation";
 import { useUpdateProfile } from "../../api/mutations";
 import { useGetCurrentUser } from "../../api/queries";
 import Toast from "react-native-toast-message";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export const EditForm = () => {
   const theme = useTheme();
@@ -51,7 +52,7 @@ export const EditForm = () => {
               JSON.stringify(error?.response?.data?.message) ||
               "An error occured, try again",
           });
-          console.log(error?.response?.data?.message)
+          console.log(error?.response?.data?.message);
         },
       });
     },
@@ -59,43 +60,50 @@ export const EditForm = () => {
   console.log(user);
   return (
     <View width={"85%"} marginHorizontal={"auto"} marginTop={25}>
-      <InputBox
-        onChangeText={handleChange("firstName")}
-        onBlur={handleBlur("firstName")}
-        value={values.firstName}
-        placeholder="Karen"
-        label="First name"
-      />
-      <InputBox
-        onChangeText={() => handleChange("lastName")}
-        onBlur={handleBlur("lastName")}
-        value={values.lastName}
-        placeholder="James"
-        label="Last name"
-      />
-      <InputBox
-        value={values.email}
-        onChangeText={() => handleChange("email")}
-        onBlur={handleBlur("email")}
-        editable={false}
-        placeholder="karenjames@gmail.com"
-        label="Email address"
-      />
-      <InputBox
-        value={values.phoneNumber}
-        onChangeText={() => handleChange("phoneNumber")}
-        onBlur={handleBlur("phoneNumber")}
-        placeholder="+1"
-        label="Phone number"
-      />
-      <View paddingTop={55}>
-        <Button
-          title="Save"
-          onPress={() => {
-            handleSubmit();
-          }}
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+        enableOnAndroid={true}
+        keyboardShouldPersistTaps="handled"
+      >
+        <InputBox
+          onChangeText={handleChange("firstName")}
+          onBlur={handleBlur("firstName")}
+          value={values.firstName}
+          placeholder="Karen"
+          label="First name"
         />
-      </View>
+        <InputBox
+          onChangeText={handleChange("lastName")}
+          onBlur={handleBlur("lastName")}
+          value={values.lastName}
+          placeholder="James"
+          label="Last name"
+        />
+        <InputBox
+          value={values.email}
+          onChangeText={handleChange("email")}
+          onBlur={handleBlur("email")}
+          editable={false}
+          placeholder="karenjames@gmail.com"
+          label="Email address"
+        />
+        <InputBox
+          value={values.phoneNumber}
+          onChangeText={handleChange("phoneNumber")}
+          onBlur={handleBlur("phoneNumber")}
+          placeholder="+1"
+          label="Phone number"
+        />
+        <View paddingTop={55}>
+          <Button
+            title="Save"
+            onPress={() => {
+              handleSubmit();
+            }}
+          />
+        </View>
+      </KeyboardAwareScrollView>
     </View>
   );
 };

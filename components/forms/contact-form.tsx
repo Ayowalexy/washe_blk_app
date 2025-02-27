@@ -12,6 +12,7 @@ import { persistentUserAtom } from "../../src/atoms";
 import { contactUsValidationSchema } from "../../schema/validation";
 import Toast from "react-native-toast-message";
 import { useContactUs } from "../../api/mutations";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export const ContactForm = () => {
   const theme = useTheme();
@@ -56,7 +57,7 @@ export const ContactForm = () => {
   });
   const isButtonDisabled = !values?.message;
   return (
-    <ScrollView style={{ width: "84%" }}>
+  <KeyboardAwareScrollView style={{ width: "84%" }} showsVerticalScrollIndicator={false}>
       <YStack
         width="100%"
         marginTop={30}
@@ -65,7 +66,7 @@ export const ContactForm = () => {
         padding={18}
         alignItems="center"
       >
-        <Text color={theme?.black3?.val} fontSize={12} textAlign="center">
+        <Text color={"$black3"} fontSize={12} textAlign="center">
           Contact washe via
         </Text>
         <XStack marginTop={12} gap={8}>
@@ -113,6 +114,6 @@ export const ContactForm = () => {
           onPress={() => handleSubmit()}
         />
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };

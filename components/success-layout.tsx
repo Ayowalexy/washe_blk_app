@@ -1,7 +1,7 @@
 import { XStack, YStack, useTheme } from "tamagui";
 import { Text } from "./libs/text";
 import { View } from "./libs/view";
-import { SuccessIcon } from "../utils/assets";
+import { SuccessIcon, SuccessIcon2 } from "../utils/assets";
 import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../src/constants";
 import { Image, ImageBackground, Platform, StyleSheet } from "react-native";
 import { CardImg, SuccessGif } from "../utils/assets-png";
@@ -34,7 +34,6 @@ export const SuccessLayout = ({
   secondTitle,
   buttonTitle,
 }: props) => {
-  const theme = useTheme();
   const navigation = useNavigation();
   return (
     <View
@@ -46,7 +45,7 @@ export const SuccessLayout = ({
       <YStack justifyContent="center" alignItems="center" paddingTop={150}>
         <SuccessIcon />
         <Text
-          color={theme?.blue1}
+          color={"$blue1"}
           fontSize={16}
           fontFamily="$body"
           fontWeight="400"
@@ -55,7 +54,7 @@ export const SuccessLayout = ({
           {successText}
         </Text>
         <Text
-          color={theme?.white1}
+          color={"$white1"}
           fontFamily="$body"
           fontWeight="600"
           fontSize={24}
@@ -69,7 +68,7 @@ export const SuccessLayout = ({
           paddingHorizontal={30}
           fontFamily="$body"
           fontWeight="400"
-          color={theme?.white2}
+          color={"$white2"}
           marginTop={7}
         >
           {text}
@@ -88,19 +87,19 @@ export const SuccessLayout = ({
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Text fontSize={13} color={theme?.blue1}>
+                <Text fontSize={13} color={"$blue1"}>
                   {nameTitle}
                 </Text>
                 <Text
                   fontSize={15}
-                  color={theme?.white1}
+                  color={"$white1"}
                   fontFamily="$body"
                   fontWeight="400"
                 >
                   {name}
                 </Text>
               </XStack>
-              <View borderBottomColor={theme?.blue2} borderBottomWidth={1} />
+              <View borderBottomColor={'$blue2'} borderBottomWidth={1} />
             </YStack>
             <YStack paddingTop={20}>
               <XStack
@@ -108,19 +107,19 @@ export const SuccessLayout = ({
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Text fontSize={13} color={theme?.blue1}>
+                <Text fontSize={13} color={"$blue1"}>
                   {secondTitle}
                 </Text>
                 <Text
                   fontSize={15}
-                  color={theme?.white1}
+                  color={"$white1"}
                   fontFamily="$body"
                   fontWeight="400"
                 >
                   {secondText}
                 </Text>
               </XStack>
-              <View borderBottomColor={theme?.blue2} borderBottomWidth={1} />
+              <View borderBottomColor={"$blue2"} borderBottomWidth={1} />
             </YStack>
             <YStack paddingTop={20}>
               <XStack
@@ -128,19 +127,19 @@ export const SuccessLayout = ({
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Text fontSize={13} color={theme?.blue1}>
+                <Text fontSize={13} color={"$blue1"}>
                   {thirdTitle}
                 </Text>
                 <Text
                   fontSize={15}
-                  color={theme?.white1}
+                  color={"$white1"}
                   fontFamily="$body"
                   fontWeight="400"
                 >
                   {thirdText}
                 </Text>
               </XStack>
-              {/* <View borderBottomColor={theme?.blue2} borderBottomWidth={1} /> */}
+              {/* <View borderBottomColor={"$blue2"} borderBottomWidth={1} /> */}
             </YStack>
           </View>
         </ImageBackground>
@@ -176,7 +175,7 @@ const styles = StyleSheet.create({
   success: {
     position: "absolute",
     top: "5%",
-    zIndex: 200,
+    zIndex: 500,
     width: "100%",
   },
 });

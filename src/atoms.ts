@@ -11,6 +11,7 @@ type UserDataProps = {
   phoneNumber: string;
   password?: string;
   passwordConfirmation?: string;
+  type: string;
 };
 export const UserData = atom<UserDataProps>({} as UserDataProps);
 
@@ -36,10 +37,16 @@ type LaundryRequestProps = {
   laundryRequestId?: string;
 };
 
+type AddressProps = {
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+};
 export const LaundryRequests = atom<LaundryRequestProps>(
   {} as LaundryRequestProps
 );
-export const AddressAtom = atom("");
+export const AddressAtom = atom<AddressProps>({} as AddressProps);
 // atoms.ts
 export const openVerificationStateAtom = atom(true);
 export const laundryRequestServiceIdAtom = atom("");

@@ -32,7 +32,7 @@ export const History = () => {
   return (
     <View
       height={DEVICE_HEIGHT}
-      backgroundColor={theme?.white1?.val}
+      backgroundColor={"$white1"}
       width="100%"
       paddingHorizontal={20}
       paddingVertical={80}
@@ -60,7 +60,7 @@ export const History = () => {
                 fontWeight="500"
                 style={{
                   fontSize: 15,
-                  color: theme?.black3?.val,
+                  color: "$black3",
                   textTransform: "uppercase",
 
                   marginTop: 30,

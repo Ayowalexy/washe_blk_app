@@ -51,19 +51,25 @@ export const OngoingRequests = ({
   const [trackDetails, setTrackdetails] = useState([]);
 
   const handleMayPayment = useCallback(async () => {
+    console.log("handleMayPayment triggered");
     try {
-      const response = await mutateAsync({
+      const payload = {
         laundryRequestId: oneLaundryRequest.laundryRequestId as string,
-
         paymentMethodId: selected_payment_id,
-      });
+        type: "base_fee",
+      };
+
+      console.log(payload, "Payload being sent");
+
+      const response = await mutateAsync(payload);
       console.log(response, "responsee");
+
       setPaymentModal(false);
       navigation.navigate("home_stack", {
         screen: "payment_successful",
       });
-    } catch (e) {
-      console.log(e);
+    } catch (error: any) {
+      console.log(error.response?.data || error.message, "error response");
     }
   }, [selected_payment_id, oneLaundryRequest]);
 
@@ -77,7 +83,7 @@ export const OngoingRequests = ({
       paddingBottom={0}
       borderRadius={15}
     >
-      <Text>Ongoing Requests</Text>
+      <Text fontSize={15}>Ongoing Requests</Text>
       <View>
         <FlatList
           ListEmptyComponent={<EmptyRequest />}
@@ -124,7 +130,7 @@ export const OngoingRequests = ({
               marginTop={27}
               borderWidth={1}
               borderRadius={12}
-              borderColor={theme?.black4?.val}
+              borderColor={"$black4"}
             >
               <Text color={theme?.primary2?.val} fontSize={15}>
                 Request Tracking

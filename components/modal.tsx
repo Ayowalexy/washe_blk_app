@@ -48,7 +48,7 @@ export const SuccessModal = ({
             <SuccessIcon2 />
             <Text
               fontSize={16}
-              color={theme?.black1}
+              color={"$black1"}
               paddingTop={15}
               fontFamily="$body"
               fontWeight="500"
@@ -68,23 +68,23 @@ export const SuccessModal = ({
             <Text
               fontFamily="$body"
               fontWeight="500"
-              color={theme?.black3}
+              color={"$black3"}
               textAlign="center"
               fontSize={14}
               minWidth={"65%"}
               width={"69%"}
-              marginTop={7}
+              marginTop={20}
             >
               {text}
             </Text>
             <Text
               fontFamily="$body"
               fontWeight="500"
-              color={theme?.black3}
+              color={"$black3"}
               textAlign="center"
               fontSize={14}
               maxWidth={"65%"}
-              marginTop={15}
+              marginTop={20}
             >
               {text2}
             </Text>

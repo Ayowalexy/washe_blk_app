@@ -25,10 +25,18 @@ export const AddressInfo = ({ navigation }: addressInfoScreenProps) => {
     useFormik({
       initialValues: {
         address: "",
+        city: "",
+        state: "",
+        zipCode: "",
       },
       validationSchema: addressValidationSchema,
       onSubmit: (values) => {
-        setAddress(values.address);
+        setAddress({
+          address: values.address,
+          state: values.state,
+          city: values.city,
+          zipCode: values.zipCode,
+        });
         navigation.navigate("id_verification");
         console.log(values, "vals");
       },
@@ -47,17 +55,47 @@ export const AddressInfo = ({ navigation }: addressInfoScreenProps) => {
               text="Please enter your pickup and delivery location."
             >
               <View>
-                <InputTextarea
+                <InputBox
                   onChangeText={handleChange("address")}
                   onBlur={handleBlur("address")}
                   label="Home address"
-                  placeholder="Home address"
+                  placeholder=""
                   hasError={!!errors.address && touched.address}
                   error={errors.address}
                 />
               </View>
+              <View>
+                <InputBox
+                  onChangeText={handleChange("city")}
+                  onBlur={handleBlur("city")}
+                  hasError={!!errors.city && touched.city}
+                  error={errors.city}
+                  label="City"
+                  placeholder=""
+                />
+              </View>
+              <View>
+                <InputBox
+                  onChangeText={handleChange("state")}
+                  onBlur={handleBlur("state")}
+                  hasError={!!errors.state && touched.state}
+                  error={errors.state}
+                  label="State/Province/Region"
+                  placeholder=""
+                />
+              </View>
+              <View>
+                <InputBox
+                  onChangeText={handleChange("zipCode")}
+                  onBlur={handleBlur("zipCode")}
+                  hasError={!!errors.zipCode && touched.zipCode}
+                  error={errors.zipCode}
+                  label="ZIP/Postal Code"
+                  placeholder=""
+                />
+              </View>
               <View
-                marginTop={50}
+                marginTop={20}
                 backgroundColor={theme.secondary3}
                 padding={24}
               >

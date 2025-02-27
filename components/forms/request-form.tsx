@@ -260,7 +260,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
       >
         <View position="relative" zIndex={1000}>
           <View>
-            <Text fontSize={14} color={theme?.black1} marginBottom={8}>
+            <Text fontSize={14} color={"$black1"} marginBottom={8}>
               Laundry type
             </Text>
             <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
@@ -268,7 +268,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                 height={50}
                 width={"100%"}
                 borderWidth={1}
-                borderColor={theme?.black4}
+                borderColor={'$black4'}
                 backgroundColor="transparent"
                 marginBottom={17}
                 borderRadius={8}
@@ -276,10 +276,10 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                 paddingLeft={10}
                 alignItems="center"
               >
-                <Text fontSize={12} color="$black1">
+                <Text fontSize={13} color="$black1">
                   {selectedItems.length > 0
                     ? selectedItems.map((item) => item.label).join(", ") // Display selected labels
-                    : "Select options"}{" "}
+                    : "Select laundry type"}{" "}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -392,7 +392,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                               width: 20,
                               height: 20,
                               borderRadius: 100,
-                              backgroundColor: theme?.black3?.val,
+                              backgroundColor: "#6C8693",
                               justifyContent: "center",
                               alignItems: "center",
                               marginLeft: 8,
@@ -400,11 +400,11 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                           >
                             <MaterialIcons
                               name="remove"
-                              color={theme?.white1?.val}
+                              color={"white"}
                               size={16}
                             />
                           </TouchableOpacity>
-                          <Text>
+                          <Text fontSize={16}>
                             {values.laundryRequestTypes?.find(
                               (entry) =>
                                 entry?.laundryRequestTypeId === item.value
@@ -416,7 +416,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                               width: 20,
                               height: 20,
                               borderRadius: 100,
-                              backgroundColor: theme?.black3?.val,
+                              backgroundColor: "#6C8693",
                               justifyContent: "center",
                               alignItems: "center",
                               marginLeft: 8,
@@ -424,7 +424,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                           >
                             <MaterialIcons
                               name="add"
-                              color={theme?.white1?.val}
+                              color={'white'}
                               size={16}
                             />
                           </TouchableOpacity>
@@ -466,7 +466,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             <View>
               <XStack
                 marginTop={20}
-                gap={Platform.OS === "android" ? 15 : "16%"}
+                gap={Platform.OS === "android" ? 15 : "5%"}
               >
                 {list.slice(0, 2).map((elem) => (
                   <XStack
@@ -529,7 +529,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             Detergent Type
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "16%"}>
+            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "5%"}>
               {["scented", "unscented"].map((elem, id) => (
                 <XStack
                   height={48}
@@ -571,7 +571,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             Water Temperature
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "16%"}>
+            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "5%"}>
               {["cold", "hot"].map((elem, index) => (
                 <XStack
                   height={48}
@@ -613,7 +613,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             Fabric Softener
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "16%"}>
+            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "5%"}>
               {request.map((elem, id) => (
                 <XStack
                   height={48}
@@ -651,7 +651,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             Bleach
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "16%"}>
+            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "5%"}>
               {["Yes", "No"].map((elem, id) => (
                 <XStack
                   height={48}
@@ -689,7 +689,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
             Dye
           </Text>
           <YStack>
-            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "16%"}>
+            <XStack marginTop={20} gap={Platform.OS === "android" ? 8 : "5%"}>
               {["Yes", "No"].map((elem, id) => (
                 <XStack
                   height={48}

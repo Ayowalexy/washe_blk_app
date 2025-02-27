@@ -69,8 +69,8 @@ export const tokens = createTokens({
     primary4: "#FFD700",
     primary5: "#F7CE45",
     primary6: "#FFF9DB",
-    primary7: '#340804',
-    primary8: '#FEEDEC',
+    primary7: "#340804",
+    primary8: "#FEEDEC",
     secondary1: "#F0F3F4",
     secondary2: "#242426",
     secondary3: "#FFFCEB",
@@ -80,6 +80,7 @@ export const tokens = createTokens({
     secondary7: "#998100",
     secondary8: "#F9FAFB",
     secondary9: "rgba(4, 104, 246, 0.32)",
+   secondary10: "#665600",
     accent1: "#DCEAFE",
     accent2: "#EE7B30",
     accent3: "#00D158",
@@ -102,9 +103,9 @@ export const tokens = createTokens({
     blue2: "#63A3FD",
     border1: "#3185FC",
     lightGrey: "#F6F8F9",
-    darkGrey: '#E6E6E6',
-    textBlack: '#090B16',
-    textSecondary: '#62636C'
+    darkGrey: "#E6E6E6",
+    textBlack: "#090B16",
+    textSecondary: "#62636C",
   },
 });
 

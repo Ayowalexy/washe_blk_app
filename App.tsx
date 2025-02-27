@@ -6,6 +6,8 @@ import { useFonts } from "expo-font";
 import { useCallback } from "react";
 import AppProvider from "./provider/app-provider";
 import { RootNavigator } from "./navigation/root.navigation";
+// import { LogBox } from "react-native";
+
 // import {
 //   GoogleSignin,
 //   GoogleSigninButton,
@@ -20,7 +22,7 @@ import { RootNavigator } from "./navigation/root.navigation";
 //     offlineAccess: false,
 //     scopes: ["https://www.googleapis.com/auth/youtube.readonly"],
 //   });
-// }
+// LogBox.ignoreAllLogs(true);
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -41,7 +43,7 @@ export default function App() {
     return null;
   }
   return (
-    <View style={{ flex: 1, height: 'auto', }} onLayout={onLayoutRootView}>
+    <View style={{ flex: 1, height: "auto" }} onLayout={onLayoutRootView}>
       <AppProvider>
         <RootNavigator />
       </AppProvider>

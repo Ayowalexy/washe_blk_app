@@ -61,7 +61,7 @@ export const TrackForm = ({ trackDetails }: Props) => {
               <View padding={22}>
                 <YStack>
                   <Text
-                    color={theme?.blue1?.val}
+                    color={"$blue1"}
                     fontSize={12}
                     fontFamily="$body"
                     fontWeight="500"
@@ -69,7 +69,7 @@ export const TrackForm = ({ trackDetails }: Props) => {
                     Service
                   </Text>
                   <Text
-                    color={theme?.white1?.val}
+                    color={"$white1"}
                     fontSize={14}
                     fontFamily="$body"
                     fontWeight="500"
@@ -81,7 +81,7 @@ export const TrackForm = ({ trackDetails }: Props) => {
                 </YStack>
                 <YStack marginTop={20}>
                   <Text
-                    color={theme?.blue1?.val}
+                    color={"$blue1"}
                     fontSize={12}
                     fontFamily="$body"
                     fontWeight="500"
@@ -90,7 +90,7 @@ export const TrackForm = ({ trackDetails }: Props) => {
                   </Text>
 
                   <Text
-                    color={theme?.white1?.val}
+                    color={"$white1"}
                     fontSize={14}
                     fontFamily="$body"
                     fontWeight="500"
@@ -110,7 +110,7 @@ export const TrackForm = ({ trackDetails }: Props) => {
             marginTop={27}
             borderWidth={1}
             borderRadius={12}
-            borderColor={theme?.black4?.val}
+            borderColor={"$black4"}
           >
             <Text color={theme?.primary2?.val} fontSize={15}>
               Request Tracking
@@ -139,16 +139,16 @@ export const TrackForm = ({ trackDetails }: Props) => {
                                 justifyContent="center"
                                 alignItems="center"
                               >
-                                <Text fontSize={8} color={theme?.black4?.val}>
+                                <Text fontSize={8} color={"$black4"}>
                                   |
                                 </Text>
-                                <Text fontSize={8} color={theme?.black4?.val}>
+                                <Text fontSize={8} color={"$black4"}>
                                   |
                                 </Text>
-                                <Text fontSize={8} color={theme?.black4?.val}>
+                                <Text fontSize={8} color={"$black4"}>
                                   |
                                 </Text>
-                                <Text fontSize={8} color={theme?.black4?.val}>
+                                <Text fontSize={8} color={"$black4"}>
                                   |
                                 </Text>
                               </YStack>

@@ -32,7 +32,7 @@ export const InputBox = ({
 
   return (
     <YStack marginBottom={22}>
-      <Text fontSize={14} color={theme?.black1} marginBottom={8}>
+      <Text fontSize={14} color={'$black1'} marginBottom={8}>
         {label}
       </Text>
       <View style={{ position: "relative" }}>
@@ -42,9 +42,9 @@ export const InputBox = ({
           {...others}
           secureTextEntry={!isPasswordVisible && secureTextEntry}
           borderWidth={1}
-          borderColor={theme?.black4}
+          borderColor={'$black4'}
           backgroundColor="transparent"
-          placeholderTextColor={theme?.placeholder}
+          placeholderTextColor={'$placeholder'}
           fontSize={14}
           fontFamily="$body"
           fontWeight="500"
@@ -102,7 +102,7 @@ export const InputTextarea = ({
   const theme = useTheme();
   return (
     <YStack marginBottom={22}>
-      <Text fontSize={14} color={theme?.black1} marginBottom={8}>
+      <Text fontSize={14} color={"$black1"} marginBottom={8}>
         {label}
       </Text>
       <View style={{ position: "relative" }}>
@@ -124,7 +124,7 @@ export const InputTextarea = ({
           placeholder={placeholder}
           {...others}
           borderWidth={1}
-          borderColor={theme?.black4}
+          borderColor={"$black4"}
           backgroundColor="transparent"
           placeholderTextColor={theme?.placeholder}
           fontSize={14}

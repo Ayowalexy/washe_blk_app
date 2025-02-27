@@ -89,12 +89,12 @@ export const AuthLayout = ({
             >
               <View
                 borderBottomWidth={1}
-                borderBottomColor={theme?.black4}
+                borderBottomColor={'$black4'}
                 width="43%"
               />
               <Text
                 fontSize={14}
-                color={theme?.black3}
+                color={'$black3'}
                 fontFamily="$body"
                 fontWeight="500"
               >
@@ -102,7 +102,7 @@ export const AuthLayout = ({
               </Text>
               <View
                 borderBottomWidth={1}
-                borderBottomColor={theme?.black4}
+                borderBottomColor={'$black4'}
                 width="43%"
               />
             </XStack>

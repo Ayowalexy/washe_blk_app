@@ -44,7 +44,10 @@ export const IdVerification = ({
     },
     onSubmit: (values) => {
       const newUser = {
-        address,
+        address: address.address,
+        city: address.city,
+        state: address.state,
+        zipCode: address.zipCode,
         fileName: values.fileName,
         fileUrl: "file",
       };
@@ -58,7 +61,7 @@ export const IdVerification = ({
             text1: "Confirm the OTP we sent to you",
           });
           const { data: datas } = await refetch();
-          console.log(datas?.data, 'user saved');
+          console.log(datas?.data, "user saved");
           setUser(datas?.data);
           setVisible(true);
         },
@@ -105,13 +108,13 @@ export const IdVerification = ({
               text="Upload a picture or scan of a valid identity document"
             >
               <View>
-                <Text fontSize={14} color={theme?.black1} marginBottom={8}>
+                <Text fontSize={14} color={"$black1"} marginBottom={8}>
                   ID upload
                 </Text>
                 <YStack
                   alignItems="center"
                   width="100%"
-                  borderColor={theme?.black4?.val}
+                  borderColor={"$black4"}
                   borderWidth={1}
                   height={154}
                   borderRadius={10}
@@ -145,7 +148,7 @@ export const IdVerification = ({
                   <Text
                     fontSize={13}
                     marginTop={4}
-                    color={theme?.black3?.val}
+                    color={"$black3"}
                     fontFamily="$body"
                     fontWeight="500"
                   >
@@ -160,7 +163,7 @@ export const IdVerification = ({
                       <YStack marginLeft={10}>
                         <Text
                           fontSize={14}
-                          color={theme?.black1}
+                          color={"$black1"}
                           fontFamily="$body"
                           fontWeight="500"
                         >
@@ -168,13 +171,13 @@ export const IdVerification = ({
                         </Text>
                         <XStack alignItems="center" marginTop={5}>
                           <Text
-                            color={theme?.black3}
+                            color={"$black3"}
                             fontSize={12}
                             marginRight={7}
                           >
                             {Number(fileSizeKB).toFixed(2)} KB
                           </Text>
-                          <Text color={theme?.black3} fontSize={12}>
+                          <Text color={"$black3"} fontSize={12}>
                             |
                           </Text>
                           <TouchableOpacity></TouchableOpacity>
@@ -195,7 +198,7 @@ export const IdVerification = ({
                       padding={24}
                     >
                       <Text
-                        color={theme?.black1}
+                        color={"$black1"}
                         fontSize={13}
                         fontFamily="$body"
                         fontWeight="500"

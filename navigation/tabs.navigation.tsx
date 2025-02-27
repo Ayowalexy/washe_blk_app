@@ -59,7 +59,7 @@ export const BottomTabNavigation = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarActiveTintColor: theme?.primary3?.val,
-        tabBarInactiveTintColor: theme?.black3?.val,
+        tabBarInactiveTintColor: "$black3",
         tabBarStyle: {
           height: 72,
           shadowColor: "rgba(103, 114, 229, 0.08)",

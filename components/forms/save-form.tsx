@@ -56,7 +56,7 @@ export const SaveForm = ({ time }: Props) => {
               <View padding={22}>
                 <YStack>
                   <Text
-                    color={theme?.blue1?.val}
+                    color={"$blue1"}
                     fontSize={12}
                     fontFamily="$body"
                     fontWeight="500"
@@ -64,7 +64,7 @@ export const SaveForm = ({ time }: Props) => {
                     Service
                   </Text>
                   <Text
-                    color={theme?.white1?.val}
+                    color={"$white1"}
                     fontSize={14}
                     fontFamily="$body"
                     fontWeight="500"
@@ -76,7 +76,7 @@ export const SaveForm = ({ time }: Props) => {
                 </YStack>
                 <YStack marginTop={20}>
                   <Text
-                    color={theme?.blue1?.val}
+                    color={"$blue1"}
                     fontSize={12}
                     fontFamily="$body"
                     fontWeight="500"
@@ -85,7 +85,7 @@ export const SaveForm = ({ time }: Props) => {
                   </Text>
 
                   <Text
-                    color={theme?.white1?.val}
+                    color={"$white1"}
                     fontSize={14}
                     fontFamily="$body"
                     fontWeight="500"
@@ -106,34 +106,34 @@ export const SaveForm = ({ time }: Props) => {
             marginTop={27}
             borderWidth={1}
             borderRadius={12}
-            borderColor={theme?.black4?.val}
+            borderColor={"$black4"}
           >
-            <Text color={theme?.black1?.val} fontSize={15}>
+            <Text color={"$black1"} fontSize={15}>
               Pickup Information
             </Text>
             <YStack marginTop={20}>
-              <Text color={theme?.black3?.val} fontSize={13}>
+              <Text color={"$black3"} fontSize={13}>
                 Date/Time
               </Text>
               <XStack gap={4}>
-                <Text color={theme?.black1?.val} fontSize={15}>
+                <Text color={"$black1"} fontSize={15}>
                   {moment(oneLaundryRequest.pickupDate).format("Do MMM YY")},
                 </Text>
-                <Text color={theme?.black1?.val} fontSize={15}>
+                <Text color={"$black1"} fontSize={15}>
                   {time}
                 </Text>
               </XStack>
               <View
                 borderBottomWidth={1}
-                borderBottomColor={theme?.black4?.val}
+                borderBottomColor={"$black4"}
                 paddingVertical={13}
               />
             </YStack>
             <YStack marginTop={20}>
-              <Text color={theme?.black3?.val} fontSize={13}>
+              <Text color={"$black3"} fontSize={13}>
                 TimeFrame
               </Text>
-              <Text color={theme?.black1?.val} fontSize={15}>
+              <Text color={"$black1"} fontSize={15}>
                 {oneLaundryRequest.timeframe === "same_day"
                   ? "Same day"
                   : oneLaundryRequest.timeframe === "2_days"
@@ -151,19 +151,19 @@ export const SaveForm = ({ time }: Props) => {
             marginTop={27}
             borderWidth={1}
             borderRadius={12}
-            borderColor={theme?.black4?.val}
+            borderColor={"$black4"}
           >
-            <Text color={theme?.black1?.val} fontSize={15}>
+            <Text color={"$black1"} fontSize={15}>
               Preferences
             </Text>
             <YStack marginTop={20}>
               <XStack justifyContent="space-between">
                 <YStack width={"47%"} alignItems="flex-start">
-                  <Text color={theme?.black3?.val} fontSize={13}>
+                  <Text color={"$black3"} fontSize={13}>
                     Detergent Type
                   </Text>
                   <Text
-                    color={theme?.black1?.val}
+                    color={"$black1"}
                     fontSize={15}
                     textTransform="capitalize"
                   >
@@ -171,11 +171,11 @@ export const SaveForm = ({ time }: Props) => {
                   </Text>
                 </YStack>
                 <YStack width={"47%"} alignItems="flex-start">
-                  <Text color={theme?.black3?.val} fontSize={13}>
+                  <Text color={"$black3"} fontSize={13}>
                     Water Temperature
                   </Text>
                   <Text
-                    color={theme?.black1?.val}
+                    color={"$black1"}
                     fontSize={15}
                     textTransform="capitalize"
                   >
@@ -185,7 +185,7 @@ export const SaveForm = ({ time }: Props) => {
               </XStack>
               <View
                 borderBottomWidth={1}
-                borderBottomColor={theme?.black4?.val}
+                borderBottomColor={"$black4"}
                 paddingVertical={13}
               />
             </YStack>
@@ -196,25 +196,25 @@ export const SaveForm = ({ time }: Props) => {
                 gap={4}
               >
                 <YStack width={"47%"} alignItems="flex-start">
-                  <Text color={theme?.black3?.val} fontSize={13}>
+                  <Text color={"$black3"} fontSize={13}>
                     Fabric Softener
                   </Text>
-                  <Text color={theme?.black1?.val} fontSize={15}>
+                  <Text color={"$black1"} fontSize={15}>
                     {oneLaundryRequest.softener ? "Yes" : "No"}
                   </Text>
                 </YStack>
                 <YStack width={"47%"} alignItems="flex-start">
-                  <Text color={theme?.black3?.val} fontSize={13}>
+                  <Text color={"$black3"} fontSize={13}>
                     Bleach
                   </Text>
-                  <Text color={theme?.black1?.val} fontSize={15}>
+                  <Text color={"$black1"} fontSize={15}>
                     {oneLaundryRequest.bleach ? "Yes" : "No"}
                   </Text>
                 </YStack>
               </XStack>
               <View
                 borderBottomWidth={1}
-                borderBottomColor={theme?.black4?.val}
+                borderBottomColor={"$black4"}
                 paddingVertical={13}
               />
               <XStack
@@ -224,19 +224,19 @@ export const SaveForm = ({ time }: Props) => {
                 marginTop={20}
               >
                 <YStack width={"47%"} alignItems="flex-start">
-                  <Text color={theme?.black3?.val} fontSize={13}>
+                  <Text color={"$black3"} fontSize={13}>
                     Dye
                   </Text>
-                  <Text color={theme?.black1?.val} fontSize={15}>
+                  <Text color={"$black1"} fontSize={15}>
                     {oneLaundryRequest.dye ? "Yes" : "No"}
                   </Text>
                 </YStack>
                 <YStack width={"47%"} alignItems="flex-start">
-                  <Text color={theme?.black3?.val} fontSize={13}>
+                  <Text color={"$black3"} fontSize={13}>
                     Dye Color
                   </Text>
                   <Text
-                    color={theme?.black1?.val}
+                    color={"$black1"}
                     fontSize={15}
                     textTransform="capitalize"
                   >

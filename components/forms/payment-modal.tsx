@@ -64,7 +64,7 @@ export const PaymentForm: FC<Prop> = ({
                 <YStack>
                   <XStack justifyContent="space-between" alignItems="center">
                     <Text
-                      color={theme?.blue1?.val}
+                      color={"$blue1"}
                       fontSize={12}
                       fontFamily="$body"
                       fontWeight="500"
@@ -72,7 +72,7 @@ export const PaymentForm: FC<Prop> = ({
                       Sub-total
                     </Text>
                     <Text
-                      color={theme?.white1?.val}
+                      color={"$white1"}
                       fontSize={14}
                       fontFamily="$body"
                       fontWeight="500"
@@ -85,14 +85,14 @@ export const PaymentForm: FC<Prop> = ({
                   </XStack>
                   <View
                     borderBottomWidth={1}
-                    borderBottomColor={theme?.blue2?.val}
+                    borderBottomColor={"$blue2"}
                     paddingVertical={9}
                   />
                 </YStack>
                 <YStack paddingTop={12}>
                   <XStack justifyContent="space-between" alignItems="center">
                     <Text
-                      color={theme?.blue1?.val}
+                      color={"$blue1"}
                       fontSize={12}
                       fontFamily="$body"
                       fontWeight="500"
@@ -100,7 +100,7 @@ export const PaymentForm: FC<Prop> = ({
                       Tax
                     </Text>
                     <Text
-                      color={theme?.white1?.val}
+                      color={"$white1"}
                       fontSize={14}
                       fontFamily="$body"
                       fontWeight="500"
@@ -111,14 +111,14 @@ export const PaymentForm: FC<Prop> = ({
                   </XStack>
                   <View
                     borderBottomWidth={1}
-                    borderBottomColor={theme?.blue2?.val}
+                    borderBottomColor={"$blue2"}
                     paddingVertical={9}
                   />
                 </YStack>
                 <YStack paddingTop={12}>
                   <XStack justifyContent="space-between" alignItems="center">
                     <Text
-                      color={theme?.blue1?.val}
+                      color={"$blue1"}
                       fontSize={12}
                       fontFamily="$body"
                       fontWeight="500"
@@ -126,7 +126,7 @@ export const PaymentForm: FC<Prop> = ({
                       Total Amount
                     </Text>
                     <Text
-                      color={theme?.white1?.val}
+                      color={"$white1"}
                       fontSize={14}
                       fontFamily="$body"
                       fontWeight="500"
@@ -146,9 +146,9 @@ export const PaymentForm: FC<Prop> = ({
             marginTop={27}
             borderWidth={1}
             borderRadius={12}
-            borderColor={theme?.black4?.val}
+            borderColor={"$black4"}
           >
-            <Text color={theme?.black3?.val} fontSize={13}>
+            <Text color={"$black3"} fontSize={13}>
               Select Payment Information
             </Text>
             {
@@ -163,7 +163,7 @@ export const PaymentForm: FC<Prop> = ({
                           <View
                             width={36}
                             height={24}
-                            backgroundColor={theme?.white1?.val}
+                            backgroundColor={"$white1"}
                             style={styles.atm}
                             justifyContent="center"
                             alignItems="center"
@@ -173,7 +173,7 @@ export const PaymentForm: FC<Prop> = ({
                             <AtmCard />
                           </View>
                           <YStack marginLeft={14}>
-                            <Text color={theme?.black1?.val} fontSize={15}>
+                            <Text color={"$black1"} fontSize={15}>
                               {item?.item?.billing_details?.name ??
                                 `${user?.firstName} ${user?.lastName}`}
                             </Text>
@@ -188,27 +188,27 @@ export const PaymentForm: FC<Prop> = ({
                                 </XStack>
                                 <Text
                                   marginLeft={4}
-                                  color={theme?.black3?.val}
+                                  color={"$black3"}
                                   fontSize={12}
                                 >
                                   {item.item?.exp_month}
                                 </Text>
                                 <View
-                                  borderLeftColor={theme?.black3?.val}
+                                  borderLeftColor={"$black3"}
                                   borderLeftWidth={1}
                                   height={10}
                                   marginHorizontal={6}
                                 />
-                                <Text color={theme?.black3?.val} fontSize={12}>
+                                <Text color={"$black3"} fontSize={12}>
                                   {item.item?.card?.exp_month}
                                 </Text>
                                 <View
-                                  borderLeftColor={theme?.black3?.val}
+                                  borderLeftColor={"$black3"}
                                   borderLeftWidth={1}
                                   height={10}
                                   marginHorizontal={6}
                                 />
-                                <Text color={theme?.black3?.val} fontSize={12}>
+                                <Text color={"$black3"} fontSize={12}>
                                   {item.item?.card?.last4}
                                 </Text>
                               </XStack>

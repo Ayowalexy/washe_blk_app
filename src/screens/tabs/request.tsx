@@ -114,14 +114,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
     });
   };
   const handleMayPayment = useCallback(async () => {
-    console.log(
-      {
-        laundryRequestId: oneLaundryRequest.laundryRequestId as string,
-        paymentMethodId: selected_payment_id,
-        type: "base_fee",
-      },
-      "payload being sent"
-    );
+    console.log("handleMayPayment triggered");
     try {
       const payload = {
         laundryRequestId: oneLaundryRequest.laundryRequestId as string,
@@ -196,7 +189,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
                   textTransform="uppercase"
                   fontSize={12}
                   marginTop={18}
-                  color={theme?.black3?.val}
+                  color={"$black3"}
                 >
                   25th Jun 2023
                 </Text>
@@ -210,7 +203,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
                 <EmptyRequest
                   onPress={() => setOpenModal(true)}
                   backgroundColor={theme?.primary3?.val}
-                  color={theme?.white1?.val}
+                  color={"$white1"}
                   borderColor={theme?.primary3?.val}
                 />
               }
@@ -239,7 +232,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
         onPress={() => setOpenModal(true)}
       >
         <View
-          backgroundColor={theme?.primary3?.val}
+          backgroundColor={"$primary3"}
           height={56}
           width={56}
           justifyContent="center"
@@ -259,8 +252,8 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
             <View width="47%">
               <Button
                 title="Cancel"
-                color={theme?.white1?.val}
-                textColor={theme?.black3?.val}
+                color={"$white1"}
+                textColor={"$black3"}
                 style={{
                   borderWidth: 1,
                   borderColor: theme?.accent4?.val,
@@ -270,7 +263,10 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
               />
             </View>
             <View width="47%">
-              <Button title="Next" onPress={handleOpenRequest} />
+              <Button
+                title="Next"
+                onPress={handleOpenRequest}
+              />
             </View>
           </XStack>
         }
@@ -314,7 +310,7 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
                 onToggle={toggleSwitch}
               />
               <TouchableOpacity onPress={() => toggleSwitch()}>
-                <Text color={theme?.black1?.val} fontSize={14}>
+                <Text color={"$black1"} fontSize={14}>
                   Save request to be used in the future
                 </Text>
               </TouchableOpacity>

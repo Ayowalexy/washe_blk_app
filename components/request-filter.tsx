@@ -10,12 +10,12 @@ export const RequestFilter = () => {
           paddingHorizontal={16}
           paddingVertical={10}
           justifyContent="center"
-          backgroundColor={theme?.accent6?.val}
+          backgroundColor={'$accent6'}
           borderWidth={1}
-          borderColor={theme?.primary3?.val}
+          borderColor={'$primary3'}
           borderRadius={100}
         >
-          <Text fontSize={12} color={theme?.primary3?.val}>
+          <Text fontSize={12} color={'$primary3'}>
             Newest - Oldest{" "}
           </Text>
         </View>
@@ -23,12 +23,12 @@ export const RequestFilter = () => {
           paddingHorizontal={16}
           paddingVertical={10}
           justifyContent="center"
-          backgroundColor={theme?.white1?.val}
+          backgroundColor={"$white1"}
           borderWidth={1}
-          borderColor={theme?.black4?.val}
+          borderColor={'$black4'}
           borderRadius={100}
         >
-          <Text fontSize={12} color={theme?.black3?.val}>
+          <Text fontSize={12} color={'$black3'}>
             Oldest - Newest{" "}
           </Text>
         </View>

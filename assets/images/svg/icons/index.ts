@@ -1,2 +1,6 @@
 export * from './user-line'
 export * from './e-bike'
+export * from './ongoing'
+export * from './bank'
+export * from './note'
+export * from './info-icon'

@@ -46,6 +46,7 @@ export const CreateAccount = ({
       firstName: "",
       lastName: "",
       phoneNumber: "",
+      type: ""
     },
     validationSchema: signUpValidationSchema,
     onSubmit: (values) => {
@@ -54,6 +55,7 @@ export const CreateAccount = ({
         lastName: values.lastName,
         phoneNumber: values.phoneNumber,
         email: values.email,
+        type: "customer"
       });
       navigation.navigate("enter_password");
       console.log(values, "values");
@@ -81,6 +83,7 @@ export const CreateAccount = ({
         contentContainerStyle={{ flexGrow: 1 }}
         enableOnAndroid={true}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         <View paddingTop={106}>
           <AuthLayout

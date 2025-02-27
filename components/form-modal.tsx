@@ -79,7 +79,7 @@ export const FormModal = ({
               paddingHorizontal={22}
             >
               <Text
-                color={theme?.black1?.val}
+                color={"$black1"}
                 fontSize={18}
                 fontFamily="$body"
                 fontWeight="500"
@@ -88,7 +88,7 @@ export const FormModal = ({
               </Text>
               <Text
                 textAlign="center"
-                color={theme?.black3?.val}
+                color={"$black3"}
                 fontSize={14}
                 fontFamily="$body"
                 fontWeight="500"

@@ -46,6 +46,12 @@ export function useReMakeLaundryRequest() {
       api.post("/requests/re-request", data).then((resp) => resp),
   });
 }
+export function useRejectPrice() {
+  return useMutation({
+    mutationFn: (data: LaundryReRequestDTO) =>
+      api.post("/requests/reweigh-order", data).then((resp) => resp),
+  });
+}
 export function useUpdateProfile() {
   return useMutation({
     mutationFn: (data: UpdateAccountDTO) =>

@@ -46,12 +46,14 @@ export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
         email: userdata.email,
         phoneNumber: userdata.phoneNumber,
         password: values.password,
+        type: userdata.type
       };
       setUserdata({
         firstName: userdata.firstName,
         lastName: userdata.lastName,
         phoneNumber: userdata.phoneNumber,
         email: userdata.email,
+        type: "customer"
       });
       console.log(newUser);
 

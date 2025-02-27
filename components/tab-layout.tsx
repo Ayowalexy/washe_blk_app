@@ -23,7 +23,11 @@ export const TabLayout = ({ children }: { children: ReactNode }) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <XStack>
           <View height={50} width={50}>
-            <Image source={ii} style={styles.img} />
+            <Image
+              source={user?.avatar ? { uri: user.avatar } : ii} // `ii` must be a valid image reference
+              style={styles.img}
+            />
+            ;
           </View>
           <YStack marginLeft={9} marginTop={6}>
             <Text

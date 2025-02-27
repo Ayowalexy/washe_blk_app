@@ -12,11 +12,12 @@ export const PaymentInfo = () => {
   const { data } = useGetPaymentMethods();
   const [user] = useAtom(persistentUserAtom);
   return (
-    <>
+    <View style={{ width: "100%" }}>
       <FlatList
         style={{ width: "100%" }}
         data={Array.isArray(data?.data?.data) ? data?.data?.data : []}
         keyExtractor={(item) => item.id.toString()}
+        showsVerticalScrollIndicator={false}
         renderItem={(item) => (
           <YStack
             width="80%"
@@ -25,13 +26,13 @@ export const PaymentInfo = () => {
             backgroundColor={theme.secondary3}
             padding={18}
           >
-            <Text color={theme?.black3?.val} fontSize={12}>
+            <Text color={"$black3"} fontSize={12}>
               Payment Information
             </Text>
             <XStack justifyContent="space-between">
               <XStack>
                 <YStack>
-                  <Text color={theme?.black1?.val} fontSize={15}>
+                  <Text color={"$black1"} fontSize={15}>
                     {item?.item?.billing_details?.name ??
                       `${user?.firstName} ${user?.lastName}`}
                   </Text>
@@ -44,29 +45,25 @@ export const PaymentInfo = () => {
                             <Star key={index} />
                           ))}
                       </XStack>
-                      <Text
-                        marginLeft={4}
-                        color={theme?.black3?.val}
-                        fontSize={12}
-                      >
+                      <Text marginLeft={4} color={"$black3"} fontSize={12}>
                         {item.item?.exp_month}
                       </Text>
                       <View
-                        borderLeftColor={theme?.black3?.val}
+                        borderLeftColor={"$black3"}
                         borderLeftWidth={1}
                         height={10}
                         marginHorizontal={6}
                       />
-                      <Text color={theme?.black3?.val} fontSize={12}>
+                      <Text color={"$black3"} fontSize={12}>
                         {item.item?.card?.exp_month}
                       </Text>
                       <View
-                        borderLeftColor={theme?.black3?.val}
+                        borderLeftColor={"$black3"}
                         borderLeftWidth={1}
                         height={10}
                         marginHorizontal={6}
                       />
-                      <Text color={theme?.black3?.val} fontSize={12}>
+                      <Text color={"$black3"} fontSize={12}>
                         {item.item?.card?.last4}
                       </Text>
                     </XStack>
@@ -77,6 +74,6 @@ export const PaymentInfo = () => {
           </YStack>
         )}
       />
-    </>
+    </View>
   );
 };

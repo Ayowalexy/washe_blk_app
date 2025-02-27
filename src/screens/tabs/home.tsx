@@ -92,23 +92,28 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const { data } = useGetLaundryServices();
   // console.log(allSavedRequests?.data, "allSavedRequestsallSavedRequests");
   const handleMayPayment = useCallback(async () => {
+    console.log("handleMayPayment triggered");
     try {
-      const response = await mutateAsync({
+      const payload = {
         laundryRequestId: oneLaundryRequest.laundryRequestId as string,
-
         paymentMethodId: selected_payment_id,
-      });
+        type: "base_fee",
+      };
+
+      console.log(payload, "Payload being sent");
+
+      const response = await mutateAsync(payload);
       console.log(response, "responsee");
+
       setPaymentModal(false);
-      setOneLaundryRequest({} as any)
       navigation.navigate("home_stack", {
         screen: "payment_successful",
       });
-    } catch (e) {
-      console.log(e);
+    } catch (error: any) {
+      console.log(error.response?.data || error.message, "error response");
     }
   }, [selected_payment_id, oneLaundryRequest]);
-
+  
   const handleOpenRequest = () => {
     setOpenModal(false);
     setOpenRequest(true);
@@ -264,7 +269,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           paddingHorizontal={15}
           paddingVertical={20}
         >
-          <Text>Saved Requests</Text>
+          <Text fontSize={15}>Saved Requests</Text>
           <View>
             <FlatList
               ListEmptyComponent={
@@ -433,8 +438,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             <View width="47%">
               <Button
                 title="Cancel"
-                color={theme?.white1?.val}
-                textColor={theme?.black3?.val}
+                color={"$white1"}
+                textColor={"$black3"}
                 style={{
                   borderWidth: 1,
                   borderColor: theme?.accent4?.val,
@@ -485,7 +490,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 onToggle={toggleSwitch}
               />
               <TouchableOpacity onPress={() => toggleSwitch()}>
-                <Text color={theme?.black1?.val} fontSize={14}>
+                <Text color={"$black1"} fontSize={14}>
                   Save request to be used in the future
                 </Text>
               </TouchableOpacity>

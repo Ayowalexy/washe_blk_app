@@ -7,7 +7,7 @@ import {
   TextStyle,
   StyleProp,
 } from "react-native";
-import { useTheme } from "tamagui";
+import { styled, useTheme } from "tamagui";
 import { View } from "./View";
 import { Text } from "./Text";
 
@@ -46,6 +46,7 @@ export const Button: React.FC<ButtonProps> = ({
   const theme = useTheme();
 
   const resolvedTextColor = theme[textColor]?.val || textColor || "#FFFFFF";
+  const resolvedButtonColor = color || "$primary3";
 
   const renderIcon = () => {
     if (!icon) return null;
@@ -61,6 +62,25 @@ export const Button: React.FC<ButtonProps> = ({
       ],
     });
   };
+  const StyledButton = styled(TouchableOpacity, {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 100,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    width: "100%",
+    backgroundColor: resolvedButtonColor, // Apply theme color directly
+    opacity: disabled || isLoading ? 0.6 : 1, // Disable opacity when loading or disabled
+  });
+
+  const StyledText = styled(Text, {
+    color: resolvedTextColor, // Apply theme color directly
+    fontFamily: "$body",
+    fontWeight: "500",
+    fontSize: textSize,
+  });
 
   const buttonStyle: StyleProp<ViewStyle> = [
     styles.button,
@@ -81,39 +101,41 @@ export const Button: React.FC<ButtonProps> = ({
   ];
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      disabled={disabled || isLoading}
-      style={buttonStyle}
-      accessibilityLabel={title}
-      accessible
-      {...props}
-    >
-      {isLoading ? (
-        <ActivityIndicator color={resolvedTextColor} />
-      ) : (
-        <View style={styles.contentContainer}>
-          {iconPosition === "left" && renderIcon()}
-          <View alignItems="center" flex={1}>
-            <Text
-            fontFamily='$body'
-              fontWeight="500"
-              variant={textVariant as any}
-              fontSize={textSize}
-              color={resolvedTextColor}
-            >
-              {title}
-            </Text>
+    <StyledButton>
+      <TouchableOpacity
+        onPress={onPress}
+        disabled={disabled || isLoading}
+        style={buttonStyle}
+        accessibilityLabel={title}
+        accessible
+        {...props}
+      >
+        {isLoading ? (
+          <ActivityIndicator color={resolvedTextColor} />
+        ) : (
+          <View style={styles.contentContainer}>
+            {iconPosition === "left" && renderIcon()}
+            <View alignItems="center" flex={1}>
+              <Text
+                fontFamily="$body"
+                fontWeight="500"
+                variant={textVariant as any}
+                fontSize={textSize}
+                color={resolvedTextColor}
+              >
+                {title}
+              </Text>
+            </View>
+            {iconPosition === "right" && (
+              <View style={styles.iconWrapper}>{renderIcon()}</View>
+            )}
+            {iconPosition === "center" && (
+              <View style={styles.iconWrapper2}>{renderIcon()}</View>
+            )}
           </View>
-          {iconPosition === "right" && (
-            <View style={styles.iconWrapper}>{renderIcon()}</View>
-          )}
-          {iconPosition === "center" && (
-            <View style={styles.iconWrapper2}>{renderIcon()}</View>
-          )}
-        </View>
-      )}
-    </TouchableOpacity>
+        )}
+      </TouchableOpacity>
+    </StyledButton>
   );
 };
 

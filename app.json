@@ -17,7 +17,9 @@
       "infoPlist": {
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": ["com.googleusercontent.apps.747966698616-nlc46s0ne6f609fu36bqvjt3a3lmooau"]
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.747966698616-nlc46s0ne6f609fu36bqvjt3a3lmooau"
+            ]
           }
         ]
       }
@@ -32,13 +34,8 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-font",
-      "@react-native-google-signin/google-signin"
-    ],
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "plugins": ["expo-font", "@react-native-google-signin/google-signin"],
+    "runtimeVersion": "1.0.0",
     "owner": "blklabs",
     "extra": {
       "eas": {

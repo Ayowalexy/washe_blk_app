@@ -12,7 +12,7 @@ export const CloseButton = ({ onPress }: { onPress: () => void }) => {
         width={56}
         height={56}
         borderWidth={1}
-        borderColor={theme?.black4}
+        borderColor={'$black4'}
         borderRadius={50}
         flexDirection="row"
         justifyContent="center"
@@ -32,7 +32,7 @@ export const BackButton = ({ onPress }: { onPress: () => void }) => {
         width={56}
         height={56}
         borderWidth={1}
-        borderColor={theme?.black4}
+        borderColor={"$black4"}
         borderRadius={50}
         flexDirection="row"
         justifyContent="center"

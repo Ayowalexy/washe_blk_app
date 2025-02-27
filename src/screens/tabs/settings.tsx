@@ -133,7 +133,7 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
       onSuccess: async (response) => {
         const { data } = await refetch();
         console.log(data.data, "data.data");
-        setOpenList(false)
+        setOpenList(false);
         setUser(data?.data);
         Toast.show({
           type: "customSuccess",
@@ -154,13 +154,15 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
   return (
     <View
       height={DEVICE_HEIGHT}
-      backgroundColor={theme?.white1?.val}
+      backgroundColor={"$white1"}
       width="100%"
       paddingHorizontal={20}
       paddingVertical={80}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text paddingTop={30}>Settings</Text>
+        <Text paddingTop={30} fontSize={18}>
+          Settings
+        </Text>
 
         <View style={styles.cardContainer}>
           <ImageBackground
@@ -191,11 +193,11 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
                 fontSize={16}
                 fontFamily="$body"
                 fontWeight="600"
-                color={theme?.white1?.val}
+                color={"$white1"}
               >
                 {user?.firstName} {user?.lastName}
               </Text>
-              <Text fontSize={14} fontWeight="500" color={theme?.white1?.val}>
+              <Text fontSize={14} fontWeight="500" color={"$white1"}>
                 {user?.email}
               </Text>
               <XStack
@@ -209,7 +211,7 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
                   fontSize={14}
                   marginLeft={3}
                   fontWeight="500"
-                  color={theme?.white1?.val}
+                  color={"$white1"}
                 >
                   {user?.phoneNumber}
                 </Text>
@@ -229,10 +231,10 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
                     <item.image />
                   </View>
                   <YStack marginLeft={13}>
-                    <Text color={theme?.black1?.val} fontSize={15}>
+                    <Text color={"$black1"} fontSize={15}>
                       {item?.title}
                     </Text>
-                    <Text color={theme?.black3?.val} fontSize={13}>
+                    <Text color={"$black3"} fontSize={13}>
                       {item.subText}
                     </Text>
                   </YStack>
@@ -252,13 +254,13 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
           <XStack
             alignItems="center"
             marginTop={22}
-            borderColor={theme?.black4?.val}
+            borderColor={"$black4"}
             borderWidth={1}
             padding={20}
             borderRadius={12}
           >
             <LogoutIcon />
-            <Text color={theme?.black1?.val} fontSize={15} marginLeft={13}>
+            <Text color={"$black1"} fontSize={15} marginLeft={13}>
               Log Out
             </Text>
           </XStack>
@@ -289,7 +291,7 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
           backgroundColor={theme.secondary3}
           padding={18}
         >
-          <Text color={theme?.black3?.val} fontSize={12}>
+          <Text color={"$black3"} fontSize={12}>
             Home address
           </Text>
           <Text color={theme.red2?.val} fontSize={14} marginTop={10}>
@@ -398,10 +400,12 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
             data={data?.data}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => (
-              <TouchableOpacity onPress={() => {
-                handleSelect(item.id)
-                handleEditProfilePic(item.url)
-              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  handleSelect(item.id);
+                  handleEditProfilePic(item.url);
+                }}
+              >
                 {selected === index ? (
                   <View height={78} width={78} borderRadius={50}>
                     <View width={74} height={74} borderRadius={50}>

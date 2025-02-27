@@ -22,12 +22,12 @@ export const Welcome = ({ navigation }: WelcomeScreenProps) => {
     <View
       height={Platform.OS === "android" ? DEVICE_HEIGHT + 100 : DEVICE_HEIGHT}
       width={DEVICE_WIDTH}
-      backgroundColor="$white1"
+      backgroundColor="$primary1"
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <Swiper
           autoplay
-          height={410}
+          height={500}
           activeDotStyle={{
             backgroundColor: "#000000",
             width: 40,
@@ -45,7 +45,7 @@ export const Welcome = ({ navigation }: WelcomeScreenProps) => {
           <Text
             fontFamily="$heading"
             fontWeight="500"
-            fontSize={28}
+            fontSize={32}
             paddingLeft={30}
             paddingRight={30}
             textAlign="center"
@@ -55,79 +55,37 @@ export const Welcome = ({ navigation }: WelcomeScreenProps) => {
           >
             Clean Clothes Always at your Fingertips
           </Text>
-          <Text
-            fontFamily="$heading"
-            fontWeight="400"
-            textAlign="center"
-            paddingLeft={20}
-            paddingRight={20}
-            fontSize={16}
-            lineHeight={28}
-            marginTop={14}
-            color="$textSecondary"
-          >
-            Our online reseller and Merchant of Record, oversees this order
-            process and
-          </Text>
+          
         </View>
         <View
           paddingBottom={150}
           paddingTop={50}
-          width="88%"
-          marginLeft="6%"
-          marginRight="6%"
+          width="95%"
+          marginLeft="2.5%"
+          marginRight="2.5%"
           rowGap={20}
+          flexDirection="row-reverse"
         >
-          <View width="100%" margin="auto">
+          <View width="50%" margin="auto">
             <Button
-              style={{ height: 60 }}
-              title="Continue as a Customer"
-              icon={<UserLine />}
-              iconPosition="right"
-              textSize={14}
+              style={{ height: 50 }}
+              variant="filled"
+              title="Create account"
+              textSize={15}
               onPress={() => navigation.navigate("create_account")}
             />
           </View>
-        
-          <View
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <View
-              borderBottomWidth={1}
-              width={"35%"}
-              borderBottomColor={theme.secondary1?.val}
-            />
-            <View
-              borderWidth={1}
-              width={60}
-              height={35}
-              borderColor={theme?.secondary1?.val}
-              borderRadius={19}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Text fontSize={15} textAlign="center" color={theme.black1?.val}>
-                OR
-              </Text>
-            </View>
-            <View
-              width={"35%"}
-              borderBottomWidth={1}
-              borderBottomColor={theme.secondary1?.val}
-            />
-          </View>
-          <View>
+
+          <View width="45%">
             <Button
-              style={{ height: 60 }}
+              style={{ height: 50 }}
               textColor="$black1"
-              variant="outline"
+              variant='secondary'
+              color="$primary4"
               onPress={() => navigation.navigate("login")}
               title="Log in"
-              icon={<LoginCircle />}
-              iconPosition="right"
-              textSize={14}
+              textSize={15}
+              
             />
           </View>
         </View>
@@ -142,6 +100,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: 60,
+    paddingTop: 100,
   },
 });

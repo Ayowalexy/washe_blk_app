@@ -102,8 +102,10 @@ export const Login = ({ navigation }: LoginScreenProps) => {
   };
 
   return (
-    <View height={Platform.OS === 'android' ? DEVICE_HEIGHT + 100 : DEVICE_HEIGHT}
-      backgroundColor="$white1">
+    <View
+      height={Platform.OS === "android" ? DEVICE_HEIGHT + 100 : DEVICE_HEIGHT}
+      backgroundColor="$white1"
+    >
       <KeyboardAwareScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}
@@ -152,17 +154,17 @@ export const Login = ({ navigation }: LoginScreenProps) => {
             marginHorizontal="auto"
             alignItems="center"
           >
-            <Text fontSize={15} color={theme?.primary4?.val}>
+            <Text fontSize={15} color={"$primary4"}>
               Forgot password
             </Text>
-            <Arrow color={theme?.primary4?.val} />
+            <Arrow color={"#FFD700"} />
           </XStack>
         </TouchableOpacity>
         <XStack
           gap={20}
           height={90}
           justifyContent="center"
-          marginBottom={20}
+          marginTop={20}
           alignItems="center"
           width="88%"
           marginHorizontal="auto"

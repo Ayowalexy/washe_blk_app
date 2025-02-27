@@ -56,13 +56,13 @@ export const NewLaundryRequest: React.FC<Props> = ({ data }) => {
               <Text
                 fontSize={14}
                 fontWeight={"600"}
-                color={theme?.black1?.val}
+                color={"$black1"}
                 paddingVertical={5}
                 textAlign="center"
               >
                 {elem.name}
               </Text>
-              <Text fontSize={12} textAlign="center" color={theme?.black3?.val}>
+              <Text fontSize={12} textAlign="center" color={"$black3"}>
                 {elem.description}
               </Text>
             </View>

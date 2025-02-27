@@ -4,7 +4,7 @@ import { SuccessLayout } from "../../../components/success-layout";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppRootStackParamsList } from "../../../navigation/app.roots.types";
 import { useAtom } from "jotai";
-import { LaundryRequests } from "../../atoms";
+import { LaundryRequests, persistentUserAtom } from "../../atoms";
 
 type PaymentSuccessfulScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
@@ -14,6 +14,8 @@ export const PaymentSuccessful = ({
   navigation,
 }: PaymentSuccessfulScreenProps) => {
   const [oneLaundryRequest, setOneLaundryRequest] = useAtom(LaundryRequests);
+    const [user] = useAtom(persistentUserAtom);
+  
 
   return (
     <SuccessLayout
@@ -24,7 +26,7 @@ export const PaymentSuccessful = ({
       secondTitle="Tax"
       thirdTitle="Total Amount"
       thirdText={`$${Number(oneLaundryRequest?.tax ?? 0) + Number(oneLaundryRequest?.total_amount ?? 0)}`}
-      successText="Welldone, Karen James!"
+      successText={`Welldone, ${user?.firstName} ${user?.lastName}!`}
       title="Payment successful"
       text={`Your payment of $${Number(oneLaundryRequest?.tax ?? 0) + Number(oneLaundryRequest?.total_amount ?? 0)} for your laundry was successfully made`}
       onPress={() => navigation.navigate("tabs", { screen: "Home" })}

@@ -59,7 +59,7 @@ export const DatePicker = ({
 
   return (
     <YStack>
-      <Text fontSize={14} color={theme?.black1} marginBottom={8}>
+      <Text fontSize={14} color={"$black1"} marginBottom={8}>
         {label}
       </Text>
       <View
@@ -69,7 +69,7 @@ export const DatePicker = ({
         alignItems="center"
         justifyContent="center"
         borderRadius={9}
-        borderColor={theme?.black4}
+        borderColor={"$black4"}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TextInput

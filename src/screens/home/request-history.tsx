@@ -79,7 +79,7 @@ export const RequestHistory = ({ navigation }: RequestHistoryScreenProps) => {
   return (
     <View
       height={DEVICE_HEIGHT}
-      backgroundColor={theme?.white1?.val}
+      backgroundColor={'$white1'}
       width="100%"
       paddingHorizontal={20}
       paddingVertical={80}
@@ -88,7 +88,7 @@ export const RequestHistory = ({ navigation }: RequestHistoryScreenProps) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <ArrowBack width={24} height={24} />
         </TouchableOpacity>
-        <Text paddingTop={30}>Request History</Text>
+        <Text paddingTop={30} fontSize={17}>Request History</Text>
         <RequestFilter />
         <YStack>
           <View>
@@ -100,7 +100,7 @@ export const RequestHistory = ({ navigation }: RequestHistoryScreenProps) => {
                     fontWeight="500"
                     style={{
                       fontSize: 15,
-                      color: theme?.black3?.val,
+                      color: "$black3",
                       textTransform: "uppercase",
 
                       marginTop: 30,
