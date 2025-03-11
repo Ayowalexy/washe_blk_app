@@ -46,7 +46,7 @@ import { CreditCard } from "../../components/credit-card.component";
 import { Button } from "../../libs/button";
 import { SuccessModal } from "../../components/layouts/success-layout";
 import { SubmitId } from "../../components/id-verification.component";
-import { useSubmitDocument } from "../../../api/mutation";
+import { useSubmitDocument, useUpdateProfile } from "../../../api/mutation";
 import * as DocumentPicker from "expo-document-picker";
 import { useFormik } from "formik";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -110,16 +110,41 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
   const [selected, setSelected] = useState(1);
   const [user, setUser] = useAtom(persistentUserAtom);
   const [selectedImage, setSelectedImage] = useState("");
-  // const { mutate, isPending } = useUpdateProfile();
   const { refetch } = useGetCurrentUser();
   const { mutate, isPending } = useSubmitDocument();
   const [fileSizeKB, setFileSizeKB] = useState(0);
   const [visible, setVisible] = useState(false);
+  const { mutateAsync, isPending: isLoading } = useUpdateProfile();
 
   const handleSelect = (id: number) => {
     setSelected(id);
   };
-
+  const handleEditProfilePic = (url: string) => {
+    const details = {
+      avatar: url,
+    };
+    mutateAsync(details, {
+      onSuccess: async (response) => {
+        const { data } = await refetch();
+        console.log(data.data, "data.data");
+        setOpenList(false);
+        setUser(data?.data);
+        Toast.show({
+          type: "customSuccess",
+          text1: "User updated successfully",
+        });
+      },
+      onError: (error: any) => {
+        Toast.show({
+          type: "customError",
+          text1:
+            JSON.stringify(error?.response?.data?.message) ||
+            "An error occured, try again",
+        });
+        console.log(error?.response?.data?.message);
+      },
+    });
+  };
   const openModal = (title: string) => {
     switch (title) {
       case "Edit Profile":
@@ -146,6 +171,7 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
   };
 
   const { data } = useGetAvatars();
+  console.log(data?.data, "all avatars");
 
   const handleLogout = async () => {
     try {
@@ -371,13 +397,13 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
               <TouchableOpacity
                 onPress={() => {
                   handleSelect(item.id);
-                  // handleEditProfilePic(item.url);
+                  handleEditProfilePic(item.url);
                 }}
               >
                 <View width={74} height={74} borderRadius={50}>
                   <Image
                     source={{
-                      uri: "https://firebasestorage.googleapis.com/v0/b/mudo-app-function.appspot.com/o/avatar%2Favatar-5.png?alt=media&",
+                      uri: item.url,
                     }}
                     width={70}
                     height={70}

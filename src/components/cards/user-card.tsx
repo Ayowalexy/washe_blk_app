@@ -13,12 +13,14 @@ type Props = {
   lastName: string;
   estimatedTime: string;
   location: string;
+  image?: string;
 };
 export const UserCard = ({
   firstName,
   lastName,
   estimatedTime,
   location,
+  image,
 }: Props) => {
   const theme = useTheme();
 
@@ -35,9 +37,7 @@ export const UserCard = ({
       <XStack justifyContent="space-between" alignItems="center" width={"auto"}>
         <XStack gap={12} alignItems="center">
           <Image
-            source={{
-              uri: "https://s3-alpha-sig.figma.com/img/4b51/cee6/d27dccad68facb12a73eb3def8dc1d6d?Expires=1728259200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=nGa9rX7Yq0quuwr2iMVhyaP6BX67SI8mP7DLox6VsgrqYUsj0KvG4ajCHGQZju9VZpODuYdCvU8cqipBsv2-85XMLq0pxnvdJlugzNPdV69o4gbCJzqU0oucoXnpIZ2QGo46qFFm7VBaRVkbiVBaWwXXtPVkTfDUQi8LagH9y4PshBTl2bDXrU8QsGX9ORGKpBhwbIhVy6W1vb7F5J~p-lnN~2h2qDsFuTeMSKsalRYpbLcEmdiqCHp9BPXKmOyGSmet2nzBXwkTNd2Yo8gakmMxEQZ0vDPVbXopRPidbt8wPv8pQTwYbpK4R9c7k659ayql1HkSfQBxAxpOik9qNg__",
-            }}
+            source={{ uri: image }}
             backgroundSize="cover"
             backgroundPosition="center"
             width={50}

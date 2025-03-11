@@ -94,6 +94,12 @@ export type UpdateAccountDTO = {
   lastName?: string;
   email?: string;
   phoneNumber?: string;
+  address?: {
+    lineOne: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
   avatar?: string;
 };
 export type ContactUsDTO = {

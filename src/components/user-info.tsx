@@ -15,6 +15,7 @@ type Props = {
   lastName?: string;
   requestType?: string;
   estimated_time?: string;
+  image: string;
 };
 export const UserInfo = ({
   address = "891 Ranchview Dr. Richardson, California 62639",
@@ -25,6 +26,7 @@ export const UserInfo = ({
   firstName,
   lastName,
   requestType,
+  image,
   estimated_time,
 }: Props) => {
   const theme = useTheme();
@@ -37,16 +39,25 @@ export const UserInfo = ({
           width={"auto"}
         >
           <XStack gap={12} alignItems="center">
-            <Image
-              source={{
-                uri: "https://s3-alpha-sig.figma.com/img/4b51/cee6/d27dccad68facb12a73eb3def8dc1d6d?Expires=1728259200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=nGa9rX7Yq0quuwr2iMVhyaP6BX67SI8mP7DLox6VsgrqYUsj0KvG4ajCHGQZju9VZpODuYdCvU8cqipBsv2-85XMLq0pxnvdJlugzNPdV69o4gbCJzqU0oucoXnpIZ2QGo46qFFm7VBaRVkbiVBaWwXXtPVkTfDUQi8LagH9y4PshBTl2bDXrU8QsGX9ORGKpBhwbIhVy6W1vb7F5J~p-lnN~2h2qDsFuTeMSKsalRYpbLcEmdiqCHp9BPXKmOyGSmet2nzBXwkTNd2Yo8gakmMxEQZ0vDPVbXopRPidbt8wPv8pQTwYbpK4R9c7k659ayql1HkSfQBxAxpOik9qNg__",
-              }}
-              backgroundSize="cover"
-              backgroundPosition="center"
-              width={50}
-              height={50}
-              borderRadius={100}
-            />
+            {image ? (
+              <Image
+                source={{
+                  uri: image,
+                }}
+                backgroundSize="cover"
+                backgroundPosition="center"
+                width={50}
+                height={50}
+                borderRadius={100}
+              />
+            ) : (
+              <View
+                width={50}
+                height={50}
+                borderRadius={100}
+              backgroundColor={theme.primary8?.val}
+              />
+            )}
             <YStack>
               <Text
                 marginBottom={2}
@@ -64,7 +75,7 @@ export const UserInfo = ({
                 <XStack gap={4} alignItems="center">
                   <Clock />
                   <Text fontSize={12} color={theme?.black3?.val}>
-                    {estimated_time?.length as any > 12
+                    {(estimated_time?.length as any) > 12
                       ? `${estimated_time?.substring(0, 12)}...`
                       : estimated_time}
                   </Text>

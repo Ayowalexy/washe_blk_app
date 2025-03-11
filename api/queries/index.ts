@@ -59,3 +59,10 @@ export function useToggle2FA() {
   });
   
 }
+export function useGetRequestHistory(){
+  return useQuery({
+    queryFn: () => api.get(`/rider/history`).then((resp) => resp.data),
+    queryKey: ["rider-history"],
+    enabled: true
+  });
+}

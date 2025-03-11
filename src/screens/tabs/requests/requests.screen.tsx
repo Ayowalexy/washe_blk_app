@@ -24,7 +24,7 @@ export const RequestScreen = ({ navigation }: RequestScreenProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [selectedTab, setSelectedTab] = useState("Pick-Up");
   const [requestType, setRequestType] = useAtom(requestTypeAtom);
-  const [acceptedRequest, setAcceptedRequest] = useAtom(oneAcceptedRequestAtom);
+  const [, setAcceptedRequest] = useAtom(oneAcceptedRequestAtom);
 
   const { refetch, data } = useGetRequests();
 
@@ -67,6 +67,7 @@ export const RequestScreen = ({ navigation }: RequestScreenProps) => {
           {filteredRequests?.map((elem: any, index: number) => (
             <View marginTop={25} key={index}>
               <UserInfo
+                image={elem.avatar}
                 firstName={elem.firstName}
                 lastName={elem.lastName}
                 isOpen={selectedIndex === index}
@@ -98,13 +99,16 @@ export const RequestScreen = ({ navigation }: RequestScreenProps) => {
                           navigation.navigate("map_screen");
                           setRequestType(elem.type);
                           setAcceptedRequest({
+                            avatar: elem.avatar,
+                            phoneNumber: elem.phoneNumber,
+                            userId: elem.userId,
                             firstName: elem?.firstName,
                             lastName: elem?.lastName,
                             location: elem?.location,
                             estimatedTime: elem?.estimatedTime,
                             baseFee: elem?.baseFee,
                             amount: elem?.amount,
-                            id: elem?.id
+                            id: elem?.id,
                           });
                         }}
                         title="Accept Request"

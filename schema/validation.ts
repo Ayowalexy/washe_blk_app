@@ -33,10 +33,10 @@ export const enterPasswordValidationSchema = Yup.object().shape({
     }),
 });
 export const addressValidationSchema = Yup.object().shape({
-  address: Yup.string().required("Address is required"),
-  city: Yup.string().required("City is required"),
-  state: Yup.string().required("State is required"),
-  zipCode: Yup.string().required("zip code is required"),
+  lineOne: Yup.string().optional(),
+  city: Yup.string().optional(),
+  state: Yup.string().optional(),
+  zipCode: Yup.string().optional(),
 });
 
 export const loginValidationSchema = Yup.object().shape({

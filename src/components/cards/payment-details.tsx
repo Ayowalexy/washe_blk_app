@@ -97,7 +97,7 @@ export const PaymentDetails = ({
           </XStack>
         </View>
 
-        {requestType !== "dropoff" && (
+        {requestType !== "picked_up" && (
           <>
             <XStack alignItems="flex-start" marginTop={10} gap={4}>
               <Clock />

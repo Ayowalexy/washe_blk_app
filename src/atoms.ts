@@ -62,6 +62,9 @@ type AcceptedRequestProps = {
   amount: number;
   baseFee: number;
   id: string;
+  avatar: string;
+  phoneNumber: string;
+  userId: string;
 };
 export const AddressAtom = atom<AddressDataProps>({} as AddressDataProps);
 // atoms.ts

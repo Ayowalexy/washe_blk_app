@@ -1,4 +1,4 @@
-import { Input, XStack, useTheme } from "tamagui";
+import { Input, ScrollView, XStack, useTheme } from "tamagui";
 import { InputBox } from "../input";
 import { useAtom } from "jotai";
 import { useFormik } from "formik";
@@ -9,11 +9,12 @@ import { View } from "../../libs/View";
 import { Button } from "../../libs/button";
 import { updateProfileValidationSchema } from "../../../schema/validation";
 import { useUpdateProfile } from "../../../api/mutation";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export const EditForm = () => {
   const theme = useTheme();
   const [user, setUser] = useAtom(persistentUserAtom);
-    const { mutate, isPending } = useUpdateProfile();
+  const { mutate, isPending } = useUpdateProfile();
   const { refetch } = useGetCurrentUser();
   const {
     handleBlur,
@@ -33,70 +34,77 @@ export const EditForm = () => {
     },
     validationSchema: updateProfileValidationSchema,
     onSubmit: (values) => {
-        mutate(values, {
-          onSuccess: async (response) => {
-            const { data } = await refetch();
-            console.log(data.data, "data.data");
-            setUser(data?.data);
-            Toast.show({
-              type: "customSuccess",
-              text1: "User updated successfully",
-            });
-          },
-          onError: (error: any) => {
-            Toast.show({
-              type: "customError",
-              text1:
-                JSON.stringify(error?.response?.data?.message) ||
-                "An error occured, try again",
-            });
-            console.log(error?.response?.data?.message)
-          },
-        });
+      mutate(values, {
+        onSuccess: async (response) => {
+          const { data } = await refetch();
+          console.log(data.data, "data.data");
+          setUser(data?.data);
+          Toast.show({
+            type: "customSuccess",
+            text1: "User updated successfully",
+          });
+        },
+        onError: (error: any) => {
+          Toast.show({
+            type: "customError",
+            text1:
+              JSON.stringify(error?.response?.data?.message) ||
+              "An error occured, try again",
+          });
+          console.log(error?.response?.data?.message);
+        },
+      });
     },
   });
   return (
-    <View width={"85%"} marginHorizontal={"auto"} marginTop={25}>
-      <InputBox
-        onChangeText={handleChange("firstName")}
-        onBlur={handleBlur("firstName")}
-        value={values.firstName}
-        placeholder="Karen"
-        editable={false}
-        label="First name"
-      />
-      <InputBox
-        onChangeText={handleChange("lastName")}
-        onBlur={handleBlur("lastName")}
-        value={values.lastName}
-        placeholder="James"
-        editable={false}
-        label="Last name"
-      />
-      <InputBox
-        value={values.email}
-        onChangeText={handleChange("email")}
-        onBlur={handleBlur("email")}
-        editable={false}
-        placeholder="karenjames@gmail.com"
-        label="Email address"
-      />
-      <InputBox
-        value={values.phoneNumber}
-        onChangeText={handleChange("phoneNumber")}
-        onBlur={handleBlur("phoneNumber")}
-        placeholder="+1"
-        label="Phone number"
-      />
-      <View paddingTop={55}>
-        <Button
-          style={{ height: 56 }}
-          title="Save"
-          onPress={() => {
-            handleSubmit();
-          }}
+    <KeyboardAwareScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      enableOnAndroid={true}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={{ width: "90%" }} marginHorizontal="auto">
+        <InputBox
+          onChangeText={handleChange("firstName")}
+          onBlur={handleBlur("firstName")}
+          value={values.firstName}
+          placeholder="Karen"
+          editable={false}
+          label="First name"
         />
+        <InputBox
+          onChangeText={handleChange("lastName")}
+          onBlur={handleBlur("lastName")}
+          value={values.lastName}
+          placeholder="James"
+          editable={false}
+          label="Last name"
+        />
+        <InputBox
+          value={values.email}
+          onChangeText={handleChange("email")}
+          onBlur={handleBlur("email")}
+          editable={false}
+          placeholder="karenjames@gmail.com"
+          label="Email address"
+        />
+        <InputBox
+          value={values.phoneNumber}
+          onChangeText={handleChange("phoneNumber")}
+          onBlur={handleBlur("phoneNumber")}
+          placeholder="+1"
+          label="Phone number"
+        />
+        <View paddingTop={55}>
+          <Button
+            style={{ height: 56 }}
+            title="Save"
+            onPress={() => {
+              handleSubmit();
+            }}
+          />
+        </View>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 };

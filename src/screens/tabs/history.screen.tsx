@@ -8,9 +8,11 @@ import { LaundryRequests } from "../../components/laundry-requests";
 import moment from "moment";
 import { UserCard } from "../../components/cards/user-card";
 import { UserHistoryCard } from "../../components/cards/user-history-card";
+import { useGetRequestHistory } from "../../../api/queries";
 
 export const History = () => {
   const theme = useTheme();
+  const { data } = useGetRequestHistory();
   // const groupedRequests = LaundryRequests?.reduce((acc: any, request: any) => {
   //   const date = moment(request.created_at).format("YYYY-MM-DD");
   //   if (!acc[date]) {
@@ -19,9 +21,9 @@ export const History = () => {
   //   acc[date].push(request);
   //   return acc;
   // }, {});
-  const groupedRequests = LaundryRequests?.reduce((acc: any, request: any) => {
+  const groupedRequests = data?.data?.reduce((acc: any, request: any) => {
     // Parse date with moment
-    const date = moment(request.date, "Do MMM YYYY").format("YYYY-MM-DD");
+    const date = moment(request.acceptedAt).format("YYYY-MM-DD");
     if (!acc[date]) {
       acc[date] = [];
     }
@@ -52,9 +54,7 @@ export const History = () => {
         </View>
         {groupedRequests &&
           Object.keys(groupedRequests).map((date, index) => (
-            <DefaultView
-              key={date}
-            >
+            <DefaultView key={date}>
               <Text
                 fontFamily="$body"
                 fontWeight="500"
@@ -74,10 +74,13 @@ export const History = () => {
               {groupedRequests[date].map((request: any, index: any) => (
                 <>
                   <UserHistoryCard
+                    image={request?.user?.avatar}
                     estimatedTime=""
-                    location={request?.location}
-                    firstName={request?.firstName}
-                    lastName={request?.lastName}
+                    location={
+                      request?.laundry?.laundryRequestService.description
+                    }
+                    firstName={request?.user?.firstName}
+                    lastName={request?.user?.lastName}
                   />
                   {index !== groupedRequests[date].length - 1 && (
                     <View borderBottomWidth={1} borderBottomColor="$black4" />

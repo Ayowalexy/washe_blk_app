@@ -11,7 +11,11 @@ import { DEVICE_HEIGHT, DEVICE_WIDTH } from "../../constants";
 import { SetStateAction, useAtom } from "jotai";
 import { oneAcceptedRequestAtom, requestTypeAtom } from "../../atoms";
 import { useNavigation } from "@react-navigation/native";
-import { useAcceptPickupRequest } from "../../../api/mutation";
+import {
+  useAcceptPickupRequest,
+  useUpdatePricing,
+  useUpdateStatus,
+} from "../../../api/mutation";
 import Toast from "react-native-toast-message";
 
 type Props = {
@@ -36,19 +40,19 @@ export const CustomerInfoModal = ({
   const [updatePricing, setUpdatePricing] = useState(false);
   const [price, setPrice] = useState("");
   const [requestType, setRequestType] = useAtom(requestTypeAtom);
-  const [accepted] = useAtom(oneAcceptedRequestAtom);
+  const [accepted, setAcceptedRequest] = useAtom(oneAcceptedRequestAtom);
   const { mutate, isPending } = useAcceptPickupRequest();
+  const { mutateAsync, isPending: isLoading } = useUpdatePricing();
 
   const handlePickUpAccepted = async () => {
     const resp = {
       riderRequestId: accepted?.id,
     };
     mutate(resp, {
-      onSuccess: async (data) => {
-        console.log(data);
+      onSuccess: async (data: any) => {
         Toast.show({
           type: "customSuccess",
-          text1: "Request Accepted Successfully",
+          text1: data?.data?.message,
         });
         setIsAccepted(false);
         setCompletePickup(true);
@@ -69,6 +73,7 @@ export const CustomerInfoModal = ({
     setCompletePickup(false);
     setUpdatePricing(true);
   };
+  console.log(accepted.avatar, "acepted id");
 
   const handlePricing = () => {
     if (price) {
@@ -76,14 +81,18 @@ export const CustomerInfoModal = ({
         riderRequestId: accepted?.id,
         fee: Number(price),
       };
-      mutate(resp, {
+      mutateAsync(resp, {
         onSuccess: async (data) => {
-          console.log(data);
+          console.log(data, "data returned");
           Toast.show({
             type: "customSuccess",
             text1: "Price Updated Successfully",
           });
           setVisible(false);
+          setAcceptedRequest({
+            ...accepted,
+            amount: Number(price),
+          });
           setShow(true);
         },
         onError: (error: any) => {
@@ -99,6 +108,36 @@ export const CustomerInfoModal = ({
   };
   const navigation = useNavigation();
   console.log(updatePricing, "updatePricing");
+
+  const { mutateAsync: changeStatus } = useUpdateStatus();
+  console.log(accepted, "acce");
+
+  const handleChangeStatus = async () => {
+    const resp = {
+      riderRequestId: accepted.id,
+      status: "picked_up",
+    };
+    mutate(resp, {
+      onSuccess: async (data) => {
+        console.log(data);
+        Toast.show({
+          type: "customSuccess",
+          text1: "Dropoff started Successfully",
+        });
+        setVisible(false);
+        setShowSuccessModal(true);
+        setRequestType("drop_off");
+      },
+      onError: (error: any) => {
+        Toast.show({
+          type: "customError",
+          text1:
+            error?.response?.data.message || "An error occurred, try again",
+        });
+        console.log(error?.response?.data, "rrr");
+      },
+    });
+  };
   return (
     <Modal
       animationType="slide"
@@ -139,13 +178,15 @@ export const CustomerInfoModal = ({
                 Customer's Information
               </Text>
               <UserCard
+                image={accepted.avatar}
                 firstName={accepted.firstName}
                 lastName={accepted.lastName}
                 location={accepted.location}
                 estimatedTime={accepted.estimatedTime}
               />
               {updatePricing || (requestType === "pick-up" && <PickUpCard />)}
-              {!updatePricing || (requestType === "dropoff" && <PickUpCard />)}
+              {!updatePricing ||
+                (requestType === "picked_up" && <PickUpCard />)}
 
               <PaymentDetails
                 amount={accepted?.amount}
@@ -210,13 +251,13 @@ export const CustomerInfoModal = ({
                   />
                 </YStack>
               )}
-              {updatePricing && requestType !== "dropoff" && (
+              {updatePricing && requestType !== "picked_up" && (
                 <Button
                   onPress={() => handlePricing()}
                   title="Update pricing"
                   textColor={theme.white1 as any}
                   textSize={14}
-                  isLoading={isPending}
+                  isLoading={isLoading}
                   disabled={!price}
                   style={{
                     height: 60,
@@ -227,13 +268,10 @@ export const CustomerInfoModal = ({
                   }}
                 />
               )}
-              {requestType === "dropoff" && (
+              {requestType === "picked_up" && (
                 <YStack marginVertical={20} gap={14}>
                   <Button
-                    onPress={() => {
-                      setVisible(false);
-                      setShowSuccessModal(true);
-                    }}
+                    onPress={() => handleChangeStatus()}
                     title="Slide to complete drop-off"
                     textColor={theme.black1 as any}
                     textSize={14}

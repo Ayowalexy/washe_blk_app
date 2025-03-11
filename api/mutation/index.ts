@@ -136,7 +136,7 @@ export function useAcceptPickupRequest() {
 export function useUpdatePricing() {
   return useMutation({
     mutationFn: (data: UpdatePricingDTO) =>
-      api.post("/rider/update-fee", data).then((resp) => resp),
+      api.patch("/rider/update-fee", data).then((resp) => resp),
   });
 }
 export function useUpdateStatus() {

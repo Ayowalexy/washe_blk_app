@@ -12,6 +12,7 @@ import { View } from "../../libs/View";
 import { Button } from "../../libs/button";
 import { useContactUs } from "../../../api/mutation";
 import { contactUsValidationSchema } from "../../../schema/validation";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export const ContactForm = () => {
   const theme = useTheme();
@@ -56,64 +57,79 @@ export const ContactForm = () => {
   });
   const isButtonDisabled = !values?.message;
   return (
-    <ScrollView style={{ width: "84%" }}>
-      <YStack
-        width="100%"
-        marginTop={30}
-        marginHorizontal="auto"
-        backgroundColor={theme.secondary3?.val}
-        padding={18}
-        alignItems="center"
-      >
-        <Text color={theme?.black3?.val} fontSize={12} textAlign="center">
-          Contact washe via
-        </Text>
-        <XStack marginTop={12} gap={8}>
-          <TouchableOpacity>
-            <MessageIcon />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <WhatsappIcon />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <PurpleIcon />
-          </TouchableOpacity>
+    <KeyboardAwareScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      enableOnAndroid={true}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={{ width: "90%" }} marginHorizontal="auto">
+        <YStack
+          width="100%"
+          marginTop={30}
+          marginHorizontal="auto"
+          backgroundColor={theme.secondary3?.val}
+          padding={18}
+          alignItems="center"
+        >
+          <Text color={theme?.black3?.val} fontSize={12} textAlign="center">
+            Contact washe via
+          </Text>
+          <XStack marginTop={12} gap={8}>
+            <TouchableOpacity>
+              <MessageIcon />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <WhatsappIcon />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <PurpleIcon />
+            </TouchableOpacity>
+          </XStack>
+        </YStack>
+        <XStack alignItems="center" marginTop={15} gap={10}>
+          <View
+            borderBottomColor="$accent4"
+            borderBottomWidth={1}
+            width="22%"
+          />
+          <Text color="$black3" fontSize={14}>
+            or send message now
+          </Text>
+          <View
+            borderBottomColor="$accent4"
+            borderBottomWidth={1}
+            width="22%"
+          />
         </XStack>
-      </YStack>
-      <XStack alignItems="center" marginTop={15} gap={10}>
-        <View borderBottomColor="$accent4" borderBottomWidth={1} width="22%" />
-        <Text color="$black3" fontSize={14}>
-          or send message now
-        </Text>
-        <View borderBottomColor="$accent4" borderBottomWidth={1} width="22%" />
-      </XStack>
-      <YStack marginTop={20}>
-        <InputBox
-          onChangeText={handleChange("email")}
-          onBlur={handleBlur("email")}
-          value={user?.email}
-          editable={false}
-          label="Email address"
-          placeholder="Email address"
-        />
-        <InputTextarea
-          onChangeText={handleChange("message")}
-          onBlur={handleBlur("message")}
-          hasError={!!errors.message && touched.message}
-          error={errors.message}
-          label="Message"
-          placeholder="Type your message here..."
-        />
-      </YStack>
-      <View paddingTop={25}>
-        <Button
-        style={{height: 56}}
-        //   loading={isPending}
-          disabled={isButtonDisabled} 
-          title="Send message"
-          onPress={() => handleSubmit()}
-        />
+        <YStack marginTop={20}>
+          <InputBox
+            onChangeText={handleChange("email")}
+            onBlur={handleBlur("email")}
+            value={user?.email}
+            editable={false}
+            label="Email address"
+            placeholder="Email address"
+          />
+          <InputTextarea
+            onChangeText={handleChange("message")}
+            onBlur={handleBlur("message")}
+            hasError={!!errors.message && touched.message}
+            error={errors.message}
+            label="Message"
+            placeholder="Type your message here..."
+          />
+        </YStack>
+        <View paddingTop={25}>
+          <Button
+            style={{ height: 56 }}
+            //   loading={isPending}
+            disabled={isButtonDisabled}
+            title="Send message"
+            onPress={() => handleSubmit()}
+          />
+        </View>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };

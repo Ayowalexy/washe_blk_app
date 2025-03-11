@@ -9,29 +9,54 @@ import { addressValidationSchema } from "../../../schema/validation";
 import { useFormik } from "formik";
 import { useAtom } from "jotai";
 import { KeyboardAvoidingView } from "react-native";
+import { useUpdateProfile } from "../../../api/mutation";
+import { UpdateAccountDTO } from "../../../api/types";
+import Toast from "react-native-toast-message";
 
 export const AddressForm = () => {
   const theme = useTheme();
 
   const [address, setAddress] = useAtom(AddressAtom);
+  const { mutateAsync, isPending: isLoading } = useUpdateProfile();
+
   const { handleBlur, handleChange, handleSubmit, errors, touched, values } =
     useFormik({
       initialValues: {
-        address: "",
-        state: "",
-        city: "",
-        zipCode: "",
+        address: {
+          lineOne: "",
+          city: "",
+          zipCode: "",
+          state: "",
+        },
       },
       validationSchema: addressValidationSchema,
       onSubmit: (values) => {
-        setAddress({
-          address: values.address,
-          city: values.city,
-          zipCode: values.zipCode,
-          state: values.state,
+        const data = {
+          address: {
+            lineOne: values.address.lineOne,
+            city: values.address.city,
+            zipCode: values.address.zipCode,
+            state: values.address.state,
+          },
+        };
+
+        mutateAsync(data, {
+          onSuccess: () => {
+            Toast.show({
+              type: "customSuccess",
+              text1: "User updated successfully",
+            });
+          },
+          onError: (error: any) => {
+            Toast.show({
+              type: "customError",
+              text1: JSON.stringify(error) || "An error occured, try again",
+            });
+            console.log(error);
+          },
         });
-     
-        console.log(values, "vals");
+
+        console.log(values, "vals44");
       },
     });
   return (
@@ -42,16 +67,18 @@ export const AddressForm = () => {
       <View width="88%" marginTop={30} marginHorizontal={"auto"}>
         <View marginTop={-20}>
           <InputBox
-            onChangeText={handleChange("address")}
-            onBlur={handleBlur("address")}
+            value={values.lineOne}
+            onChangeText={handleChange("lineOne")}
+            onBlur={handleBlur("lineOne")}
             label="Address"
             placeholder="4, James Street"
-            hasError={!!errors.address && touched.address}
-            error={errors.address}
+            hasError={!!errors.lineOne && touched.lineOne}
+            error={errors.lineOne}
           />
         </View>
         <View>
           <InputBox
+            value={values.city}
             onChangeText={handleChange("city")}
             onBlur={handleBlur("city")}
             label="City"
@@ -62,6 +89,7 @@ export const AddressForm = () => {
         </View>
         <View>
           <InputBox
+            value={values.state}
             onChangeText={handleChange("state")}
             onBlur={handleBlur("state")}
             label="State/Province/Region"
@@ -72,6 +100,7 @@ export const AddressForm = () => {
         </View>
         <View>
           <InputBox
+            value={values.zipCode}
             onChangeText={handleChange("zipCode")}
             onBlur={handleBlur("zipCode")}
             label="ZIP/Postal Code"

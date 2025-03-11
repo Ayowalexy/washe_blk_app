@@ -30,7 +30,7 @@ export const PriceAcceptedModal = ({
   const handleChangeStatus = async () => {
     const resp = {
       riderRequestId: accepted.id,
-      status: "drop_off",
+      status: "picked_up",
     };
     mutate(resp, {
       onSuccess: async (data) => {
@@ -41,7 +41,7 @@ export const PriceAcceptedModal = ({
         });
         setShowModal(false);
         setVisible(true);
-        setRequestType("drop_off");
+        setRequestType("picked_up");
       },
       onError: (error: any) => {
         Toast.show({
