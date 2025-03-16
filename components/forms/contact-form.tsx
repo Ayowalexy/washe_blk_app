@@ -57,7 +57,10 @@ export const ContactForm = () => {
   });
   const isButtonDisabled = !values?.message;
   return (
-  <KeyboardAwareScrollView style={{ width: "84%" }} showsVerticalScrollIndicator={false}>
+    <KeyboardAwareScrollView
+      style={{ width: "84%" }}
+      showsVerticalScrollIndicator={false}
+    >
       <YStack
         width="100%"
         marginTop={30}
@@ -109,7 +112,7 @@ export const ContactForm = () => {
       <View paddingTop={35}>
         <Button
           loading={isPending}
-          disabled={isButtonDisabled} 
+          disabled={isButtonDisabled}
           title="Send message"
           onPress={() => handleSubmit()}
         />

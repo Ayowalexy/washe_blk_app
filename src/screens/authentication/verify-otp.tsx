@@ -63,60 +63,37 @@ export const VerifyOtp = ({ navigation }: VerifyOtpScreenProps) => {
     });
   };
   return (
-    <View height={DEVICE_HEIGHT} backgroundColor="$white1">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "height" : "padding"}
+    <View>
+      <AuthLayout
+      buttonSub={false}
+        handleSubmit={handleVerifyOtp}
+        buttonTitle="Verify code"
+        title="Verify OTP"
+        text="Access your washe account"
+        subtitle="Enter password reset code"
+        auth={false}
       >
-        <ScrollView style={{ height: DEVICE_HEIGHT - 100 }}>
-          <View paddingTop={106}>
-            <AuthLayout
-              title="Verify OTP"
-              text="Access your washe account"
-              subtitle="Enter password reset code"
-              auth={false}
-            >
-              <View>
-                <View>
-                  <OTPTextInput
-                    containerStyle={{
-                      width: "98%",
-                      margin: "auto",
-                    }}
-                    tintColor={"rgba(4, 104, 246,1)"}
-                    textInputStyle={{
-                      width: 50,
-                      height: 50,
-                      borderWidth: 1,
-                      borderBottomWidth: 1,
-                    }}
-                    ref={otpInputRef}
-                    handleTextChange={(text: any) => setOtp(text)}
-                    inputCount={6}
-                  />
-                </View>
-              </View>
-            </AuthLayout>
-          </View>
-        </ScrollView>
-        <XStack
-          gap={20}
-          height={90}
-          marginBottom={20}
-          justifyContent="center"
-          alignItems="center"
-          width="88%"
-          marginHorizontal="auto"
-        >
-          <BackButton onPress={() => navigation.goBack()} />
-          <View width="80%">
-            <Button
-              //   loading={isPending}
-              title="Verify code"
-              onPress={() => handleVerifyOtp()}
+        <View>
+          <View>
+            <OTPTextInput
+              containerStyle={{
+                width: "98%",
+                margin: "auto",
+              }}
+              tintColor={"rgba(4, 104, 246,1)"}
+              textInputStyle={{
+                width: 50,
+                height: 50,
+                borderWidth: 1,
+                borderBottomWidth: 1,
+              }}
+              ref={otpInputRef}
+              handleTextChange={(text: any) => setOtp(text)}
+              inputCount={6}
             />
           </View>
-        </XStack>
-      </KeyboardAvoidingView>
+        </View>
+      </AuthLayout>
     </View>
   );
 };

@@ -43,6 +43,7 @@ import { BottomTabParamList } from "../../../navigation/tabs.navigation";
 import { useGetAvatars, useGetCurrentUser } from "../../../api/queries";
 import { useUpdateProfile } from "../../../api/mutations";
 import Toast from "react-native-toast-message";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const List = [
   {
@@ -87,6 +88,7 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
   const [selectedImage, setSelectedImage] = useState("");
   const { mutate, isPending } = useUpdateProfile();
   const { refetch } = useGetCurrentUser();
+  const { top, bottom } = useSafeAreaInsets();
 
   const handleSelect = (id: number) => {
     setSelected(id);
@@ -153,16 +155,13 @@ export const Settings = ({ navigation }: SettingScreenProps) => {
   };
   return (
     <View
-      height={DEVICE_HEIGHT}
       backgroundColor={"$white1"}
       width="100%"
       paddingHorizontal={20}
-      paddingVertical={80}
+      paddingTop={top + 20}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text paddingTop={30} fontSize={18}>
-          Settings
-        </Text>
+        <Text fontSize={18}>Settings</Text>
 
         <View style={styles.cardContainer}>
           <ImageBackground

@@ -102,83 +102,74 @@ export const Login = ({ navigation }: LoginScreenProps) => {
   };
 
   return (
-    <View
-      height={Platform.OS === "android" ? DEVICE_HEIGHT + 100 : DEVICE_HEIGHT}
-      backgroundColor="$white1"
-    >
-      <KeyboardAwareScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1 }}
-        enableOnAndroid={true}
-        keyboardShouldPersistTaps="handled"
+    <View>
+      <AuthLayout
+        buttonTitle="Log in"
+        handleSubmit={() => handleSubmit()}
+        title="Log in to your account"
+        text="Access your washe account"
+        subtitle="Welcome back"
+        googleAuth={signIn}
       >
-        <View paddingTop={106}>
-          <AuthLayout
-            title="Log in to your account"
-            text="Access your washe account"
-            subtitle="Welcome back"
-            googleAuth={signIn}
+        <View>
+          <InputBox
+            onChangeText={handleChange("email")}
+            onBlur={handleBlur("email")}
+            hasError={!!errors.email && touched.email}
+            error={errors.email}
+            label="Email address"
+            placeholder="First name"
+          />
+          <InputBox
+            onChangeText={handleChange("password")}
+            onBlur={handleBlur("password")}
+            hasError={!!errors.password && touched.password}
+            error={errors.password}
+            label="Password"
+            placeholder="Enter your password"
+            secureTextEntry={true}
+          />
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("onboarding", {
+                screen: "forgot_password",
+              })
+            }
           >
-            <View>
-              <InputBox
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                hasError={!!errors.email && touched.email}
-                error={errors.email}
-                label="Email address"
-                placeholder="First name"
-              />
-              <InputBox
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                hasError={!!errors.password && touched.password}
-                error={errors.password}
-                label="Password"
-                placeholder="Enter your password"
-                secureTextEntry={true}
-              />
-            </View>
-          </AuthLayout>
+            <XStack
+              width="98%"
+              gap={4}
+              marginTop={-17}
+              marginHorizontal="auto"
+              alignItems="center"
+            >
+              <Text fontSize={15} color={"$primary4"}>
+                Forgot password
+              </Text>
+              <Arrow color={"#FFD700"} />
+            </XStack>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("onboarding", {
-              screen: "forgot_password",
-            })
-          }
-        >
-          <XStack
-            width="88%"
-            gap={4}
-            marginTop={-6}
-            marginHorizontal="auto"
-            alignItems="center"
-          >
-            <Text fontSize={15} color={"$primary4"}>
-              Forgot password
-            </Text>
-            <Arrow color={"#FFD700"} />
-          </XStack>
-        </TouchableOpacity>
-        <XStack
-          gap={20}
-          height={90}
-          justifyContent="center"
-          marginTop={20}
-          alignItems="center"
-          width="88%"
-          marginHorizontal="auto"
-        >
-          <CloseButton onPress={() => navigation.goBack()} />
-          <View width="80%">
-            <Button
-              loading={isPending}
-              title="Login"
-              onPress={() => handleSubmit()}
-            />
-          </View>
-        </XStack>
-      </KeyboardAwareScrollView>
+      </AuthLayout>
+
+      <XStack
+        gap={20}
+        height={90}
+        justifyContent="center"
+        marginTop={20}
+        alignItems="center"
+        width="88%"
+        marginHorizontal="auto"
+      >
+        <CloseButton onPress={() => navigation.goBack()} />
+        <View width="80%">
+          <Button
+            loading={isPending}
+            title="Login"
+            onPress={() => handleSubmit()}
+          />
+        </View>
+      </XStack>
     </View>
   );
 };

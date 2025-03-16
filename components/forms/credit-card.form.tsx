@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from "react-native";
+import { KeyboardAvoidingView, ScrollView, StyleSheet } from "react-native";
 import { View } from "../libs/view";
 import { XStack, YStack, useTheme } from "tamagui";
 import { Text } from "../libs/text";
@@ -10,6 +10,7 @@ import { useFormik } from "formik";
 import { createPaymentMethodValidationSchema } from "../../schema/validation";
 import { useCreateCard, useAddCard } from "../../api/mutations";
 import { useGetPaymentMethods } from "../../api/queries";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 type props = {
   //   setShow: Dispatch<SetStateAction<boolean>>;
@@ -39,7 +40,7 @@ export const CreditCard = ({ onPress }: props) => {
     onSubmit: async (values) => {
       try {
         const response = await mutateAsync({
-          number: values.number.split(' ').join(''),
+          number: values.number.split(" ").join(""),
           exp_month: Number(values.exp.split("/")[0]),
           exp_year: Number(
             new Date()
@@ -57,7 +58,6 @@ export const CreditCard = ({ onPress }: props) => {
         onPress();
         const refetchedData = await refetch();
         const { data } = refetchedData;
-
       } catch (e) {
         console.log(e);
       }
@@ -78,9 +78,10 @@ export const CreditCard = ({ onPress }: props) => {
     <>
       <View width={"100%"} paddingHorizontal={28}>
         <YStack height={"auto"}>
-          <ScrollView
+          <KeyboardAwareScrollView
+            enableOnAndroid={true}
+            keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
-            style={styles.scrollview}
           >
             <View height="80%" width="100%" style={styles.container}>
               <InputBox
@@ -122,7 +123,7 @@ export const CreditCard = ({ onPress }: props) => {
                 error={errors.cvc}
               />
             </View>
-          </ScrollView>
+          </KeyboardAwareScrollView>
           <View paddingTop={30}>
             <Button
               loading={isPending || loading}

@@ -95,171 +95,140 @@ export const IdVerification = ({
 
   console.log(values, "image");
   return (
-    <View height={DEVICE_HEIGHT} backgroundColor="$white1">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "height" : "padding"}
-      >
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View paddingTop={106} height={DEVICE_HEIGHT - 110}>
-            <AuthLayout
-              auth={false}
-              title="complete onboarding"
-              subtitle="ID Verification"
-              text="Upload a picture or scan of a valid identity document"
-            >
-              <View>
-                <Text fontSize={14} color={"$black1"} marginBottom={8}>
-                  ID upload
-                </Text>
-                <YStack
-                  alignItems="center"
-                  width="100%"
-                  borderColor={"$black4"}
-                  borderWidth={1}
-                  height={154}
-                  borderRadius={10}
-                  paddingVertical={30}
-                >
-                  <TouchableOpacity
-                    onPress={() => pickDocument()}
-                    style={{ alignItems: "center" }}
-                  >
-                    <File />
-
-                    <Text
-                      color={theme?.primary3?.val}
-                      fontSize={13}
-                      textDecorationStyle="solid"
-                      textDecorationLine="underline"
-                      textDecorationColor={theme?.primary3?.val}
-                    >
-                      Browse file
-                    </Text>
-                  </TouchableOpacity>
-                  <Text
-                    fontSize={13}
-                    marginTop={7}
-                    color={theme?.red?.val}
-                    fontFamily="$body"
-                    fontWeight="500"
-                  >
-                    Format accepted- png, jpg, pdf.
-                  </Text>
-                  <Text
-                    fontSize={13}
-                    marginTop={4}
-                    color={"$black3"}
-                    fontFamily="$body"
-                    fontWeight="500"
-                  >
-                    maximum file size 5 MB
-                  </Text>
-                </YStack>
-
-                {values.fileName && (
-                  <View marginTop={25}>
-                    <XStack>
-                      <PdfFile />
-                      <YStack marginLeft={10}>
-                        <Text
-                          fontSize={14}
-                          color={"$black1"}
-                          fontFamily="$body"
-                          fontWeight="500"
-                        >
-                          {values.fileName}
-                        </Text>
-                        <XStack alignItems="center" marginTop={5}>
-                          <Text
-                            color={"$black3"}
-                            fontSize={12}
-                            marginRight={7}
-                          >
-                            {Number(fileSizeKB).toFixed(2)} KB
-                          </Text>
-                          <Text color={"$black3"} fontSize={12}>
-                            |
-                          </Text>
-                          <TouchableOpacity></TouchableOpacity>
-                          <Text
-                            color={theme?.red1}
-                            fontSize={12}
-                            marginLeft={7}
-                          >
-                            Delete
-                          </Text>
-                        </XStack>
-                      </YStack>
-                    </XStack>
-
-                    <YStack
-                      marginTop={50}
-                      backgroundColor={theme.secondary3}
-                      padding={24}
-                    >
-                      <Text
-                        color={"$black1"}
-                        fontSize={13}
-                        fontFamily="$body"
-                        fontWeight="500"
-                      >
-                        Accepted document type
-                      </Text>
-                      <View marginTop={8}>
-                        {[
-                          "Driver's License",
-                          "Non-Driver Photo ID",
-                          "U.S. Passport",
-                          "Foreign Passport",
-                          "U.S. Military ID Card",
-                          "U.S. Military Dependent's",
-                          " ID Card Tribal Card",
-                        ].map((elem) => (
-                          <View
-                            key={elem}
-                            flexDirection="row"
-                            alignItems="center"
-                            gap={8}
-                            marginTop={3}
-                          >
-                            <View
-                              width={4}
-                              height={4}
-                              backgroundColor={theme?.secondary7?.val}
-                            />
-                            <Text color={theme?.secondary7?.val} fontSize={15}>
-                              {elem}
-                            </Text>
-                          </View>
-                        ))}
-                      </View>
-                    </YStack>
-                  </View>
-                )}
-              </View>
-            </AuthLayout>
-          </View>
-        </ScrollView>
-        <XStack
-          gap={20}
-          height={90}
-          marginVertical="auto"
-          justifyContent="center"
-          alignItems="center"
-          width="88%"
-          marginHorizontal="auto"
+    <View>
+      <View>
+        <AuthLayout
+          buttonTitle="Complete Onboarding"
+          handleSubmit={() => handleSubmit()}
+          auth={false}
+          title="complete onboarding"
+          subtitle="ID Verification"
+          text="Upload a picture or scan of a valid identity document"
         >
-          <CloseButton onPress={() => navigation.goBack()} />
-          <View width="80%">
-            <Button
-              loading={isPending}
-              disabled={values.fileName ? false : true}
-              title="Complete Onboarding"
-              onPress={() => handleSubmit()}
-            />
+          <View>
+            <Text fontSize={14} color={"$black1"} marginBottom={8}>
+              ID upload
+            </Text>
+            <YStack
+              alignItems="center"
+              width="100%"
+              borderColor={"$black4"}
+              borderWidth={1}
+              height={154}
+              borderRadius={10}
+              paddingVertical={30}
+            >
+              <TouchableOpacity
+                onPress={() => pickDocument()}
+                style={{ alignItems: "center" }}
+              >
+                <File />
+
+                <Text
+                  color={theme?.primary3?.val}
+                  fontSize={13}
+                  textDecorationStyle="solid"
+                  textDecorationLine="underline"
+                  textDecorationColor={theme?.primary3?.val}
+                >
+                  Browse file
+                </Text>
+              </TouchableOpacity>
+              <Text
+                fontSize={13}
+                marginTop={7}
+                color={theme?.red?.val}
+                fontFamily="$body"
+                fontWeight="500"
+              >
+                Format accepted- png, jpg, pdf.
+              </Text>
+              <Text
+                fontSize={13}
+                marginTop={4}
+                color={"$black3"}
+                fontFamily="$body"
+                fontWeight="500"
+              >
+                maximum file size 5 MB
+              </Text>
+            </YStack>
+
+            {values.fileName && (
+              <View marginTop={25}>
+                <XStack>
+                  <PdfFile />
+                  <YStack marginLeft={10}>
+                    <Text
+                      fontSize={14}
+                      color={"$black1"}
+                      fontFamily="$body"
+                      fontWeight="500"
+                    >
+                      {values.fileName}
+                    </Text>
+                    <XStack alignItems="center" marginTop={5}>
+                      <Text color={"$black3"} fontSize={12} marginRight={7}>
+                        {Number(fileSizeKB).toFixed(2)} KB
+                      </Text>
+                      <Text color={"$black3"} fontSize={12}>
+                        |
+                      </Text>
+                      <TouchableOpacity></TouchableOpacity>
+                      <Text color={theme?.red1} fontSize={12} marginLeft={7}>
+                        Delete
+                      </Text>
+                    </XStack>
+                  </YStack>
+                </XStack>
+
+                <YStack
+                  marginTop={50}
+                  backgroundColor={theme.secondary3}
+                  padding={24}
+                >
+                  <Text
+                    color={"$black1"}
+                    fontSize={13}
+                    fontFamily="$body"
+                    fontWeight="500"
+                  >
+                    Accepted document type
+                  </Text>
+                  <View marginTop={8}>
+                    {[
+                      "Driver's License",
+                      "Non-Driver Photo ID",
+                      "U.S. Passport",
+                      "Foreign Passport",
+                      "U.S. Military ID Card",
+                      "U.S. Military Dependent's",
+                      " ID Card Tribal Card",
+                    ].map((elem) => (
+                      <View
+                        key={elem}
+                        flexDirection="row"
+                        alignItems="center"
+                        gap={8}
+                        marginTop={3}
+                      >
+                        <View
+                          width={4}
+                          height={4}
+                          backgroundColor={theme?.secondary7?.val}
+                        />
+                        <Text color={theme?.secondary7?.val} fontSize={15}>
+                          {elem}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                </YStack>
+              </View>
+            )}
           </View>
-        </XStack>
-      </KeyboardAvoidingView>
+        </AuthLayout>
+      </View>
 
       <SuccessModal
         visible={visible}

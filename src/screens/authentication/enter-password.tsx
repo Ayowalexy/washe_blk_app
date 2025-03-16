@@ -46,14 +46,14 @@ export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
         email: userdata.email,
         phoneNumber: userdata.phoneNumber,
         password: values.password,
-        type: userdata.type
+        type: userdata.type,
       };
       setUserdata({
         firstName: userdata.firstName,
         lastName: userdata.lastName,
         phoneNumber: userdata.phoneNumber,
         email: userdata.email,
-        type: "customer"
+        type: "customer",
       });
       console.log(newUser);
 
@@ -65,7 +65,7 @@ export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
             text1: "Account created successfully",
           });
           await saveToken("accessToken", data?.data?.token?.token);
-          console.log(data?.data?.token?.token, 'token saved');
+          console.log(data?.data?.token?.token, "token saved");
           navigation.navigate("user_details");
         },
         onError: (error: any) => {
@@ -81,54 +81,31 @@ export const EnterPassword = ({ navigation }: EnterPasswordScreenProps) => {
     },
   });
   return (
-    <View height={DEVICE_HEIGHT} backgroundColor="$white1">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "height" : "padding"}
-      >
-        <View paddingTop={106} height={DEVICE_HEIGHT - 110}>
-          <AuthLayout auth={false}>
-            <View>
-              <InputBox
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                error={errors.password}
-                hasError={!!errors.password && touched.password}
-                secureTextEntry={true}
-                label="Password"
-                placeholder="Enter your password"
-              />
-              <InputBox
-                onChangeText={handleChange("password_confirmation")}
-                onBlur={handleBlur("password_confirmation")}
-                error={errors.password_confirmation}
-                hasError={
-                  !!errors.password_confirmation &&
-                  touched.password_confirmation
-                }
-                secureTextEntry={true}
-                label="Confirm password"
-                placeholder="Re-enter your password"
-              />
-            </View>
-          </AuthLayout>
+    <View>
+      <AuthLayout isLoading={isPending} handleSubmit={() => handleSubmit()} auth={false}>
+        <View>
+          <InputBox
+            onChangeText={handleChange("password")}
+            onBlur={handleBlur("password")}
+            error={errors.password}
+            hasError={!!errors.password && touched.password}
+            secureTextEntry={true}
+            label="Password"
+            placeholder="Enter your password"
+          />
+          <InputBox
+            onChangeText={handleChange("password_confirmation")}
+            onBlur={handleBlur("password_confirmation")}
+            error={errors.password_confirmation}
+            hasError={
+              !!errors.password_confirmation && touched.password_confirmation
+            }
+            secureTextEntry={true}
+            label="Confirm password"
+            placeholder="Re-enter your password"
+          />
         </View>
-        <XStack
-          gap={20}
-          paddingVertical={20}
-          height={100}
-          width="88%"
-          marginHorizontal="auto"
-        >
-          <CloseButton onPress={() => navigation.goBack()} />
-          <View width="80%">
-            <Button
-              loading={isPending}
-              title="Create account"
-              onPress={() => handleSubmit()}
-            />
-          </View>
-        </XStack>
-      </KeyboardAvoidingView>
+      </AuthLayout>
     </View>
   );
 };

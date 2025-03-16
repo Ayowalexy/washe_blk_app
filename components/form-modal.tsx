@@ -72,7 +72,7 @@ export const FormModal = ({
           )}
         </XStack>
         <View style={styles.modal}>
-          <YStack alignItems="center" paddingTop={5}>
+          <YStack alignItems="center" paddingTop={5} flex={1}>
             <YStack
               justifyContent="center"
               alignItems="center"
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: "absolute",
-    top: 165,
+    top: Platform.OS === "android" ? 130 : 165,
     flexDirection: "row",
     justifyContent: "space-between",
     width: "90%",

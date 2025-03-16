@@ -47,7 +47,7 @@ export const AddressForm = () => {
             only operate within the Arkansas area.
           </Text>
         </View>
-        <View paddingTop={105}>
+        <View paddingTop={105} paddingBottom={50}>
           <Button title="Save" onPress={() => {}} disabled={!address} />
         </View>
       </KeyboardAwareScrollView>

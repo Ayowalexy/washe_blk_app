@@ -46,7 +46,7 @@ export const CreateAccount = ({
       firstName: "",
       lastName: "",
       phoneNumber: "",
-      type: ""
+      type: "",
     },
     validationSchema: signUpValidationSchema,
     onSubmit: (values) => {
@@ -55,7 +55,7 @@ export const CreateAccount = ({
         lastName: values.lastName,
         phoneNumber: values.phoneNumber,
         email: values.email,
-        type: "customer"
+        type: "customer",
       });
       navigation.navigate("enter_password");
       console.log(values, "values");
@@ -78,80 +78,58 @@ export const CreateAccount = ({
   // };
 
   return (
-    <View height={DEVICE_HEIGHT} backgroundColor="$white1">
-      <KeyboardAwareScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        enableOnAndroid={true}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+    <View>
+      <AuthLayout
+        handleSubmit={() => handleSubmit()}
+        // googleAuth={signIn}
+        text={
+          !isUpdate
+            ? "By joining you agree to our Terms & and our Privacy Policy"
+            : "Please make sure the name matches valid ID"
+        }
+        subtitle={
+          !isUpdate
+            ? "Help us get to know you"
+            : "Verify information provided is correct"
+        }
+        title={!isUpdate ? "Create your account" : "Update your account"}
       >
-        <View paddingTop={106}>
-          <AuthLayout
-            // googleAuth={signIn}
-            text={
-              !isUpdate
-                ? "By joining you agree to our Terms & and our Privacy Policy"
-                : "Please make sure the name matches valid ID"
-            }
-            subtitle={
-              !isUpdate
-                ? "Help us get to know you"
-                : "Verify information provided is correct"
-            }
-            title={!isUpdate ? "Create your account" : "Update your account"}
-          >
-            <View>
-              <InputBox
-                onChangeText={handleChange("firstName")}
-                onBlur={handleBlur("firstName")}
-                label="First name"
-                placeholder="First name"
-                error={errors.firstName}
-                hasError={!!errors.firstName && touched.firstName}
-              />
-              <InputBox
-                onChangeText={handleChange("lastName")}
-                onBlur={handleBlur("lastName")}
-                label="Last name"
-                placeholder="Last name"
-                error={errors.lastName}
-                hasError={!!errors.lastName && touched.lastName}
-              />
-              <InputBox
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                label="Email address"
-                placeholder="Email address"
-                error={errors.email}
-                hasError={!!errors.email && touched.email}
-              />
-              <InputBox
-                onChangeText={handleChange("phoneNumber")}
-                onBlur={handleBlur("phoneNumber")}
-                label="Phone number"
-                keyboardType="phone-pad"
-                placeholder="Phone number"
-                error={errors.phoneNumber}
-                hasError={!!errors.phoneNumber && touched.phoneNumber}
-              />
-            </View>
-          </AuthLayout>
+        <View>
+          <InputBox
+            onChangeText={handleChange("firstName")}
+            onBlur={handleBlur("firstName")}
+            label="First name"
+            placeholder="First name"
+            error={errors.firstName}
+            hasError={!!errors.firstName && touched.firstName}
+          />
+          <InputBox
+            onChangeText={handleChange("lastName")}
+            onBlur={handleBlur("lastName")}
+            label="Last name"
+            placeholder="Last name"
+            error={errors.lastName}
+            hasError={!!errors.lastName && touched.lastName}
+          />
+          <InputBox
+            onChangeText={handleChange("email")}
+            onBlur={handleBlur("email")}
+            label="Email address"
+            placeholder="Email address"
+            error={errors.email}
+            hasError={!!errors.email && touched.email}
+          />
+          <InputBox
+            onChangeText={handleChange("phoneNumber")}
+            onBlur={handleBlur("phoneNumber")}
+            label="Phone number"
+            keyboardType="phone-pad"
+            placeholder="Phone number"
+            error={errors.phoneNumber}
+            hasError={!!errors.phoneNumber && touched.phoneNumber}
+          />
         </View>
-        <XStack
-          gap={20}
-          height={90}
-          marginVertical="auto"
-          justifyContent="center"
-          alignItems="center"
-          width="88%"
-          marginHorizontal="auto"
-        >
-          <CloseButton onPress={() => navigation.goBack()} />
-          <View width="80%">
-            <Button title="Next" onPress={() => handleSubmit()} />
-          </View>
-        </XStack>
-      </KeyboardAwareScrollView>
+      </AuthLayout>
     </View>
   );
 };

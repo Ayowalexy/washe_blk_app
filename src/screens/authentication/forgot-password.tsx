@@ -70,50 +70,27 @@ export const ForgotPassword = ({ navigation }: ForgotPasswordScreenProps) => {
   });
   console.log(values.email);
   return (
-    <View height={DEVICE_HEIGHT} backgroundColor="$white1">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "height" : "padding"}
+    <View>
+      <AuthLayout
+        buttonSub={false}
+        handleSubmit={handleSubmit}
+        buttonTitle="Send code"
+        title="forgot password"
+        text="Access your washe account"
+        subtitle="Enter your registered email address"
+        auth={false}
       >
-        <ScrollView style={{ height: DEVICE_HEIGHT - 100 }}>
-          <View paddingTop={106}>
-            <AuthLayout
-              title="forgot password"
-              text="Access your washe account"
-              subtitle="Enter your registered email address"
-              auth={false}
-            >
-              <View>
-                <InputBox
-                  onChangeText={handleChange("email")}
-                  onBlur={handleBlur("email")}
-                  hasError={!!errors.email && touched.email}
-                  error={errors.email}
-                  label="Email address"
-                  placeholder="Email address"
-                />
-              </View>
-            </AuthLayout>
-          </View>
-        </ScrollView>
-        <XStack
-          gap={20}
-          height={90}
-          marginBottom={20}
-          justifyContent="center"
-          alignItems="center"
-          width="88%"
-          marginHorizontal="auto"
-        >
-          <BackButton onPress={() => navigation.goBack()} />
-          <View width="80%">
-            <Button
-              loading={isPending}
-              title="Send code"
-              onPress={() => handleSubmit()}
-            />
-          </View>
-        </XStack>
-      </KeyboardAvoidingView>
+        <View>
+          <InputBox
+            onChangeText={handleChange("email")}
+            onBlur={handleBlur("email")}
+            hasError={!!errors.email && touched.email}
+            error={errors.email}
+            label="Email address"
+            placeholder="Email address"
+          />
+        </View>
+      </AuthLayout>
     </View>
   );
 };

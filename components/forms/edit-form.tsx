@@ -95,7 +95,7 @@ export const EditForm = () => {
           placeholder="+1"
           label="Phone number"
         />
-        <View paddingTop={55}>
+        <View paddingTop={55} paddingBottom={50}>
           <Button
             title="Save"
             onPress={() => {

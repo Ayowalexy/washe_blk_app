@@ -53,63 +53,39 @@ export const ResetPassword = ({ navigation }: ResetPasswordScreenProps) => {
       },
     });
   return (
-    <View height={DEVICE_HEIGHT} backgroundColor="$white1">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "height" : "padding"}
+    <View>
+      <AuthLayout
+        handleSubmit={handleSubmit}
+        buttonSub={false}
+        buttonTitle="Reset password"
+        title="reset password"
+        text="Access your washe account"
+        subtitle="Enter your new password"
+        auth={false}
       >
-        <ScrollView style={{ height: DEVICE_HEIGHT - 100 }}>
-          <View paddingTop={106}>
-            <AuthLayout
-              title="reset password"
-              text="Access your washe account"
-              subtitle="Enter your new password"
-              auth={false}
-            >
-              <View>
-                <InputBox
-                  onChangeText={handleChange("password")}
-                  onBlur={handleBlur("password")}
-                  hasError={!!errors.password && touched.password}
-                  error={errors.password}
-                  secureTextEntry={true}
-                  label="Password"
-                  placeholder="Enter your password"
-                />
-                <InputBox
-                  onChangeText={handleChange("password_confirmation")}
-                  onBlur={handleBlur("password_confirmation")}
-                  secureTextEntry={true}
-                  hasError={
-                    !!errors.password_confirmation &&
-                    touched.password_confirmation
-                  }
-                  error={errors.password_confirmation}
-                  label="Confirm password"
-                  placeholder="Re-enter your password"
-                />
-              </View>
-            </AuthLayout>
-          </View>
-        </ScrollView>
-        <XStack
-          gap={20}
-          height={90}
-          marginBottom={20}
-          justifyContent="center"
-          alignItems="center"
-          width="88%"
-          marginHorizontal="auto"
-        >
-          <BackButton onPress={() => navigation.goBack()} />
-          <View width="80%">
-            <Button
-              loading={isPending}
-              title="Reset password"
-              onPress={() => handleSubmit()}
-            />
-          </View>
-        </XStack>
-      </KeyboardAvoidingView>
+        <View>
+          <InputBox
+            onChangeText={handleChange("password")}
+            onBlur={handleBlur("password")}
+            hasError={!!errors.password && touched.password}
+            error={errors.password}
+            secureTextEntry={true}
+            label="Password"
+            placeholder="Enter your password"
+          />
+          <InputBox
+            onChangeText={handleChange("password_confirmation")}
+            onBlur={handleBlur("password_confirmation")}
+            secureTextEntry={true}
+            hasError={
+              !!errors.password_confirmation && touched.password_confirmation
+            }
+            error={errors.password_confirmation}
+            label="Confirm password"
+            placeholder="Re-enter your password"
+          />
+        </View>
+      </AuthLayout>
     </View>
   );
 };
