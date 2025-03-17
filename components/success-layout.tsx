@@ -36,7 +36,7 @@ export const SuccessLayout = ({
 }: props) => {
   const navigation = useNavigation();
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View
         flex={1}
         paddingBottom={40}

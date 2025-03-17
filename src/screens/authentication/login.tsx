@@ -104,6 +104,7 @@ export const Login = ({ navigation }: LoginScreenProps) => {
   return (
     <View>
       <AuthLayout
+      isLoading={isPending}
         buttonTitle="Log in"
         handleSubmit={() => handleSubmit()}
         title="Log in to your account"

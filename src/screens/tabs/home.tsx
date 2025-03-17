@@ -361,6 +361,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           setSelectedPaymentId={setSelectedPaymentId}
           selected_payment_id={selected_payment_id}
         />
+        
       </FormModal>
 
       <FormModal

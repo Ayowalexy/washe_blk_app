@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -36,6 +37,7 @@ import {
   OngoingIcon,
 } from "../../../assets/images/svg/icons";
 import { Info } from "../../../assets/images/svg/icons/info";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type NotificationScreenProps = NativeStackScreenProps<
   AppRootStackParamsList,
@@ -51,6 +53,7 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
 
   const { data, refetch } = useGetNotifications();
   console.log(data, "notificationsuE");
+  const {top} = useSafeAreaInsets()
 
   const groupedRequests = data?.data?.reduce((acc: any, request: any) => {
     const date = moment(request.createdAt).format("YYYY-MM-DD");
@@ -149,10 +152,10 @@ export const NotificationsPage = ({ navigation }: NotificationScreenProps) => {
       backgroundColor={"$white1"}
       width="100%"
       paddingHorizontal={5}
-      paddingVertical={80}
+      paddingTop={top + 20}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text paddingTop={30} fontSize={18}>
+        <Text paddingTop={Platform.OS === 'ios' ? 30 : 0} fontSize={18}>
           Notifications
         </Text>
         <YStack marginTop={20}>

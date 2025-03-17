@@ -55,6 +55,7 @@ export const ResetPassword = ({ navigation }: ResetPasswordScreenProps) => {
   return (
     <View>
       <AuthLayout
+        isLoading={isPending}
         handleSubmit={handleSubmit}
         buttonSub={false}
         buttonTitle="Reset password"

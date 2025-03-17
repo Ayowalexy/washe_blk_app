@@ -72,6 +72,7 @@ export const ForgotPassword = ({ navigation }: ForgotPasswordScreenProps) => {
   return (
     <View>
       <AuthLayout
+       isLoading={isPending}
         buttonSub={false}
         handleSubmit={handleSubmit}
         buttonTitle="Send code"

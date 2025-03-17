@@ -98,6 +98,7 @@ export const IdVerification = ({
     <View>
       <View>
         <AuthLayout
+          isLoading={isPending}
           buttonTitle="Complete Onboarding"
           handleSubmit={() => handleSubmit()}
           auth={false}

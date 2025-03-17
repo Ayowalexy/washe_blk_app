@@ -7,18 +7,19 @@ import { Text } from "./libs/text";
 import { ReactNode } from "react";
 import { useAtom } from "jotai";
 import { persistentUserAtom } from "../src/atoms";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const TabLayout = ({ children }: { children: ReactNode }) => {
   const theme = useTheme();
   const [user] = useAtom(persistentUserAtom);
+  const {top, bottom} = useSafeAreaInsets()
   // console.log(user, "us");
   return (
     <View
       width={DEVICE_WIDTH}
-      height={DEVICE_HEIGHT}
       backgroundColor="$white1"
-      paddingTop={70}
       paddingHorizontal={20}
+      paddingTop={top + 10}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <XStack>

@@ -52,7 +52,7 @@ export const PaymentForm: FC<Prop> = ({
   }, [selected_payment_id]);
   return (
     <View width='100%'>
-      <View width="100%" paddingHorizontal={28} paddingBottom={30}>
+      <View width="100%" paddingHorizontal={28} paddingBottom={40}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View width="100%" style={styles.container}>
             <ImageBackground

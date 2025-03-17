@@ -11,7 +11,7 @@ import { Text } from "../../../components/libs/text";
 import { View } from "../../../components/libs/view";
 import { TabLayout } from "../../../components/tab-layout";
 import { Arrow, PlusIcon } from "../../../utils/assets";
-import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { FlatList, Platform, StyleSheet, TouchableOpacity } from "react-native";
 import { EmptyRequest } from "../../../components/empty-request";
 import { useCallback, useState } from "react";
 import { FormModal } from "../../../components/form-modal";
@@ -229,15 +229,16 @@ export const Requests = ({ navigation }: RequestScreenProps) => {
       </TabLayout>
       <TouchableOpacity
         style={styles.button}
+
         onPress={() => setOpenModal(true)}
       >
         <View
           backgroundColor={"$primary3"}
-          height={56}
-          width={56}
+          height={Platform.OS === 'ios' ? 56 : 45}
+          width={Platform.OS === 'ios' ? 56 : 45}
           justifyContent="center"
           alignItems="center"
-          marginTop={-50}
+          marginTop={Platform.OS === 'ios' ? -50 : 0}
           borderRadius={100}
         >
           <PlusIcon />
@@ -375,5 +376,6 @@ const styles = StyleSheet.create({
     top: "89%",
     right: "8%",
     zIndex: 1000,
+ 
   },
 });

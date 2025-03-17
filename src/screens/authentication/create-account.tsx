@@ -80,6 +80,7 @@ export const CreateAccount = ({
   return (
     <View>
       <AuthLayout
+      
         handleSubmit={() => handleSubmit()}
         // googleAuth={signIn}
         text={

@@ -247,7 +247,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
   return (
     <View
       width={"100%"}
-      paddingBottom={100}
+      paddingBottom={Platform.OS === "ios" ? 100 : 0}
       paddingHorizontal={25}
       marginTop={20}
     >
@@ -268,7 +268,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                 height={50}
                 width={"100%"}
                 borderWidth={1}
-                borderColor={'$black4'}
+                borderColor={"$black4"}
                 backgroundColor="transparent"
                 marginBottom={17}
                 borderRadius={8}
@@ -301,12 +301,14 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                     const itemCount = counts[item.value] || 1;
 
                     const increaseCount = () => {
-                      const currentTypes = Array.isArray(values.laundryRequestTypes)
+                      const currentTypes = Array.isArray(
+                        values.laundryRequestTypes
+                      )
                         ? values.laundryRequestTypes
                         : [];
-                    
+
                       let arr_ = [...currentTypes];
-                    
+
                       if (
                         currentTypes.some(
                           (entry) => entry.laundryRequestTypeId === item.value
@@ -323,10 +325,9 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                           quantity: 1,
                         });
                       }
-                    
+
                       setFieldValue("laundryRequestTypes", arr_);
                     };
-                    
 
                     const decreaseCount = () => {
                       let arr_ = values.laundryRequestTypes
@@ -424,7 +425,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
                           >
                             <MaterialIcons
                               name="add"
-                              color={'white'}
+                              color={"white"}
                               size={16}
                             />
                           </TouchableOpacity>
@@ -753,7 +754,7 @@ export const RequestForm = ({ setOpenConfirmation, closeRequest }: props) => {
           ) : null}
         </View>
       </KeyboardAwareScrollView>
-      <View paddingTop={25}>
+      <View paddingTop={Platform.OS === "ios" ? 25 : 46}>
         <Button
           title="Next"
           onPress={() => {

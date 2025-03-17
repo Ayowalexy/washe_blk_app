@@ -72,34 +72,36 @@ export const FormModal = ({
           )}
         </XStack>
         <View style={styles.modal}>
-          <YStack alignItems="center" paddingTop={5} flex={1}>
-            <YStack
-              justifyContent="center"
-              alignItems="center"
-              paddingHorizontal={22}
-            >
-              <Text
-                color={"$black1"}
-                fontSize={18}
-                fontFamily="$body"
-                fontWeight="500"
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <YStack alignItems="center" paddingTop={5}>
+              <YStack
+                justifyContent="center"
+                alignItems="center"
+                paddingHorizontal={22}
               >
-                {title}
-              </Text>
-              <Text
-                textAlign="center"
-                color={"$black3"}
-                fontSize={14}
-                fontFamily="$body"
-                fontWeight="500"
-                marginTop={6}
-                paddingHorizontal={10}
-              >
-                {text}
-              </Text>
+                <Text
+                  color={"$black1"}
+                  fontSize={18}
+                  fontFamily="$body"
+                  fontWeight="500"
+                >
+                  {title}
+                </Text>
+                <Text
+                  textAlign="center"
+                  color={"$black3"}
+                  fontSize={14}
+                  fontFamily="$body"
+                  fontWeight="500"
+                  marginTop={6}
+                  paddingHorizontal={10}
+                >
+                  {text}
+                </Text>
+              </YStack>
+              {children}
             </YStack>
-            {children}
-          </YStack>
+          </ScrollView>
           {show_button && <View style={styles.buttonContainer}>{button}</View>}
         </View>
       </View>
@@ -121,16 +123,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     height: "75%",
     paddingTop: 40,
-    paddingBottom: 100,
+    paddingBottom: Platform.OS === "ios" ? 100 : 0,
     marginTop: "auto",
-    marginBottom: "3%",
+    marginBottom: Platform.OS === 'ios' ? "3%" : "10%",
     borderRadius: 30,
     position: "relative",
     overflow: "hidden",
   },
   iconContainer: {
     position: "absolute",
-    top: Platform.OS === "android" ? 130 : 165,
+    top: Platform.OS === "android" ? "10%" : 165,
     flexDirection: "row",
     justifyContent: "space-between",
     width: "90%",
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
   },
   iconContainer2: {
     position: "absolute",
-    top: Platform.OS === "android" ? 130 : 165,
+    top: Platform.OS === "android" ? "10%" : 165,
     marginHorizontal: "auto",
     flexDirection: "row",
     justifyContent: "flex-end",
